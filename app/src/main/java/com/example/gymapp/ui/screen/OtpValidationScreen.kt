@@ -5,6 +5,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 
 @Composable
-fun OTPValidationScreen(modifier: Modifier = Modifier) {
+fun OtpValidationScreen(modifier: Modifier = Modifier) {
     Text("OTP validation page")
 }

@@ -1,7 +1,7 @@
-package com.example.gymapp.ui.navigation.enum
+package com.example.gymapp.ui.screen.enum
 
 enum class ScreenName {
-    REGISTER_SCREEN,
+    USER_REGISTER_SCREEN,
     OTP_VALIDATION_SCREEN,
     HOME_SCREEN
 }

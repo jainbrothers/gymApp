@@ -23,11 +23,10 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.gymapp.ui.navigation.enum.ScreenName
+import com.example.gymapp.ui.screen.enum.ScreenName
 import com.example.gymapp.ui.screen.HomeScreen
-import com.example.gymapp.ui.screen.OTPValidationScreen
-import com.example.gymapp.ui.screen.RegisterScreen
-import com.example.gymapp.ui.screens.choose.FacilitySearchApp
+import com.example.gymapp.ui.screen.OtpValidationScreen
+import com.example.gymapp.ui.screen.UserRegisterScreen
 
 /**
  * Provides Navigation graph for the application.
@@ -39,7 +38,7 @@ fun GymNavHost(
     modifier: Modifier = Modifier,
 ) {
 
-    var startDestination = ScreenName.REGISTER_SCREEN.name
+    var startDestination = ScreenName.USER_REGISTER_SCREEN.name
     if (isUserRegistered) {
         startDestination = ScreenName.HOME_SCREEN.name
     }
@@ -48,8 +47,8 @@ fun GymNavHost(
         startDestination,
         modifier.fillMaxWidth()
     ) {
-        composable(route = ScreenName.REGISTER_SCREEN.name) {
-            RegisterScreen(
+        composable(route = ScreenName.USER_REGISTER_SCREEN.name) {
+            UserRegisterScreen(
                 onSuccessfulOTPGeneration = {
                     navController.navigate(route = ScreenName.OTP_VALIDATION_SCREEN.name)
                 },
@@ -59,7 +58,7 @@ fun GymNavHost(
             )
         }
         composable(route = ScreenName.OTP_VALIDATION_SCREEN.name) {
-            OTPValidationScreen()
+            OtpValidationScreen()
         }
         composable(route = ScreenName.HOME_SCREEN.name) {
             HomeScreen()
