@@ -12,8 +12,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
 private val TAG = "User Registration View Model"
-private val NUMBER_PATTERN = Regex("\\d+\$")
-private val MOBILE_NUMBER_LENGTH = 10
 
 class UserRegistrationViewModel: ViewModel() {
 
@@ -29,6 +27,11 @@ class UserRegistrationViewModel: ViewModel() {
                 )
             }
         }
+    }
+    fun generateOtp(mobileNumber: String) : String? {
+        var error: String ?= null
+        error = ""
+        return error
     }
 
     private fun isMobileNumberValid(mobileNumber: String): Boolean {

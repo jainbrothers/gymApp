@@ -25,7 +25,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.gymapp.ui.screen.enum.ScreenName
 import com.example.gymapp.ui.screen.HomeScreen
-import com.example.gymapp.ui.screen.OtpValidationScreen
+import com.example.gymapp.ui.screen.OtpVerificationScreen
 import com.example.gymapp.ui.screen.UserRegisterScreen
 
 /**
@@ -49,16 +49,20 @@ fun GymNavHost(
     ) {
         composable(route = ScreenName.USER_REGISTER_SCREEN.name) {
             UserRegisterScreen(
-                onSuccessfulOTPGeneration = {
-                    navController.navigate(route = ScreenName.OTP_VALIDATION_SCREEN.name)
+                onSuccessfulOtpGeneration = {
+                    navController.navigate(route = ScreenName.OTP_VERIFICATION_SCREEN.name)
                 },
                 onJumpHomeScreen = {
                     navController.navigate(route = ScreenName.HOME_SCREEN.name)
                 }
             )
         }
-        composable(route = ScreenName.OTP_VALIDATION_SCREEN.name) {
-            OtpValidationScreen()
+        composable(route = ScreenName.OTP_VERIFICATION_SCREEN.name) {
+            OtpVerificationScreen(
+                onSuccessfulOtpVerification = {
+                    navController.navigate(route = ScreenName.HOME_SCREEN.name)
+                }
+            )
         }
         composable(route = ScreenName.HOME_SCREEN.name) {
             HomeScreen()
