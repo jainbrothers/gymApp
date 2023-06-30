@@ -16,6 +16,7 @@
 
 package com.example.gymapp.ui.screens.choose
 
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
@@ -48,12 +49,6 @@ import com.example.gymapp.R
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.gymapp.data.Facility
 import androidx.compose.foundation.lazy.items
-import com.example.inventory.ui.navigation.NavigationDestination
-
-object HomeDestination : NavigationDestination {
-    override val route = "home"
-    override val titleRes = R.string.app_name
-}
 
 @Composable
 fun FacilitySearchApp(
