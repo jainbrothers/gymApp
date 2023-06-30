@@ -12,6 +12,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
 private val TAG = "User Registration View Model"
+private val NUMBER_PATTERN = Regex("\\d+\$")
+private val MOBILE_NUMBER_LENGTH = 10
 
 class UserRegistrationViewModel: ViewModel() {
 
@@ -19,11 +21,25 @@ class UserRegistrationViewModel: ViewModel() {
     val userRegistrationUiState: StateFlow<UserRegistrationUiState>  = _userRegistrationUiState.asStateFlow()
 
     fun setMobileNumber(userInput: String) {
-        _userRegistrationUiState.update {currentState ->
-            currentState.copy(
-                mobileNumber = userInput
-            )
+        if (isMobileNumberValid(userInput)) {
+            _userRegistrationUiState.update { currentState ->
+                currentState.copy(
+                    mobileNumber = userInput,
+                    isOtpGenerationEnabled = isOtpGenerationEnabled(userInput)
+                )
+            }
         }
+    }
+
+    private fun isMobileNumberValid(mobileNumber: String): Boolean {
+        var valid = mobileNumber.isNullOrEmpty()
+        valid = valid || mobileNumber.matches(NUMBER_PATTERN)
+        valid = valid && mobileNumber.length <= MOBILE_NUMBER_LENGTH
+        return valid
+    }
+
+    private fun isOtpGenerationEnabled(mobileNumber: String): Boolean {
+        return mobileNumber.length == MOBILE_NUMBER_LENGTH
     }
     companion object {
         val factory: ViewModelProvider.Factory = viewModelFactory {

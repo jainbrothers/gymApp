@@ -55,7 +55,8 @@ fun UserRegisterScreen(
                 if (otpGenerationError == null) {
                     onSuccessfulOTPGeneration()
                 }
-            }
+            },
+            enabled = uiState.isOtpGenerationEnabled
         ) {
             Text(stringResource(R.string.generate_otp_button_name))
         }
