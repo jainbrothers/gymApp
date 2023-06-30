@@ -21,8 +21,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.gymapp.R
-import com.example.gymapp.ui.viewmodel.OtpViewModel
-import com.example.gymapp.ui.viewmodel.UserRegistrationViewModel
+import com.example.gymapp.ui.screen.viewmodel.OtpViewModel
+import com.example.gymapp.ui.screen.viewmodel.UserRegistrationViewModel
 
 private const val TAG = "GYM APP LOG"
 @OptIn(ExperimentalMaterial3Api::class)

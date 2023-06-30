@@ -1,11 +1,11 @@
-package com.example.gymapp.ui.viewmodel
+package com.example.gymapp.ui.screen.viewmodel
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
-import com.example.gymapp.ui.viewmodel.state.UserRegistrationUiState
+import com.example.gymapp.ui.screen.viewmodel.state.UserRegistrationUiState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
