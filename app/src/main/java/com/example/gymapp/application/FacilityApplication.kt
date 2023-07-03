@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
-package com.example.gymapp
+package com.example.gymapp.application
 
 import android.app.Application
-import com.example.gymapp.data.AppContainer
-import com.example.gymapp.data.AppDataContainer
+
 
 class FacilityApplication : Application() {
     /**

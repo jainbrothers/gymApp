@@ -14,16 +14,28 @@
  * limitations under the License.
  */
 
-package com.example.gymapp.data
+package com.example.gymapp.application
 
 import android.content.Context
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.preferencesDataStore
+import com.example.gymapp.data.FacilityDatabase
+import com.example.gymapp.data.FacilityRepository
+import com.example.gymapp.data.OfflineFacilityRepository
+import com.example.gymapp.data.repository.UserDetailPreferencesRepository
+import com.example.gymapp.data.repository.UserDetailRepository
 
+val Context.userDetailDatastore: DataStore<Preferences> by preferencesDataStore(
+    name = USER_DETAIL_PREFERENCES_NAME
+)
 
 /**
  * App container for Dependency injection.
  */
 interface AppContainer {
     val facilityRepository: FacilityRepository
+    val userDetailRepository: UserDetailRepository
 }
 
 /**
@@ -35,5 +47,9 @@ class AppDataContainer(private val context: Context) : AppContainer {
      */
     override val facilityRepository: FacilityRepository by lazy {
         OfflineFacilityRepository(FacilityDatabase.getDatabase(context).itemDao())
+    }
+
+    override val userDetailRepository: UserDetailRepository by lazy {
+        UserDetailPreferencesRepository(context.userDetailDatastore)
     }
 }
