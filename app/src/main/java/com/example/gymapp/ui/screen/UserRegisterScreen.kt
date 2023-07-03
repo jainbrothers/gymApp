@@ -25,7 +25,6 @@ private const val TAG = "GYM APP LOG"
 @Composable
 fun UserRegisterScreen(
     onSuccessfulOtpGeneration: () -> Unit,
-    onJumpHomeScreen: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val userRegistrationViewModel: UserRegistrationViewModel = viewModel(factory = UserRegistrationViewModel.factory)
@@ -61,14 +60,5 @@ fun UserRegisterScreen(
             Text("OTP generation failed with error ${otpGenerationError}, please try again",
                 modifier.align(CenterHorizontally))
         }
-    }
-    JumpToHomeScreen(onJumpHomeScreen)
-
-}
-
-@Composable
-fun JumpToHomeScreen(onJumpHomeScreen: () -> Unit) {
-    Button(onClick = onJumpHomeScreen) {
-        Text("Tony!!! Jump to Home page")
     }
 }

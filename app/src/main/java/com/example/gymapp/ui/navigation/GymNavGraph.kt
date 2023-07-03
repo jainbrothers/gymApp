@@ -58,9 +58,6 @@ fun GymNavHost(
             UserRegisterScreen(
                 onSuccessfulOtpGeneration = {
                     navController.navigate(route = ScreenName.OTP_VERIFICATION_SCREEN.name)
-                },
-                onJumpHomeScreen = {
-                    navController.navigate(route = ScreenName.HOME_SCREEN.name)
                 }
             )
         }
