@@ -9,14 +9,10 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.gymapp.data.repository.UserDetailRepository
 import com.example.gymapp.ui.screen.viewmodel.enum.OtpVerificationCode
 import com.example.gymapp.ui.screen.viewmodel.enum.UserRegistrationState
-import com.example.gymapp.ui.screen.viewmodel.state.OtpVerificationState
+import com.example.gymapp.ui.screen.viewmodel.state.OtpVerificationUiState
 import com.example.gymapp.ui.screens.choose.facilityApplication
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onSubscription
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -25,7 +21,7 @@ private const val TAG = "Otp View tag"
 
 class OtpVerificationViewModel(val userDetailRepository: UserDetailRepository): ViewModel() {
 
-    private val _otpVerificationUiState = MutableStateFlow(OtpVerificationState())
+    private val _otpVerificationUiState = MutableStateFlow(OtpVerificationUiState())
     val otpVerificationUiState = _otpVerificationUiState.asStateFlow()
     init {
         populateUserDetail()

@@ -26,6 +26,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.gymapp.ui.screen.enum.ScreenName
 import com.example.gymapp.ui.screen.HomeScreen
 import com.example.gymapp.ui.screen.OtpVerificationScreen
+import com.example.gymapp.ui.screen.SplashScreen
 import com.example.gymapp.ui.screen.UserRegisterScreen
 
 /**
@@ -34,19 +35,25 @@ import com.example.gymapp.ui.screen.UserRegisterScreen
 @Composable
 fun GymNavHost(
     navController: NavHostController = rememberNavController(),
-    isUserRegistered: Boolean = false,
     modifier: Modifier = Modifier,
 ) {
 
-    var startDestination = ScreenName.USER_REGISTER_SCREEN.name
-    if (isUserRegistered) {
-        startDestination = ScreenName.HOME_SCREEN.name
-    }
+    var startDestination = ScreenName.SPLASH_SCREEN.name
     NavHost(
         navController,
         startDestination,
         modifier.fillMaxWidth()
     ) {
+        composable(route = ScreenName.SPLASH_SCREEN.name) {
+            SplashScreen(
+                navigateUnregisterUser = {
+                    navController.navigate(route = ScreenName.USER_REGISTER_SCREEN.name)
+                },
+                navigateRegisterUser = {
+                    navController.navigate(route = ScreenName.HOME_SCREEN.name)
+                }
+            )
+        }
         composable(route = ScreenName.USER_REGISTER_SCREEN.name) {
             UserRegisterScreen(
                 onSuccessfulOtpGeneration = {

@@ -25,8 +25,8 @@ private const val TAG = "Otp verification screen tag"
 @Composable
 fun OtpVerificationScreen(
     onSuccessfulOtpVerification: () -> Unit,
-    modifier: Modifier = Modifier) {
-
+    modifier: Modifier = Modifier)
+{
     val otpViewModel: OtpVerificationViewModel = viewModel(factory = OtpVerificationViewModel.factory)
     val uiState by otpViewModel.otpVerificationUiState.collectAsState()
     Column(
