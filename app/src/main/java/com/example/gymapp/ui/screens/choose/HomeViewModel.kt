@@ -23,7 +23,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
-import com.example.gymapp.FacilityApplication
+import com.example.gymapp.application.FacilityApplication
 import com.example.gymapp.data.Facility
 import com.example.gymapp.data.FacilityRepository
 import kotlinx.coroutines.flow.SharingStarted

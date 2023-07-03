@@ -28,7 +28,6 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface FacilityDao {
 
-
     @Query("SELECT * from facility ORDER BY name ASC")
     fun getAllItems(): Flow<List<Facility>>
 

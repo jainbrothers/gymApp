@@ -48,6 +48,7 @@ fun UserRegisterScreen(
             onClick = {
                 otpGenerationError = userRegistrationViewModel.generateOtp(uiState.mobileNumber)
                 if (otpGenerationError.isNullOrEmpty()) {
+                    userRegistrationViewModel.saveUserMobileNumber()
                     onSuccessfulOtpGeneration()
                 }
             },
