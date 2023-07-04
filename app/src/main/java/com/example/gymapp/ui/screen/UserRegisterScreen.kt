@@ -25,10 +25,14 @@ private const val TAG = "GYM APP LOG"
 @Composable
 fun UserRegisterScreen(
     onSuccessfulOtpGeneration: () -> Unit,
+    onSkipToHomePageButtonClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val userRegistrationViewModel: UserRegistrationViewModel = viewModel(factory = UserRegistrationViewModel.factory)
     val uiState by userRegistrationViewModel.userRegistrationUiState.collectAsState()
+    Button(onClick = onSkipToHomePageButtonClick) {
+        Text(text = "Click here to skip to home page")
+    }
     Column(
         verticalArrangement = Arrangement.SpaceEvenly,
         horizontalAlignment = Alignment.CenterHorizontally,

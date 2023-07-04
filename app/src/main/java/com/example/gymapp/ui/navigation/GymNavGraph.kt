@@ -38,7 +38,7 @@ fun GymNavHost(
     modifier: Modifier = Modifier,
 ) {
 
-    var startDestination = ScreenName.SPLASH_SCREEN.name
+    var startDestination = ScreenName.USER_REGISTER_SCREEN.name
     NavHost(
         navController,
         startDestination,
@@ -58,6 +58,9 @@ fun GymNavHost(
             UserRegisterScreen(
                 onSuccessfulOtpGeneration = {
                     navController.navigate(route = ScreenName.OTP_VERIFICATION_SCREEN.name)
+                },
+                onSkipToHomePageButtonClick = {
+                    navController.navigate(route = ScreenName.HOME_SCREEN.name)
                 }
             )
         }
