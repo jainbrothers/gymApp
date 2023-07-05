@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -34,14 +35,18 @@ fun SplashScreen(
         } else {
             if (uiState.userRegistrationState.equals(UserRegistrationState.REGISTERED)) {
                 Text("Redirecting to home screen")
-                navigateRegisterUser()
+                LaunchedEffect(uiState.userRegistrationState) {
+                    navigateRegisterUser()
+                }
             } else {
                 Log.d(
                     TAG,
                     "uiState state ${uiState.userRegistrationState}, enum ${UserRegistrationState.REGISTERED}"
                 )
                 Text("Redirecting to registration screen")
-                navigateUnregisterUser()
+                LaunchedEffect(uiState.userRegistrationState) {
+                    navigateUnregisterUser()
+                }
             }
         }
     }

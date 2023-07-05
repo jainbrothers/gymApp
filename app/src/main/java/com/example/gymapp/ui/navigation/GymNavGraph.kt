@@ -38,7 +38,7 @@ fun GymNavHost(
     modifier: Modifier = Modifier,
 ) {
 
-    var startDestination = ScreenName.USER_REGISTER_SCREEN.name
+    var startDestination = ScreenName.SPLASH_SCREEN.name
     NavHost(
         navController,
         startDestination,
