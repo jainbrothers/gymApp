@@ -14,18 +14,15 @@
  * limitations under the License.
  */
 
-package com.example.gymapp.data
+package com.example.gymapp.data.repository
 
-import kotlinx.coroutines.flow.Flow
+import com.example.gymapp.model.Gym
 
 /**
  * Repository that provides insert, update, delete, and retrieve of [Item] from a given data source.
  */
-interface FacilityRepository {
-    /**
-     * Retrieve all the items from the the given data source.
-     */
-    fun getAllItemsStream(): Flow<List<Facility>>
+interface GymRepository {
+    suspend fun getAmphibians(): List<Gym>
 
     /**
      * Retrieve an item from the given data source that matches with the [id].

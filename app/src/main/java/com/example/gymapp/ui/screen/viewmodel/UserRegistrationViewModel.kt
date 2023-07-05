@@ -7,13 +7,10 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.gymapp.data.repository.UserDetailRepository
-import com.example.gymapp.ui.screen.viewmodel.enum.UserRegistrationState
 import com.example.gymapp.ui.screen.viewmodel.state.UserRegistrationUiState
-import com.example.gymapp.ui.screens.choose.facilityApplication
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 

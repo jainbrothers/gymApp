@@ -8,10 +8,8 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.gymapp.data.repository.UserDetailRepository
 import com.example.gymapp.ui.screen.viewmodel.state.SplashScreenUiState
-import com.example.gymapp.ui.screens.choose.facilityApplication
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 private const val TAG = "Splash Screen View Model"

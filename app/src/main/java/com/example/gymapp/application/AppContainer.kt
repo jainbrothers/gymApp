@@ -20,11 +20,15 @@ import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
-import com.example.gymapp.data.FacilityDatabase
-import com.example.gymapp.data.FacilityRepository
-import com.example.gymapp.data.OfflineFacilityRepository
+import com.example.gymapp.data.repository.GymRepository
+import com.example.gymapp.data.repository.OfflineGymRepository
 import com.example.gymapp.data.repository.UserDetailPreferencesRepository
 import com.example.gymapp.data.repository.UserDetailRepository
+import com.example.gymapp.network.GymApiService
+import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
+import kotlinx.serialization.json.Json
+import retrofit2.Retrofit
+import okhttp3.MediaType.Companion.toMediaType
 
 val Context.userDetailDatastore: DataStore<Preferences> by preferencesDataStore(
     name = USER_DETAIL_PREFERENCES_NAME
@@ -34,7 +38,7 @@ val Context.userDetailDatastore: DataStore<Preferences> by preferencesDataStore(
  * App container for Dependency injection.
  */
 interface AppContainer {
-    val facilityRepository: FacilityRepository
+    val gymRepository: GymRepository
     val userDetailRepository: UserDetailRepository
 }
 
@@ -42,11 +46,29 @@ interface AppContainer {
  * [AppContainer] implementation that provides instance of [OfflineItemsRepository]
  */
 class AppDataContainer(private val context: Context) : AppContainer {
+    private val BASE_URL = "https://android-kotlin-fun-mars-server.appspot.com/"
+
     /**
-     * Implementation for [FacilityRepository]
+     * Use the Retrofit builder to build a retrofit object using a kotlinx.serialization converter
      */
-    override val facilityRepository: FacilityRepository by lazy {
-        OfflineFacilityRepository(FacilityDatabase.getDatabase(context).itemDao())
+    @kotlinx.serialization.ExperimentalSerializationApi
+    private val retrofit: Retrofit = Retrofit.Builder()
+        .addConverterFactory(Json.asConverterFactory("application/json".toMediaType()))
+        .baseUrl(BASE_URL)
+        .build()
+
+    /**
+     * Retrofit service object for creating api calls
+     */
+    private val retrofitService: GymApiService by lazy {
+        retrofit.create(GymApiService::class.java)
+    }
+
+    /**
+     * Implementation for [GymRepository]
+     */
+    override val gymRepository: GymRepository by lazy {
+        OfflineGymRepository(retrofitService)
     }
 
     override val userDetailRepository: UserDetailRepository by lazy {

@@ -3,4 +3,7 @@
     <string name="mobile_input_label">Enter mobile number</string>
     <string name="generate_otp_button_name">Generate OTP</string>
     <string name="verify_otp_button_text">Verify Otp</string>
+    <string name="loading">Loading...</string>
+    <string name="loading_failed">loading failed !</string>
+    <string name="retry">Retry</string>
 </resources>

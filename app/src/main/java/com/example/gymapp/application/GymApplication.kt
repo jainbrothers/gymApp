@@ -19,7 +19,7 @@ package com.example.gymapp.application
 import android.app.Application
 
 
-class FacilityApplication : Application() {
+class GymApplication : Application() {
     /**
      * AppContainer instance used by the rest of classes to obtain dependencies
      */
