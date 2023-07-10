@@ -23,7 +23,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.gymapp.ui.screen.enum.ScreenName
+import com.example.gymapp.ui.screen.enumeration.ScreenName
 import com.example.gymapp.ui.screen.HomeScreen
 import com.example.gymapp.ui.screen.OtpVerificationScreen
 import com.example.gymapp.ui.screen.SplashScreen

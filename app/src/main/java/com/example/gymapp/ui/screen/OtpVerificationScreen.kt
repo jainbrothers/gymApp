@@ -18,7 +18,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.gymapp.R
 import com.example.gymapp.ui.screen.viewmodel.OtpVerificationViewModel
-import com.example.gymapp.ui.screen.viewmodel.enum.OtpVerificationCode
+import com.example.gymapp.ui.screen.viewmodel.enumeration.OtpVerificationCode
 
 private const val TAG = "Otp verification screen tag"
 @OptIn(ExperimentalMaterial3Api::class)

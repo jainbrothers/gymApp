@@ -13,7 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.gymapp.ui.screen.viewmodel.SplashScreenViewModel
-import com.example.gymapp.ui.screen.viewmodel.enum.UserRegistrationState
+import com.example.gymapp.ui.screen.viewmodel.enumeration.UserRegistrationState
 
 private const val TAG = "Splash Screen"
 @Composable

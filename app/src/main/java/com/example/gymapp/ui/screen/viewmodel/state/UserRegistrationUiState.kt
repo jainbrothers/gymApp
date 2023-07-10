@@ -1,6 +1,6 @@
 package com.example.gymapp.ui.screen.viewmodel.state
 
-import com.example.gymapp.ui.screen.viewmodel.enum.UserRegistrationState
+import com.example.gymapp.ui.screen.viewmodel.enumeration.UserRegistrationState
 
 data class UserRegistrationUiState (
     val mobileNumber: String = "",

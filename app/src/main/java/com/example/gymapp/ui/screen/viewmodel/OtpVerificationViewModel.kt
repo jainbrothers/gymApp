@@ -7,8 +7,8 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.gymapp.data.repository.UserDetailRepository
-import com.example.gymapp.ui.screen.viewmodel.enum.OtpVerificationCode
-import com.example.gymapp.ui.screen.viewmodel.enum.UserRegistrationState
+import com.example.gymapp.ui.screen.viewmodel.enumeration.OtpVerificationCode
+import com.example.gymapp.ui.screen.viewmodel.enumeration.UserRegistrationState
 import com.example.gymapp.ui.screen.viewmodel.state.OtpVerificationUiState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow

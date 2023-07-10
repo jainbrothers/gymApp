@@ -1,4 +1,4 @@
-package com.example.gymapp.ui.screen.viewmodel.enum
+package com.example.gymapp.ui.screen.viewmodel.enumeration
 
 enum class OtpVerificationCode {
     SUCCEEDED,

@@ -1,6 +1,6 @@
 package com.example.gymapp.data.repository
 
-import com.example.gymapp.ui.screen.viewmodel.enum.UserRegistrationState
+import com.example.gymapp.ui.screen.viewmodel.enumeration.UserRegistrationState
 import kotlinx.coroutines.flow.Flow
 
 interface UserDetailRepository {

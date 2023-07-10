@@ -1,4 +1,4 @@
-package com.example.gymapp.ui.screen.enum
+package com.example.gymapp.ui.screen.enumeration
 
 enum class ScreenName {
     SPLASH_SCREEN,
