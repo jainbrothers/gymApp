@@ -6,16 +6,20 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.stringPreferencesKey
+import com.example.gymapp.application.UserDetailPreferenceDatastoreQualifier
 import com.example.gymapp.ui.screen.viewmodel.enumeration.UserRegistrationState
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import java.io.IOException
+import javax.inject.Inject
+import javax.inject.Named
 
 private const val TAG = "User Detail Preference Repository"
-class UserDetailPreferencesRepository(
-    private val dataStore: DataStore<Preferences>
+
+class UserDetailPreferencesRepository @Inject constructor(
+    @UserDetailPreferenceDatastoreQualifier private val dataStore: DataStore<Preferences>
 ): UserDetailRepository {
 
     private companion object {

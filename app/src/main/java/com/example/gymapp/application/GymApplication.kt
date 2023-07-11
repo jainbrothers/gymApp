@@ -17,15 +17,21 @@
 package com.example.gymapp.application
 
 import android.app.Application
+import android.content.Context
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.preferencesDataStore
+import dagger.hilt.android.HiltAndroidApp
+import javax.inject.Inject
 
-
+@HiltAndroidApp
 class GymApplication : Application() {
     /**
      * AppContainer instance used by the rest of classes to obtain dependencies
      */
+    @Inject
     lateinit var container: AppContainer
     override fun onCreate() {
         super.onCreate()
-        container = AppDataContainer(this)
     }
 }

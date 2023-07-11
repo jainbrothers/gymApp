@@ -2,23 +2,23 @@ package com.example.gymapp.ui.screen.viewmodel
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.gymapp.data.repository.UserDetailRepository
 import com.example.gymapp.ui.screen.viewmodel.enumeration.OtpVerificationCode
 import com.example.gymapp.ui.screen.viewmodel.enumeration.UserRegistrationState
 import com.example.gymapp.ui.screen.viewmodel.state.OtpVerificationUiState
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 
 private const val TAG = "Otp View tag"
 
-class OtpVerificationViewModel(val userDetailRepository: UserDetailRepository): ViewModel() {
+@HiltViewModel
+class OtpVerificationViewModel @Inject constructor(val userDetailRepository: UserDetailRepository): ViewModel() {
 
     private val _otpVerificationUiState = MutableStateFlow(OtpVerificationUiState())
     val otpVerificationUiState = _otpVerificationUiState.asStateFlow()
@@ -69,14 +69,5 @@ class OtpVerificationViewModel(val userDetailRepository: UserDetailRepository): 
 
     private fun isVerifyOtpButtonEnabled(userInput: String) : Boolean {
         return userInput.length == OTP_LENGTH
-    }
-
-    companion object {
-        val factory: ViewModelProvider.Factory = viewModelFactory {
-            initializer {
-                val userDetailRepository = facilityApplication().container.userDetailRepository
-                OtpVerificationViewModel(userDetailRepository)
-            }
-        }
     }
 }

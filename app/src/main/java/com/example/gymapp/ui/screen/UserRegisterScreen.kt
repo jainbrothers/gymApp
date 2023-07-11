@@ -16,6 +16,7 @@ import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.gymapp.R
 import com.example.gymapp.ui.screen.viewmodel.UserRegistrationViewModel
@@ -28,7 +29,7 @@ fun UserRegisterScreen(
     onSkipToHomePageButtonClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val userRegistrationViewModel: UserRegistrationViewModel = viewModel(factory = UserRegistrationViewModel.factory)
+    val userRegistrationViewModel: UserRegistrationViewModel = hiltViewModel()
     val uiState by userRegistrationViewModel.userRegistrationUiState.collectAsState()
     Button(onClick = onSkipToHomePageButtonClick) {
         Text(text = "Click here to skip to home page")

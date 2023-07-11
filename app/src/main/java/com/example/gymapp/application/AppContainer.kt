@@ -26,9 +26,21 @@ import com.example.gymapp.data.repository.UserDetailPreferencesRepository
 import com.example.gymapp.data.repository.UserDetailRepository
 import com.example.gymapp.network.GymApiService
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
+import dagger.Binds
+import dagger.Module
+import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
+import dagger.hilt.components.SingletonComponent
 import kotlinx.serialization.json.Json
-import retrofit2.Retrofit
 import okhttp3.MediaType.Companion.toMediaType
+import retrofit2.Retrofit
+import java.lang.annotation.Documented
+import java.lang.annotation.Retention
+import java.lang.annotation.RetentionPolicy
+import javax.inject.Inject
+import javax.inject.Qualifier
+import javax.inject.Singleton
 
 val Context.userDetailDatastore: DataStore<Preferences> by preferencesDataStore(
     name = USER_DETAIL_PREFERENCES_NAME
@@ -39,13 +51,12 @@ val Context.userDetailDatastore: DataStore<Preferences> by preferencesDataStore(
  */
 interface AppContainer {
     val gymRepository: GymRepository
-    val userDetailRepository: UserDetailRepository
 }
 
 /**
  * [AppContainer] implementation that provides instance of [OfflineItemsRepository]
  */
-class AppDataContainer(private val context: Context) : AppContainer {
+class AppDataContainer @Inject constructor(@ApplicationContext private val context: Context) : AppContainer {
     private val BASE_URL = "https://android-kotlin-fun-mars-server.appspot.com/"
 
     /**
@@ -70,8 +81,37 @@ class AppDataContainer(private val context: Context) : AppContainer {
     override val gymRepository: GymRepository by lazy {
         OfflineGymRepository(retrofitService)
     }
+}
 
-    override val userDetailRepository: UserDetailRepository by lazy {
-        UserDetailPreferencesRepository(context.userDetailDatastore)
+@Module
+@InstallIn(SingletonComponent::class)
+object AppModule {
+    @Singleton
+    @Provides
+    @UserDetailPreferenceDatastoreQualifier
+    fun provideUserDetailPreferencesDatastore(@ApplicationContext context: Context): DataStore<Preferences>
+    {
+        return context.userDetailDatastore
     }
 }
+
+@InstallIn(SingletonComponent::class)
+@Module
+abstract class UserDetailRepositoryModule {
+    @Binds
+    abstract fun bindUserDetailRepository(
+        userDetailPreferencesRepository: UserDetailPreferencesRepository,
+    ): UserDetailRepository
+}
+
+@InstallIn(SingletonComponent::class)
+@Module
+abstract class AppContainerModule {
+    @Binds
+    abstract fun bindAppContainer(appDataContainer: AppDataContainer): AppContainer
+}
+
+@Qualifier
+@Documented
+@Retention(RetentionPolicy.RUNTIME)
+annotation class UserDetailPreferenceDatastoreQualifier()

@@ -11,7 +11,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.gymapp.ui.screen.viewmodel.SplashScreenViewModel
 import com.example.gymapp.ui.screen.viewmodel.enumeration.UserRegistrationState
 
@@ -22,8 +22,8 @@ fun SplashScreen(
     navigateRegisterUser: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val viewModel: SplashScreenViewModel = viewModel(factory = SplashScreenViewModel.factory)
-    val uiState by viewModel.splashScreenUiState.collectAsState()
+    val splashScreenViewModelviewModel: SplashScreenViewModel = hiltViewModel()
+    val uiState by splashScreenViewModelviewModel.splashScreenUiState.collectAsState()
     Column(
         modifier = modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,

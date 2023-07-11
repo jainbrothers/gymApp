@@ -15,7 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.gymapp.R
 import com.example.gymapp.ui.screen.viewmodel.OtpVerificationViewModel
 import com.example.gymapp.ui.screen.viewmodel.enumeration.OtpVerificationCode
@@ -27,7 +27,7 @@ fun OtpVerificationScreen(
     onSuccessfulOtpVerification: () -> Unit,
     modifier: Modifier = Modifier)
 {
-    val otpViewModel: OtpVerificationViewModel = viewModel(factory = OtpVerificationViewModel.factory)
+    val otpViewModel: OtpVerificationViewModel = hiltViewModel()
     val uiState by otpViewModel.otpVerificationUiState.collectAsState()
     Column(
         verticalArrangement = Arrangement.SpaceEvenly,
