@@ -72,9 +72,8 @@ class AuthServiceImpl @Inject constructor(
             otpVerificationState.value =
                 OtpVerificationState.Loading("$(context.getString(R.string.code_will_be_sent_to)) $phoneNumber")
             val options = authBuilder.setPhoneNumber(phoneNumber).build()
-//        PhoneAuthProvider.verifyPhoneNumber(options)
-//            ErrorCode.None
-            ErrorCode.InternalClientError("Injected error")
+        PhoneAuthProvider.verifyPhoneNumber(options)
+            ErrorCode.None
         } catch(exception: Exception) {
             Log.e(TAG, "Error during OTP generation, ${exception.message}", exception)
             if (exception is FirebaseException) {

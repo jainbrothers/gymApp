@@ -72,6 +72,8 @@ object AppModule {
             .baseUrl("https://android-kotlin-fun-mars-server.appspot.com/")
             .build().create(GymApiService::class.java)
     }
+    @Singleton
+    @Provides
     fun provideFirebaseAuth(): FirebaseAuth = Firebase.auth
     @Singleton
     @Provides
