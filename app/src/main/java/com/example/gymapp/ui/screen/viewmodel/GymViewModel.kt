@@ -29,9 +29,11 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.gymapp.application.GymApplication
 import com.example.gymapp.data.repository.GymRepository
 import com.example.gymapp.model.Gym
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import java.io.IOException
+import javax.inject.Inject
 
 /**
  * Ui State for HomeScreen
@@ -48,7 +50,8 @@ sealed interface AmphibiansUiState {
  * [BlurViewModel] starts and stops the WorkManger and applies blur to the image. Also updates the
  * visibility states of the buttons depending on the states of the WorkManger.
  */
-class GymViewModel(private val gymRepository: GymRepository) : ViewModel() {
+@HiltViewModel
+class GymViewModel @Inject constructor(val gymRepository: GymRepository) : ViewModel() {
 
     var amphibiansUiState: AmphibiansUiState by mutableStateOf(AmphibiansUiState.Loading)
         private set
@@ -70,23 +73,5 @@ class GymViewModel(private val gymRepository: GymRepository) : ViewModel() {
         }
     }
 
-    /**
-     * Factory for [HomwViewModel] that takes [BluromaticRepository] as a dependency
-     */
-    companion object {
-        private const val TIMEOUT_MILLIS = 5_000L
-        val factory: ViewModelProvider.Factory = viewModelFactory {
-            initializer {
-                val facilityRepository =
-                    facilityApplication().container.gymRepository
-                GymViewModel(
-                    gymRepository = facilityRepository
-                )
-            }
-        }
-    }
 }
-
-fun CreationExtras.facilityApplication(): GymApplication =
-    (this[APPLICATION_KEY] as GymApplication)
 

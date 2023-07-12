@@ -16,11 +16,11 @@
 
 package com.example.gymapp.data.repository
 
-import com.example.gymapp.data.repository.GymRepository
 import com.example.gymapp.model.Gym
 import com.example.gymapp.network.GymApiService
+import javax.inject.Inject
 
-class OfflineGymRepository(private val gymApiService: GymApiService) : GymRepository {
+class OfflineGymRepository @Inject constructor(private val gymApiService: GymApiService) : GymRepository {
     override suspend fun getAmphibians(): List<Gym> = gymApiService.getAmphibians()
 }
 

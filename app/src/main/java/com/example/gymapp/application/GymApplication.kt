@@ -29,8 +29,6 @@ class GymApplication : Application() {
     /**
      * AppContainer instance used by the rest of classes to obtain dependencies
      */
-    @Inject
-    lateinit var container: AppContainer
     override fun onCreate() {
         super.onCreate()
     }

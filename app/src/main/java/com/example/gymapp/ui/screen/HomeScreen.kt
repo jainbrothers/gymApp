@@ -51,6 +51,7 @@ import androidx.compose.material3.Button
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.gymapp.model.Gym
 import com.example.gymapp.ui.screen.viewmodel.AmphibiansUiState
 import com.example.gymapp.ui.screen.viewmodel.GymViewModel
@@ -65,9 +66,8 @@ fun HomeScreen() {
 
 @Composable
 fun FacilitySearchApp(
-//    navigateToFlightSearch: (Int) -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: GymViewModel = viewModel(factory = GymViewModel.factory)
+    viewModel: GymViewModel = hiltViewModel()
 ){
     val amphibiansUiState = viewModel.amphibiansUiState
 

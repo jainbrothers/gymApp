@@ -46,43 +46,6 @@ val Context.userDetailDatastore: DataStore<Preferences> by preferencesDataStore(
     name = USER_DETAIL_PREFERENCES_NAME
 )
 
-/**
- * App container for Dependency injection.
- */
-interface AppContainer {
-    val gymRepository: GymRepository
-}
-
-/**
- * [AppContainer] implementation that provides instance of [OfflineItemsRepository]
- */
-class AppDataContainer @Inject constructor(@ApplicationContext private val context: Context) : AppContainer {
-    private val BASE_URL = "https://android-kotlin-fun-mars-server.appspot.com/"
-
-    /**
-     * Use the Retrofit builder to build a retrofit object using a kotlinx.serialization converter
-     */
-    @kotlinx.serialization.ExperimentalSerializationApi
-    private val retrofit: Retrofit = Retrofit.Builder()
-        .addConverterFactory(Json.asConverterFactory("application/json".toMediaType()))
-        .baseUrl(BASE_URL)
-        .build()
-
-    /**
-     * Retrofit service object for creating api calls
-     */
-    private val retrofitService: GymApiService by lazy {
-        retrofit.create(GymApiService::class.java)
-    }
-
-    /**
-     * Implementation for [GymRepository]
-     */
-    override val gymRepository: GymRepository by lazy {
-        OfflineGymRepository(retrofitService)
-    }
-}
-
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
@@ -93,6 +56,25 @@ object AppModule {
     {
         return context.userDetailDatastore
     }
+
+    @Singleton
+    @Provides
+    fun provideRetrofitService(): GymApiService
+    {
+        return Retrofit.Builder()
+            .addConverterFactory(Json.asConverterFactory("application/json".toMediaType()))
+            .baseUrl("https://android-kotlin-fun-mars-server.appspot.com/")
+            .build().create(GymApiService::class.java)
+    }
+}
+
+@InstallIn(SingletonComponent::class)
+@Module
+abstract class GymRepositoryModule {
+    @Binds
+    abstract fun bindGymRepository(
+        offlineGymRepository: OfflineGymRepository
+    ): GymRepository
 }
 
 @InstallIn(SingletonComponent::class)
@@ -102,13 +84,6 @@ abstract class UserDetailRepositoryModule {
     abstract fun bindUserDetailRepository(
         userDetailPreferencesRepository: UserDetailPreferencesRepository,
     ): UserDetailRepository
-}
-
-@InstallIn(SingletonComponent::class)
-@Module
-abstract class AppContainerModule {
-    @Binds
-    abstract fun bindAppContainer(appDataContainer: AppDataContainer): AppContainer
 }
 
 @Qualifier
