@@ -6,8 +6,8 @@ import com.google.firebase.auth.PhoneAuthProvider
 import kotlinx.coroutines.flow.MutableStateFlow
 
 interface AuthService {
-    val otpVerificationState: MutableStateFlow<OtpVerificationState>
-    fun authenticate(phone: String): ErrorCode
+    val otpVerificationStatus: MutableStateFlow<OtpVerificationStatus>
+    fun authenticate(phone: String)
     fun onCodeSent(
         verificationId: String,
         token:
@@ -23,3 +23,8 @@ interface AuthService {
     fun onVerificationFailed(exception: Exception)
     fun getUserPhone(): String
 }
+
+data class OtpVerificationStatus(
+    val otpVerificationState: OtpVerificationState = OtpVerificationState.NotInitialised,
+    val errorCode: ErrorCode = ErrorCode.None
+)

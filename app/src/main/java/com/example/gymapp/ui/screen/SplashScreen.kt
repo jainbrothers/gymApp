@@ -36,7 +36,7 @@ fun SplashScreen(
             if (uiState.userRegistrationState.equals(UserRegistrationState.REGISTERED)) {
                 Text("Redirecting to home screen")
                 LaunchedEffect(uiState.userRegistrationState) {
-                    navigateRegisterUser()
+                    navigateUnregisterUser()
                 }
             } else {
                 Log.d(

@@ -4,11 +4,15 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.gymapp.data.repository.UserDetailRepository
-import com.example.gymapp.ui.screen.viewmodel.enumeration.OtpVerificationCode
+import com.example.gymapp.service.authservice.AuthService
+import com.example.gymapp.service.authservice.OtpVerificationState
+import com.example.gymapp.service.authservice.OtpVerificationStatus
+import com.example.gymapp.ui.screen.enumeration.ErrorCode
 import com.example.gymapp.ui.screen.viewmodel.enumeration.UserRegistrationState
 import com.example.gymapp.ui.screen.viewmodel.state.OtpVerificationUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -18,10 +22,14 @@ import javax.inject.Inject
 private const val TAG = "Otp View tag"
 
 @HiltViewModel
-class OtpVerificationViewModel @Inject constructor(val userDetailRepository: UserDetailRepository): ViewModel() {
-
+class OtpVerificationViewModel @Inject constructor(
+    val userDetailRepository: UserDetailRepository,
+    val authService: AuthService
+): ViewModel()
+{
     private val _otpVerificationUiState = MutableStateFlow(OtpVerificationUiState())
     val otpVerificationUiState = _otpVerificationUiState.asStateFlow()
+    val otpVerificationStatus: StateFlow<OtpVerificationStatus> = authService.otpVerificationStatus.asStateFlow()
     init {
         populateUserDetail()
     }
@@ -35,14 +43,12 @@ class OtpVerificationViewModel @Inject constructor(val userDetailRepository: Use
         }
     }
 
-    fun verifyOtp(otp: String): OtpVerificationCode {
-        //TODO: call backend server to verify otp
+    fun verifyOtp(otp: String) {
         Log.d(TAG, "inside verifyOtp function, otp = ${otp}")
-        updateRegistrationState(UserRegistrationState.REGISTERED)
-        return OtpVerificationCode.SUCCEEDED
+        authService.verifyOtp(otp)
     }
 
-    private fun updateRegistrationState(state: UserRegistrationState) {
+    fun updateRegistrationState(state: UserRegistrationState) {
         viewModelScope.launch {
             Log.d(TAG, "updating registration ${state}")
             userDetailRepository.saveUserRegistrationState(state)

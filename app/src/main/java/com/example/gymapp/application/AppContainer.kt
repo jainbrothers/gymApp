@@ -101,7 +101,8 @@ abstract class UserDetailRepositoryModule {
 @InstallIn(SingletonComponent::class)
 abstract class ServiceModule {
     @Binds
-    abstract fun bindAccountService(
+    @Singleton
+    abstract fun bindAuthService(
         authServiceImpl: AuthServiceImpl
     ): AuthService
 }

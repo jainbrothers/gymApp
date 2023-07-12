@@ -1,5 +1,6 @@
 package com.example.gymapp.ui.screen
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -9,31 +10,62 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.gymapp.R
+import com.example.gymapp.service.authservice.OtpVerificationState
+import com.example.gymapp.ui.screen.enumeration.ErrorCode
+import com.example.gymapp.ui.screen.viewmodel.OtpVerificationViewModel
 import com.example.gymapp.ui.screen.viewmodel.UserRegistrationViewModel
+import com.example.gymapp.ui.screen.viewmodel.enumeration.UserRegistrationState
+import kotlinx.coroutines.flow.MutableStateFlow
 
 private const val TAG = "GYM APP LOG"
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun UserRegisterScreen(
     onSuccessfulOtpGeneration: () -> Unit,
-    onSkipToHomePageButtonClick: () -> Unit,
+    postSuccessfulRegistration: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val userRegistrationViewModel: UserRegistrationViewModel = hiltViewModel()
+    val otpVerificationViewModel: OtpVerificationViewModel = hiltViewModel()
+    val otpVerificationStatus by userRegistrationViewModel.otpVerificationStatus.collectAsState()
+    Log.d(TAG, "otpVerificationState ${otpVerificationStatus.otpVerificationState}")
+    when(otpVerificationStatus.otpVerificationState) {
+        is OtpVerificationState.NotInitialised,
+        is OtpVerificationState.Error,
+        is OtpVerificationState.Failed,
+        is OtpVerificationState.Loading -> GenerateOtp(modifier)
+        is OtpVerificationState.OtpSent,
+        is OtpVerificationState.OtpAutoFeedDone-> LaunchedEffect(otpVerificationStatus.otpVerificationState) {
+            userRegistrationViewModel.saveUserMobileNumber()
+            onSuccessfulOtpGeneration()
+        }
+        is OtpVerificationState.Successful -> LaunchedEffect(otpVerificationStatus.otpVerificationState) {
+            otpVerificationViewModel.updateRegistrationState(UserRegistrationState.REGISTERED)
+            postSuccessfulRegistration()
+        }
+    }
+}
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun GenerateOtp(
     modifier: Modifier = Modifier
 ) {
     val userRegistrationViewModel: UserRegistrationViewModel = hiltViewModel()
     val uiState by userRegistrationViewModel.userRegistrationUiState.collectAsState()
-    Button(onClick = onSkipToHomePageButtonClick) {
-        Text(text = "Click here to skip to home page")
-    }
+    val otpVerificationStatus by userRegistrationViewModel.otpVerificationStatus.collectAsState()
     Column(
         verticalArrangement = Arrangement.SpaceEvenly,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -47,22 +79,16 @@ fun UserRegisterScreen(
             label = {Text(stringResource(R.string.mobile_input_label))},
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
         )
-        var otpGenerationError: String ?= null
         Button(
             onClick = {
-                otpGenerationError = userRegistrationViewModel.generateOtp(uiState.mobileNumber)
-                if (otpGenerationError.isNullOrEmpty()) {
-                    userRegistrationViewModel.saveUserMobileNumber()
-                    onSuccessfulOtpGeneration()
-                }
+                userRegistrationViewModel.generateOtp(uiState.mobileNumber)
             },
             enabled = uiState.isOtpGenerationEnabled
         ) {
             Text(stringResource(R.string.generate_otp_button_name))
         }
-
-        if (!otpGenerationError.isNullOrEmpty()) {
-            Text("OTP generation failed with error ${otpGenerationError}, please try again",
+        if (uiState.otpVerificationError != ErrorCode.None) {
+            Text("OTP generation failed with error ${uiState.otpVerificationError}, please try again",
                 modifier.align(CenterHorizontally))
         }
     }
