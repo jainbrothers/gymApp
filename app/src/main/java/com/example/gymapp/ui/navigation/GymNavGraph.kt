@@ -16,6 +16,8 @@
 
 package com.example.flightsearchapp.ui.navigation
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -25,6 +27,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.gymapp.ui.screen.enumeration.ScreenName
 import com.example.gymapp.ui.screen.HomeScreen
+import com.example.gymapp.ui.screen.LocationPermissionScreen
 import com.example.gymapp.ui.screen.OtpVerificationScreen
 import com.example.gymapp.ui.screen.SplashScreen
 import com.example.gymapp.ui.screen.UserRegisterScreen
@@ -32,13 +35,15 @@ import com.example.gymapp.ui.screen.UserRegisterScreen
 /**
  * Provides Navigation graph for the application.
  */
+@RequiresApi(Build.VERSION_CODES.Q)
 @Composable
 fun GymNavHost(
     navController: NavHostController = rememberNavController(),
     modifier: Modifier = Modifier,
 ) {
 
-    var startDestination = ScreenName.SPLASH_SCREEN.name
+//    var startDestination = ScreenName.SPLASH_SCREEN.name
+    var startDestination = ScreenName.HOME_SCREEN.name
     NavHost(
         navController,
         startDestination,
@@ -73,6 +78,9 @@ fun GymNavHost(
         }
         composable(route = ScreenName.HOME_SCREEN.name) {
             HomeScreen()
+        }
+        composable(route = ScreenName.LOCATION_PERMISSION_SCREEN.name) {
+            LocationPermissionScreen()
         }
     }
 }

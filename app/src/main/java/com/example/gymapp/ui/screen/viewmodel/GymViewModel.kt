@@ -48,7 +48,7 @@ sealed interface AmphibiansUiState {
  * [BlurViewModel] starts and stops the WorkManger and applies blur to the image. Also updates the
  * visibility states of the buttons depending on the states of the WorkManger.
  */
-class HomeViewModel(private val gymRepository: GymRepository) : ViewModel() {
+class GymViewModel(private val gymRepository: GymRepository) : ViewModel() {
 
     var amphibiansUiState: AmphibiansUiState by mutableStateOf(AmphibiansUiState.Loading)
         private set
@@ -79,7 +79,7 @@ class HomeViewModel(private val gymRepository: GymRepository) : ViewModel() {
             initializer {
                 val facilityRepository =
                     facilityApplication().container.gymRepository
-                HomeViewModel(
+                GymViewModel(
                     gymRepository = facilityRepository
                 )
             }
