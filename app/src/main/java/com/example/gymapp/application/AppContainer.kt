@@ -20,11 +20,17 @@ import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
+import com.example.gymapp.MainActivity
 import com.example.gymapp.data.repository.GymRepository
 import com.example.gymapp.data.repository.OfflineGymRepository
 import com.example.gymapp.data.repository.UserDetailPreferencesRepository
 import com.example.gymapp.data.repository.UserDetailRepository
 import com.example.gymapp.network.GymApiService
+import com.example.gymapp.service.authservice.AuthService
+import com.example.gymapp.service.authservice.AuthServiceImpl
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import dagger.Binds
 import dagger.Module
@@ -66,6 +72,10 @@ object AppModule {
             .baseUrl("https://android-kotlin-fun-mars-server.appspot.com/")
             .build().create(GymApiService::class.java)
     }
+    fun provideFirebaseAuth(): FirebaseAuth = Firebase.auth
+    @Singleton
+    @Provides
+    fun provideMainActivity(): MainActivity = MainActivity.getInstance() as MainActivity
 }
 
 @InstallIn(SingletonComponent::class)
@@ -85,7 +95,14 @@ abstract class UserDetailRepositoryModule {
         userDetailPreferencesRepository: UserDetailPreferencesRepository,
     ): UserDetailRepository
 }
-
+@Module
+@InstallIn(SingletonComponent::class)
+abstract class ServiceModule {
+    @Binds
+    abstract fun bindAccountService(
+        authServiceImpl: AuthServiceImpl
+    ): AuthService
+}
 @Qualifier
 @Documented
 @Retention(RetentionPolicy.RUNTIME)

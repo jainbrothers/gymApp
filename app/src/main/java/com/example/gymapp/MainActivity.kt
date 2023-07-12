@@ -17,6 +17,7 @@ class MainActivity : ComponentActivity() {
     @RequiresApi(Build.VERSION_CODES.Q)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        mainActivity = this
         setContent {
             MyApplicationTheme {
                 // A surface container using the 'background' color from the theme
@@ -28,5 +29,22 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+    }
+    override fun onResume() {
+        super.onResume()
+        mainActivity = this
+    }
+
+    override fun onRestart() {
+        super.onRestart()
+        mainActivity = this
+    }
+    override fun onDestroy() {
+        super.onDestroy()
+        mainActivity = null
+    }
+    companion object {
+        var mainActivity: MainActivity? = null
+        fun getInstance(): MainActivity? = mainActivity
     }
 }
