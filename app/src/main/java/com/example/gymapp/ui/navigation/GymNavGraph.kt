@@ -28,6 +28,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.gymapp.ui.screen.enumeration.ScreenName
 import com.example.gymapp.ui.screen.HomeScreen
 import com.example.gymapp.ui.screen.LocationPermissionScreen
+import com.example.gymapp.ui.screen.LocationScreen
 import com.example.gymapp.ui.screen.OtpVerificationScreen
 import com.example.gymapp.ui.screen.SplashScreen
 import com.example.gymapp.ui.screen.UserRegisterScreen
@@ -77,7 +78,8 @@ fun GymNavHost(
             )
         }
         composable(route = ScreenName.HOME_SCREEN.name) {
-            HomeScreen()
+//            HomeScreen()
+            LocationScreen()
         }
         composable(route = ScreenName.LOCATION_PERMISSION_SCREEN.name) {
             LocationPermissionScreen()

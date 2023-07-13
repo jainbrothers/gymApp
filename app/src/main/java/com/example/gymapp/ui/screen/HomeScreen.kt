@@ -16,6 +16,8 @@
 
 package com.example.gymapp.ui.screen
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
@@ -48,6 +50,7 @@ import com.example.gymapp.R
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
@@ -57,11 +60,65 @@ import com.example.gymapp.ui.screen.viewmodel.AmphibiansUiState
 import com.example.gymapp.ui.screen.viewmodel.GymViewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.example.gymapp.ui.screen.viewmodel.LocationViewModel
 import com.example.gymapp.ui.theme.MyApplicationTheme
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.rememberMultiplePermissionsState
 
 @Composable
 fun HomeScreen() {
     FacilitySearchApp()
+}
+
+@OptIn(ExperimentalPermissionsApi::class, ExperimentalAnimationApi::class)
+@Composable
+fun LocationScreen(
+    viewModel: LocationViewModel = hiltViewModel()
+) {
+    val locationPermissions = rememberMultiplePermissionsState(
+        permissions = listOf(
+            android.Manifest.permission.ACCESS_COARSE_LOCATION,
+            android.Manifest.permission.ACCESS_FINE_LOCATION
+        )
+    )
+
+    LaunchedEffect(key1 = locationPermissions.allPermissionsGranted) {
+        if (locationPermissions.allPermissionsGranted) {
+            viewModel.getCurrentLocation()
+        }
+    }
+
+    val currentLocation = viewModel.currentLocation
+
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        AnimatedContent(
+            targetState = locationPermissions.allPermissionsGranted
+        ) { areGranted ->
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                if (areGranted) {
+                    Text(text = "${currentLocation?.latitude ?: 0.0} ${currentLocation?.longitude ?: 0.0}")
+                    Button(
+                        onClick = { viewModel.getCurrentLocation() }
+                    ) {
+                        Text(text = "Get current location")
+                    }
+                } else {
+                    Text(text = "We need location permissions for this application.")
+                    Button(
+                        onClick = { locationPermissions.launchMultiplePermissionRequest() }
+                    ) {
+                        Text(text = "Accept")
+                    }
+                }
+            }
+        }
+    }
 }
 
 @Composable

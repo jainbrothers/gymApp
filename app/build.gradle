@@ -102,9 +102,13 @@ dependencies {
     // Permissions
     implementation "com.google.accompanist:accompanist-permissions:0.30.1"
 
+
     // Firebase for phone authentication
     implementation platform('com.google.firebase:firebase-bom:30.4.1')
     implementation 'com.google.firebase:firebase-auth-ktx'
+
+    // Needed if targeting API > 31 (Android 12+)
+    implementation ("androidx.work:work-runtime-ktx:2.8.1")
 }
 
 // Allow references to generated code

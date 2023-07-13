@@ -16,6 +16,7 @@
 
 package com.example.gymapp.application
 
+import android.app.Application
 import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
@@ -25,12 +26,16 @@ import com.example.gymapp.data.repository.GymRepository
 import com.example.gymapp.data.repository.OfflineGymRepository
 import com.example.gymapp.data.repository.UserDetailPreferencesRepository
 import com.example.gymapp.data.repository.UserDetailRepository
+import com.example.gymapp.domain.location.DefaultLocationTracker
+import com.example.gymapp.domain.location.LocationTracker
 import com.example.gymapp.network.GymApiService
 import com.example.gymapp.service.authservice.AuthService
 import com.example.gymapp.service.authservice.AuthServiceImpl
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import dagger.Binds
 import dagger.Module
@@ -72,12 +77,30 @@ object AppModule {
             .baseUrl("https://android-kotlin-fun-mars-server.appspot.com/")
             .build().create(GymApiService::class.java)
     }
+
     @Singleton
     @Provides
     fun provideFirebaseAuth(): FirebaseAuth = Firebase.auth
     @Singleton
     @Provides
     fun provideMainActivity(): MainActivity = MainActivity.getInstance() as MainActivity
+
+    @Provides
+    @Singleton
+    fun providesFusedLocationProviderClient(
+        application: Application
+    ): FusedLocationProviderClient =
+        LocationServices.getFusedLocationProviderClient(application)
+
+    @Provides
+    @Singleton
+    fun providesLocationTracker(
+        fusedLocationProviderClient: FusedLocationProviderClient,
+        application: Application
+    ): LocationTracker = DefaultLocationTracker(
+        fusedLocationProviderClient = fusedLocationProviderClient,
+        application = application
+    )
 }
 
 @InstallIn(SingletonComponent::class)
