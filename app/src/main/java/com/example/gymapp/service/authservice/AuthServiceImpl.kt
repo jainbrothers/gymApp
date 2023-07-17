@@ -96,7 +96,7 @@ class AuthServiceImpl @Inject constructor(
             Log.d(TAG, "OTP verification debugging, inside authenticate function mobile${phoneNumber}")
             val options = authBuilder.setPhoneNumber(phoneNumber).build()
             PhoneAuthProvider.verifyPhoneNumber(options)
-            otpVerificationState = OtpVerificationState.Loading(context.getString(R.string.otp_dispatch_is_triggered))
+            otpVerificationState = OtpVerificationState.OtpGenerationInProgress(context.getString(R.string.otp_dispatch_is_triggered))
             errorCode = ErrorCode.None
         } catch(exception: Exception) {
             Log.e(TAG, "Error occurred during OTP generation, ${exception.message}", exception)

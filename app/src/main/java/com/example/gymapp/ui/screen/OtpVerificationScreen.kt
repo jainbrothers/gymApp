@@ -33,6 +33,7 @@ fun OtpVerificationScreen(
     val otpViewModel: OtpVerificationViewModel = hiltViewModel()
     val uiState by otpViewModel.otpVerificationUiState.collectAsState()
     val otpVerificationStatus by otpViewModel.otpVerificationStatus.collectAsState()
+
     if (otpVerificationStatus.otpVerificationState is OtpVerificationState.Successful) {
         LaunchedEffect(otpVerificationStatus.otpVerificationState) {
             otpViewModel.updateRegistrationState(UserRegistrationState.REGISTERED)
@@ -61,8 +62,8 @@ fun OtpVerificationScreen(
         ) {
             Text(stringResource(R.string.verify_otp_button_text))
         }
-        if (uiState.otpVerificationError != ErrorCode.None) {
-            Text("OTP verification failed with error ${uiState.otpVerificationError}, please try again",
+        if (otpVerificationStatus.errorCode != ErrorCode.None) {
+            Text("OTP verification failed with error ${otpVerificationStatus.errorCode}, please try again",
                 modifier.align(Alignment.CenterHorizontally))
         }
     }

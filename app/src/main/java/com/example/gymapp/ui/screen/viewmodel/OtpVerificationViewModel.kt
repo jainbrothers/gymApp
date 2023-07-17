@@ -5,9 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.gymapp.data.repository.UserDetailRepository
 import com.example.gymapp.service.authservice.AuthService
-import com.example.gymapp.service.authservice.OtpVerificationState
 import com.example.gymapp.service.authservice.OtpVerificationStatus
-import com.example.gymapp.ui.screen.enumeration.ErrorCode
 import com.example.gymapp.ui.screen.viewmodel.enumeration.UserRegistrationState
 import com.example.gymapp.ui.screen.viewmodel.state.OtpVerificationUiState
 import dagger.hilt.android.lifecycle.HiltViewModel

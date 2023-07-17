@@ -6,10 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.gymapp.application.COUNTRY_CODE
 import com.example.gymapp.data.repository.UserDetailRepository
 import com.example.gymapp.service.authservice.AuthService
-import com.example.gymapp.service.authservice.OtpVerificationState
 import com.example.gymapp.service.authservice.OtpVerificationStatus
-import com.example.gymapp.ui.screen.enumeration.ErrorCode
-import com.example.gymapp.ui.screen.viewmodel.enumeration.UserRegistrationState
 import com.example.gymapp.ui.screen.viewmodel.state.UserRegistrationUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -49,7 +46,7 @@ class UserRegistrationViewModel @Inject constructor(
             userDetailRepository.userMobileNumber.collect {mobileNumber ->
                 _userRegistrationUiState.update {currentState ->
                     currentState.copy(mobileNumber = mobileNumber,
-                        isOtpGenerationEnabled = isOtpGenerationEnabled(mobileNumber))
+                        isMobileNumberValid = isMobileNumberValid(mobileNumber))
                 }
             }
             userDetailRepository.userRegistrationStatus.collect { registrationStatus ->
@@ -63,17 +60,22 @@ class UserRegistrationViewModel @Inject constructor(
     }
 
     fun setMobileNumber(userInput: String) {
-        if (isMobileNumberValid(userInput)) {
+        if (isMobileNumberPatternValid(userInput)) {
             _userRegistrationUiState.update { currentState ->
                 currentState.copy(
                     mobileNumber = userInput,
-                    isOtpGenerationEnabled = isOtpGenerationEnabled(userInput)
+                    isMobileNumberValid = isMobileNumberValid(userInput)
                 )
             }
         }
     }
     fun generateOtp(mobileNumber: String) {
         Log.d(TAG, "calling authService.authenticate")
+        _userRegistrationUiState.update { currentState ->
+            currentState.copy(
+                isGenerateOtpButtonEnabled = false
+            )
+        }
         authService.authenticate(COUNTRY_CODE + mobileNumber)
     }
 
@@ -82,15 +84,13 @@ class UserRegistrationViewModel @Inject constructor(
              userDetailRepository.saveUserMobileNumber(userRegistrationUiState.value.mobileNumber)
          }
     }
-
-    private fun isMobileNumberValid(mobileNumber: String): Boolean {
+    private fun isMobileNumberPatternValid(mobileNumber: String): Boolean {
         var valid = mobileNumber.isNullOrEmpty()
         valid = valid || mobileNumber.matches(NUMBER_PATTERN)
         valid = valid && mobileNumber.length <= MOBILE_NUMBER_LENGTH
         return valid
     }
-
-    private fun isOtpGenerationEnabled(mobileNumber: String): Boolean {
+    private fun isMobileNumberValid(mobileNumber: String): Boolean {
         return mobileNumber.length == MOBILE_NUMBER_LENGTH
     }
 }
