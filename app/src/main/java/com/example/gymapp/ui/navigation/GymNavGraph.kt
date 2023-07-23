@@ -19,12 +19,27 @@ package com.example.flightsearchapp.ui.navigation
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.gymapp.R
 import com.example.gymapp.ui.screen.enumeration.ScreenName
 import com.example.gymapp.ui.screen.HomeScreen
 import com.example.gymapp.ui.screen.LocationPermissionScreen
@@ -32,54 +47,99 @@ import com.example.gymapp.ui.screen.OtpVerificationScreen
 import com.example.gymapp.ui.screen.SplashScreen
 import com.example.gymapp.ui.screen.UserRegisterScreen
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun GymAppBar(
+    currentScreen: ScreenName,
+    canNavigateBack: Boolean,
+    navigateUp: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    TopAppBar(
+        title = { Text(stringResource(currentScreen.title)) },
+        colors = TopAppBarDefaults.mediumTopAppBarColors(
+            containerColor = MaterialTheme.colorScheme.primaryContainer
+        ),
+        modifier = modifier,
+        navigationIcon = {
+            if (canNavigateBack) {
+                IconButton(onClick = navigateUp) {
+                    Icon(
+                        imageVector = Icons.Filled.ArrowBack,
+                        contentDescription = stringResource(R.string.back_button)
+                    )
+                }
+            }
+        }
+    )
+}
+
 /**
  * Provides Navigation graph for the application.
  */
+@OptIn(ExperimentalMaterial3Api::class)
 @RequiresApi(Build.VERSION_CODES.Q)
 @Composable
 fun GymNavHost(
     navController: NavHostController = rememberNavController(),
     modifier: Modifier = Modifier,
 ) {
+    // Get current back stack entry
+    val backStackEntry by navController.currentBackStackEntryAsState()
+    // Get the name of the current screen
+    val startDestination = ScreenName.valueOf(
+        backStackEntry?.destination?.route ?: ScreenName.SPLASH_SCREEN.name
+    )
 
-    var startDestination = ScreenName.SPLASH_SCREEN.name
-    NavHost(
-        navController,
-        startDestination,
-        modifier.fillMaxWidth()
-    ) {
-        composable(route = ScreenName.SPLASH_SCREEN.name) {
-            SplashScreen(
-                navigateUnregisterUser = {
-                    navController.navigate(route = ScreenName.USER_REGISTER_SCREEN.name)
-                },
-                navigateRegisterUser = {
-                    navController.navigate(route = ScreenName.HOME_SCREEN.name)
-                }
-            )
+//    var startDestination = ScreenName.SPLASH_SCREEN.name
+    Scaffold(
+        topBar = {
+            GymAppBar(
+                currentScreen = startDestination,
+                canNavigateBack = navController.previousBackStackEntry != null,
+                navigateUp = { navController.navigateUp() })
         }
-        composable(route = ScreenName.USER_REGISTER_SCREEN.name) {
-            UserRegisterScreen(
-                onSuccessfulOtpGeneration = {
-                    navController.navigate(route = ScreenName.OTP_VERIFICATION_SCREEN.name)
-                },
-                postSuccessfulRegistration = {
-                    navController.navigate(route = ScreenName.HOME_SCREEN.name)
-                }
-            )
-        }
-        composable(route = ScreenName.OTP_VERIFICATION_SCREEN.name) {
-            OtpVerificationScreen(
-                onSuccessfulOtpVerification = {
-                    navController.navigate(route = ScreenName.HOME_SCREEN.name)
-                }
-            )
-        }
-        composable(route = ScreenName.HOME_SCREEN.name) {
-            HomeScreen()
-        }
-        composable(route = ScreenName.LOCATION_PERMISSION_SCREEN.name) {
-            LocationPermissionScreen()
+    ) { innerPadding ->
+        NavHost(
+            navController,
+            startDestination.name,
+            modifier
+                .padding(innerPadding)
+                .fillMaxWidth()
+        ) {
+            composable(route = ScreenName.SPLASH_SCREEN.name) {
+                SplashScreen(
+                    navigateUnregisterUser = {
+                        navController.navigate(route = ScreenName.USER_REGISTER_SCREEN.name)
+                    },
+                    navigateRegisterUser = {
+                        navController.navigate(route = ScreenName.HOME_SCREEN.name)
+                    }
+                )
+            }
+            composable(route = ScreenName.USER_REGISTER_SCREEN.name) {
+                UserRegisterScreen(
+                    onSuccessfulOtpGeneration = {
+                        navController.navigate(route = ScreenName.OTP_VERIFICATION_SCREEN.name)
+                    },
+                    postSuccessfulRegistration = {
+                        navController.navigate(route = ScreenName.HOME_SCREEN.name)
+                    }
+                )
+            }
+            composable(route = ScreenName.OTP_VERIFICATION_SCREEN.name) {
+                OtpVerificationScreen(
+                    onSuccessfulOtpVerification = {
+                        navController.navigate(route = ScreenName.HOME_SCREEN.name)
+                    }
+                )
+            }
+            composable(route = ScreenName.HOME_SCREEN.name) {
+                HomeScreen()
+            }
+            composable(route = ScreenName.LOCATION_PERMISSION_SCREEN.name) {
+                LocationPermissionScreen()
+            }
         }
     }
 }

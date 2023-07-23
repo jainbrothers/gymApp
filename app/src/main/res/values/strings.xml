@@ -19,4 +19,9 @@
     <string name="otp_verification_failed">OTP verification failed</string>
     <string name="otp_verification_failed_due_to_invalid_code">OTP verification failed due to invalid code</string>
     <string name="trigger_dispatch_otp_failed">Trigger dispatch OTP failed</string>
+    <string name="back_button">Back button</string>
+    <string name="onboarding">Onboarding</string>
+    <string name="otp_verification">OTP verification</string>
+    <string name="gym_listing">Gym listing</string>
+    <string name="location_permission">location permission</string>
 </resources>
