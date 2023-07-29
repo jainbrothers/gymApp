@@ -10,4 +10,5 @@
 # P1 tasks
 - authentication
 - gym location
-- location in drop down 
+- location in drop down
+- payments ??
