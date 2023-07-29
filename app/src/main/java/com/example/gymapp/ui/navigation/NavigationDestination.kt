@@ -14,13 +14,19 @@
  * limitations under the License.
  */
 
-package com.example.gymapp.data.repository
+package com.example.gymapp.ui.navigation
 
-import com.example.gymapp.model.Gym
-import com.example.gymapp.network.GymApiService
-import javax.inject.Inject
+/**
+ * Interface to describe the navigation destinations for the app
+ */
+interface NavigationDestination {
+    /**
+     * Unique name to define the path for a composable
+     */
+    val route: String
 
-class OfflineGymRepository @Inject constructor(private val gymApiService: GymApiService) : GymRepository {
-    override suspend fun getAmphibians(): List<Gym> = gymApiService.getAmphibians()
+    /**
+     * String resource id to that contains title to be displayed for the screen.
+     */
+    val titleRes: Int
 }
-

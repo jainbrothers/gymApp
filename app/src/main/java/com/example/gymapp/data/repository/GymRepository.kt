@@ -24,6 +24,7 @@ import com.example.gymapp.model.Gym
 interface GymRepository {
     suspend fun getAmphibians(): List<Gym>
 
+
     /**
      * Retrieve an item from the given data source that matches with the [id].
      */
@@ -43,4 +44,7 @@ interface GymRepository {
 //     * Update item in the data source
 //     */
 //    suspend fun updateItem(item: Facility)
+
+//    suspend fun getGymDetails(): Gym
+
 }

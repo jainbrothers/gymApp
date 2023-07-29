@@ -4,7 +4,7 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.example.flightsearchapp.ui.navigation.GymNavHost
+import com.example.gymapp.ui.navigation.GymNavHost
 
 @RequiresApi(Build.VERSION_CODES.Q)
 @Composable

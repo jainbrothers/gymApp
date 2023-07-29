@@ -20,13 +20,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.CreationExtras
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
-import com.example.gymapp.application.GymApplication
 import com.example.gymapp.data.repository.GymRepository
 import com.example.gymapp.model.Gym
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -60,7 +54,7 @@ class GymViewModel @Inject constructor(val gymRepository: GymRepository) : ViewM
         getAmphibians()
     }
 
-    fun getAmphibians() {
+    private fun getAmphibians() {
         viewModelScope.launch {
             amphibiansUiState = AmphibiansUiState.Loading
             amphibiansUiState = try {

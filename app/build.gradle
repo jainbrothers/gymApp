@@ -105,6 +105,10 @@ dependencies {
     // Firebase for phone authentication
     implementation platform('com.google.firebase:firebase-bom:30.4.1')
     implementation 'com.google.firebase:firebase-auth-ktx'
+
+    implementation 'com.google.accompanist:accompanist-pager:0.22.0-rc'
+
+
 }
 
 // Allow references to generated code

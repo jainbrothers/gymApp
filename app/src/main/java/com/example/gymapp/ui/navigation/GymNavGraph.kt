@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.flightsearchapp.ui.navigation
+package com.example.gymapp.ui.navigation
 
 import android.os.Build
 import androidx.annotation.RequiresApi
@@ -35,15 +35,19 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.gymapp.R
+import androidx.navigation.navArgument
+import com.example.gymapp.ui.screen.GymDetailsNav
 import com.example.gymapp.ui.screen.enumeration.ScreenName
 import com.example.gymapp.ui.screen.HomeScreen
 import com.example.gymapp.ui.screen.LocationPermissionScreen
 import com.example.gymapp.ui.screen.OtpVerificationScreen
+import com.example.gymapp.ui.screen.ShowGymBanner
 import com.example.gymapp.ui.screen.SplashScreen
 import com.example.gymapp.ui.screen.UserRegisterScreen
 
@@ -87,22 +91,23 @@ fun GymNavHost(
     // Get current back stack entry
     val backStackEntry by navController.currentBackStackEntryAsState()
     // Get the name of the current screen
-    val startDestination = ScreenName.valueOf(
-        backStackEntry?.destination?.route ?: ScreenName.SPLASH_SCREEN.name
-    )
+//    val startDestination = ScreenName.valueOf(
+//        backStackEntry?.destination?.route ?: ScreenName.HOME_SCREEN.name
+//    )
 
-//    var startDestination = ScreenName.SPLASH_SCREEN.name
+    val startDestination = ScreenName.HOME_SCREEN.name
     Scaffold(
         topBar = {
             GymAppBar(
-                currentScreen = startDestination,
+//                currentScreen = startDestination,
+                currentScreen = ScreenName.HOME_SCREEN,
                 canNavigateBack = navController.previousBackStackEntry != null,
                 navigateUp = { navController.navigateUp() })
         }
     ) { innerPadding ->
         NavHost(
             navController,
-            startDestination.name,
+            startDestination,
             modifier
                 .padding(innerPadding)
                 .fillMaxWidth()
@@ -135,7 +140,22 @@ fun GymNavHost(
                 )
             }
             composable(route = ScreenName.HOME_SCREEN.name) {
-                HomeScreen()
+                HomeScreen(
+                    navigateToGymDetails = {
+                        navController.navigate("${GymDetailsNav.route}/${it}")
+                    }
+                )
+            }
+            composable(
+                route = GymDetailsNav.routeWithArgs,
+                arguments = listOf(navArgument(GymDetailsNav.itemIdArg) {
+                    type = NavType.IntType
+                })
+            ) {
+                ShowGymBanner(
+                    navigateBack = { navController.popBackStack() },
+                    onNavigateUp = { navController.navigateUp() }
+                )
             }
             composable(route = ScreenName.LOCATION_PERMISSION_SCREEN.name) {
                 LocationPermissionScreen()
@@ -143,3 +163,60 @@ fun GymNavHost(
         }
     }
 }
+//=======
+//    var startDestination = ScreenName.SPLASH_SCREEN.name
+//    NavHost(
+//        navController,
+//        startDestination,
+//        modifier.fillMaxWidth()
+//    ) {
+//        composable(route = ScreenName.SPLASH_SCREEN.name) {
+//            SplashScreen(
+//                navigateUnregisterUser = {
+//                    navController.navigate(route = ScreenName.USER_REGISTER_SCREEN.name)
+//                },
+//                navigateRegisterUser = {
+//                    navController.navigate(route = ScreenName.HOME_SCREEN.name)
+//                }
+//            )
+//        }
+//        composable(route = ScreenName.USER_REGISTER_SCREEN.name) {
+//            UserRegisterScreen(
+//                onSuccessfulOtpGeneration = {
+//                    navController.navigate(route = ScreenName.OTP_VERIFICATION_SCREEN.name)
+//                },
+//                postSuccessfulRegistration = {
+//                    navController.navigate(route = ScreenName.HOME_SCREEN.name)
+//                }
+//            )
+//        }
+//        composable(route = ScreenName.OTP_VERIFICATION_SCREEN.name) {
+//            OtpVerificationScreen(
+//                onSuccessfulOtpVerification = {
+//                    navController.navigate(route = ScreenName.HOME_SCREEN.name)
+//                }
+//            )
+//        }
+//        composable(route = ScreenName.HOME_SCREEN.name) {
+//            HomeScreen (
+//                navigateToGymDetails = {
+//                    navController.navigate("${GymDetailsNav.route}/${it}")
+//                }
+//            )
+//        }
+//        composable(route = GymDetailsNav.routeWithArgs,
+//            arguments = listOf(navArgument(GymDetailsNav.itemIdArg) {
+//                type = NavType.IntType
+//            })
+//        ) {
+//            ShowGymBanner(
+//                navigateBack = { navController.popBackStack() },
+//                onNavigateUp = { navController.navigateUp() }
+//            )
+//        }
+//        composable(route = ScreenName.LOCATION_PERMISSION_SCREEN.name) {
+//            LocationPermissionScreen()
+//>>>>>>> 2338bc4 (animation v1)
+//        }
+//    }
+//}
