@@ -62,6 +62,7 @@ import com.example.gymapp.ui.screen.viewmodel.GymViewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.gymapp.ui.navigation.NavigationDestination
+import com.example.gymapp.ui.screen.enumeration.ScreenName
 import com.example.gymapp.ui.theme.MyApplicationTheme
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
@@ -69,7 +70,8 @@ import com.google.accompanist.pager.PagerState
 import kotlinx.coroutines.delay
 
 object GymDetailsNav : NavigationDestination {
-    override val route = "gym_details"
+//    override val route = "gym_details"
+    override val route = ScreenName.GYM_DETAILS.name
     override val titleRes = R.string.app_name
     const val itemIdArg = "itemId"
     val routeWithArgs = "$route/{$itemIdArg}"
@@ -253,7 +255,6 @@ fun ShowGymCard(
             gym.imgsrc,
             "https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__340.jpg",
             "https://upload.wikimedia.org/wikipedia/commons/3/33/Vanamo_Logo.png"
-
         )
             AutoSlidingCarousel(
                 itemsCount = images.size,

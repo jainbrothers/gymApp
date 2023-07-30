@@ -17,13 +17,14 @@
 package com.example.gymapp.data.repository
 
 import com.example.gymapp.model.Gym
+import kotlinx.coroutines.flow.Flow
 
 /**
  * Repository that provides insert, update, delete, and retrieve of [Item] from a given data source.
  */
 interface GymRepository {
     suspend fun getAmphibians(): List<Gym>
-
+    fun getGymDetailsWithId(itemId: Int): Flow<Gym>
 
     /**
      * Retrieve an item from the given data source that matches with the [id].

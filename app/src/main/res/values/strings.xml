@@ -24,4 +24,5 @@
     <string name="otp_verification">OTP verification</string>
     <string name="gym_listing">Gym listing</string>
     <string name="location_permission">location permission</string>
+    <string name="gym_details">Gym Details</string>
 </resources>

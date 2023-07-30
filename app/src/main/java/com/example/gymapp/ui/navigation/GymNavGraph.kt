@@ -17,6 +17,7 @@
 package com.example.gymapp.ui.navigation
 
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -48,6 +49,7 @@ import com.example.gymapp.ui.screen.HomeScreen
 import com.example.gymapp.ui.screen.LocationPermissionScreen
 import com.example.gymapp.ui.screen.OtpVerificationScreen
 import com.example.gymapp.ui.screen.ShowGymBanner
+import com.example.gymapp.ui.screen.ShowGymCard
 import com.example.gymapp.ui.screen.SplashScreen
 import com.example.gymapp.ui.screen.UserRegisterScreen
 
@@ -91,9 +93,12 @@ fun GymNavHost(
     // Get current back stack entry
     val backStackEntry by navController.currentBackStackEntryAsState()
     // Get the name of the current screen
+    Log.d("sarkar navgraph", "${backStackEntry?.destination?.route}")
 //    val startDestination = ScreenName.valueOf(
-//        backStackEntry?.destination?.route ?: ScreenName.HOME_SCREEN.name
+//        backStackEntry?.destination?.route?: ScreenName.HOME_SCREEN.name
 //    )
+//
+////    backStackEntry?.destination?.route?
 
     val startDestination = ScreenName.HOME_SCREEN.name
     Scaffold(
@@ -142,17 +147,20 @@ fun GymNavHost(
             composable(route = ScreenName.HOME_SCREEN.name) {
                 HomeScreen(
                     navigateToGymDetails = {
-                        navController.navigate("${GymDetailsNav.route}/${it}")
+//                        navController.navigate(route = "${GymDetailsNav.route}/${it}")
+                        navController.navigate(route = "${ScreenName.GYM_DETAILS.name}/${it}")
+//                        navController.navigate(route = ScreenName.GYM_DETAILS.name)
                     }
                 )
             }
             composable(
-                route = GymDetailsNav.routeWithArgs,
-                arguments = listOf(navArgument(GymDetailsNav.itemIdArg) {
+                route = ScreenName.GYM_DETAILS.name + "/{itemId}",
+                arguments = listOf(navArgument("itemId") {
                     type = NavType.IntType
-                })
+                }
+                )
             ) {
-                ShowGymBanner(
+                ShowGymCard(
                     navigateBack = { navController.popBackStack() },
                     onNavigateUp = { navController.navigateUp() }
                 )
@@ -163,60 +171,3 @@ fun GymNavHost(
         }
     }
 }
-//=======
-//    var startDestination = ScreenName.SPLASH_SCREEN.name
-//    NavHost(
-//        navController,
-//        startDestination,
-//        modifier.fillMaxWidth()
-//    ) {
-//        composable(route = ScreenName.SPLASH_SCREEN.name) {
-//            SplashScreen(
-//                navigateUnregisterUser = {
-//                    navController.navigate(route = ScreenName.USER_REGISTER_SCREEN.name)
-//                },
-//                navigateRegisterUser = {
-//                    navController.navigate(route = ScreenName.HOME_SCREEN.name)
-//                }
-//            )
-//        }
-//        composable(route = ScreenName.USER_REGISTER_SCREEN.name) {
-//            UserRegisterScreen(
-//                onSuccessfulOtpGeneration = {
-//                    navController.navigate(route = ScreenName.OTP_VERIFICATION_SCREEN.name)
-//                },
-//                postSuccessfulRegistration = {
-//                    navController.navigate(route = ScreenName.HOME_SCREEN.name)
-//                }
-//            )
-//        }
-//        composable(route = ScreenName.OTP_VERIFICATION_SCREEN.name) {
-//            OtpVerificationScreen(
-//                onSuccessfulOtpVerification = {
-//                    navController.navigate(route = ScreenName.HOME_SCREEN.name)
-//                }
-//            )
-//        }
-//        composable(route = ScreenName.HOME_SCREEN.name) {
-//            HomeScreen (
-//                navigateToGymDetails = {
-//                    navController.navigate("${GymDetailsNav.route}/${it}")
-//                }
-//            )
-//        }
-//        composable(route = GymDetailsNav.routeWithArgs,
-//            arguments = listOf(navArgument(GymDetailsNav.itemIdArg) {
-//                type = NavType.IntType
-//            })
-//        ) {
-//            ShowGymBanner(
-//                navigateBack = { navController.popBackStack() },
-//                onNavigateUp = { navController.navigateUp() }
-//            )
-//        }
-//        composable(route = ScreenName.LOCATION_PERMISSION_SCREEN.name) {
-//            LocationPermissionScreen()
-//>>>>>>> 2338bc4 (animation v1)
-//        }
-//    }
-//}

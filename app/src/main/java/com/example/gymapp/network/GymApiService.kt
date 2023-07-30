@@ -17,9 +17,11 @@
 package com.example.gymapp.network
 
 import com.example.gymapp.model.Gym
+import kotlinx.coroutines.flow.Flow
 import retrofit2.http.GET
 
 interface GymApiService {
     @GET("amphibians")
     suspend fun getAmphibians(): List<Gym>
+    fun getGymDetailsWithIdService(id: Int): Flow<Gym>
 }
