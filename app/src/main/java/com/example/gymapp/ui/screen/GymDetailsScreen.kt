@@ -154,13 +154,13 @@ fun ShowGymBanner(
             .padding(bottom = 2.dp),
         model = ImageRequest.Builder(context = LocalContext.current)
 //                .data(imgSrc)
-            .data(R.drawable.great_basin_spade)
+            .data(R.drawable.loading_img)
             .crossfade(true)
             .build(),
         contentDescription = null,
 //        error = painterResource(id = R.drawable.ic_broken_image),
-        error = painterResource(id = R.drawable.great_basin_spade),
-        placeholder = painterResource(id = R.drawable.great_basin_spade)
+        error = painterResource(id = R.drawable.loading_img),
+        placeholder = painterResource(id = R.drawable.loading_img)
 //        placeholder = painterResource(id = R.drawable.loading_img)
     )
     Text(text = "test text")
