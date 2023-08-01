@@ -41,16 +41,17 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.example.gymapp.R
 import androidx.navigation.navArgument
-import com.example.gymapp.ui.screen.enumeration.ScreenName
+import com.example.gymapp.R
 import com.example.gymapp.ui.screen.HomeScreen
 import com.example.gymapp.ui.screen.LocationPermissionScreen
 import com.example.gymapp.ui.screen.OtpVerificationScreen
 import com.example.gymapp.ui.screen.ShowGymImages
 import com.example.gymapp.ui.screen.SplashScreen
 import com.example.gymapp.ui.screen.UserRegisterScreen
+import com.example.gymapp.ui.screen.enumeration.ScreenName
 
+private const val TAG = "GymNavGraph.kt"
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GymAppBar(
@@ -88,29 +89,27 @@ fun GymNavHost(
     navController: NavHostController = rememberNavController(),
     modifier: Modifier = Modifier,
 ) {
+    val defaultStartScreen = ScreenName.SPLASH_SCREEN
     // Get current back stack entry
     val backStackEntry by navController.currentBackStackEntryAsState()
-    // Get the name of the current screen
-    Log.d("sarkar navgraph", "${backStackEntry?.destination?.route}")
-//    val startDestination = ScreenName.valueOf(
-//        backStackEntry?.destination?.route?: ScreenName.HOME_SCREEN.name
-//    )
-//
-////    backStackEntry?.destination?.route?
 
-    val startDestination = ScreenName.HOME_SCREEN.name
+    // Get the name of the current screen
+    val currentScreen = ScreenName.valueOf(
+        backStackEntry?.destination?.route?.split('/')?.get(0) ?: defaultStartScreen.name
+    )
+    Log.d(TAG, "navController.previousBackStackEntry ${navController.previousBackStackEntry}")
+    Log.d(TAG, "backStackEntry?.destination?.route ${backStackEntry?.destination?.route}")
     Scaffold(
         topBar = {
             GymAppBar(
-//                currentScreen = startDestination,
-                currentScreen = ScreenName.HOME_SCREEN,
+                currentScreen = currentScreen,
                 canNavigateBack = navController.previousBackStackEntry != null,
-                navigateUp = { navController.navigateUp() })
+                navigateUp = {navController.navigateUp()})
         }
     ) { innerPadding ->
         NavHost(
             navController,
-            startDestination,
+            defaultStartScreen.name,
             modifier
                 .padding(innerPadding)
                 .fillMaxWidth()
@@ -118,9 +117,11 @@ fun GymNavHost(
             composable(route = ScreenName.SPLASH_SCREEN.name) {
                 SplashScreen(
                     navigateUnregisterUser = {
+                        navController.popBackStack()
                         navController.navigate(route = ScreenName.USER_REGISTER_SCREEN.name)
                     },
                     navigateRegisterUser = {
+                        navController.popBackStack()
                         navController.navigate(route = ScreenName.HOME_SCREEN.name)
                     }
                 )
