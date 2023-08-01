@@ -24,5 +24,15 @@ import javax.inject.Inject
 class OfflineGymRepository @Inject constructor(private val gymApiService: GymApiService) : GymRepository {
     override suspend fun getAmphibians(): List<Gym> = gymApiService.getAmphibians()
     override fun getGymDetailsWithId(id: Int): Flow<Gym> = gymApiService.getGymDetailsWithIdService(id)
+
+//    return Gym(
+//    1,
+//    "TAURUS FITNESS",
+//    "Gym",
+//    "Rajajinagar, No 46, 2nd Floor 10th CrossWest off Chord Road Above Tata motors, Rajajinagar",
+//    "This is the Gym Description",
+//    imgsrc = "https://developer.android.com/codelabs/basic-android-kotlin-compose-amphibians-app/img/great-basin-spadefoot.png"
+//    )
+
 }
 

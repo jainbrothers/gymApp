@@ -4,6 +4,7 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.interaction.collectIsDraggedAsState
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -47,7 +48,6 @@ import kotlinx.coroutines.delay
 // etc
 
 
-
 @Composable
 fun DotsIndicator1(
     modifier: Modifier = Modifier,
@@ -78,7 +78,7 @@ fun DotsIndicator1(
 @Composable
 fun AutoSlidingCarousel1(
     modifier: Modifier = Modifier,
-    autoSlideDuration: Long = 3000, // AUTO_SLIDE_DURATION,
+    autoSlideDuration: Long = 1000, // AUTO_SLIDE_DURATION,
     pagerState: PagerState = remember { PagerState() },
     itemsCount: Int,
     itemContent: @Composable (index: Int) -> Unit,
@@ -87,7 +87,7 @@ fun AutoSlidingCarousel1(
     if (isDragged) {
         LaunchedEffect(pagerState.currentPage) {
             delay(autoSlideDuration)
-            //pagerState.animateScrollToPage((pagerState.currentPage + 1) % itemsCount)
+            pagerState.animateScrollToPage((pagerState.currentPage + 1) % itemsCount)
         }
     }
     Box(
@@ -128,7 +128,11 @@ fun ShowGymTitle(
 
 @Composable
 fun ShowGymAddress() {
+    Column() {
+        Row() {
 
+        }
+    }
 }
 
 @Composable
@@ -143,9 +147,7 @@ fun ShowGymFacilities() {
 
 
 @Composable
-fun ShowGymBanner(
-    navigateBack: () -> Unit,
-    onNavigateUp: () -> Unit,
+fun ShowGymImages(
     modifier: Modifier = Modifier
 ) {
     AsyncImage(
@@ -169,13 +171,21 @@ fun ShowGymBanner(
 
 @OptIn(ExperimentalAnimationApi::class, ExperimentalPagerApi::class)
 @Composable
-fun ShowGymCard(
-    navigateBack: () -> Unit,
-    onNavigateUp: () -> Unit,
-    modifier: Modifier = Modifier,
-    viewModel: GymDetailsViewModel = hiltViewModel()
+fun ShowGymDetailsPage(
+//    navigateBack: () -> Unit,
+//    onNavigateUp: () -> Unit,
+//    modifier: Modifier = Modifier,
+//    viewModel: GymDetailsViewModel = hiltViewModel()
 ) {
-    val gymDetailsUiState = viewModel.gymDetailsUiState
+//    val gymDetailsUiState = viewModel.gymDetailsUiState
+    val gym = Gym(
+        1,
+        "TAURUS FITNESS",
+        "Gym",
+        "Rajajinagar, No 46, 2nd Floor 10th CrossWest off Chord Road Above Tata motors, Rajajinagar",
+        "This is the Gym Description",
+        imgsrc = "https://developer.android.com/codelabs/basic-android-kotlin-compose-amphibians-app/img/great-basin-spadefoot.png"
+    )
     println("this is rahul")
     val images = listOf(
         "https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__340.jpg",
@@ -195,6 +205,7 @@ fun ShowGymCard(
                 )
             }
         )
+        ShowGymAddress()
     }
 }
 
@@ -212,7 +223,7 @@ fun GymDetailsScreenPreview() {
                 imgsrc = "https://developer.android.com/codelabs/basic-android-kotlin-compose-amphibians-app/img/great-basin-spadefoot.png"
             )
 
-//        ShowGymCard(mockData)
+        ShowGymDetailsPage()
     }
 }
 

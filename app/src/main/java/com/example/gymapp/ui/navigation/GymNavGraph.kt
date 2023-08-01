@@ -43,13 +43,11 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.gymapp.R
 import androidx.navigation.navArgument
-import com.example.gymapp.ui.screen.GymDetailsNav
 import com.example.gymapp.ui.screen.enumeration.ScreenName
 import com.example.gymapp.ui.screen.HomeScreen
 import com.example.gymapp.ui.screen.LocationPermissionScreen
 import com.example.gymapp.ui.screen.OtpVerificationScreen
-import com.example.gymapp.ui.screen.ShowGymBanner
-import com.example.gymapp.ui.screen.ShowGymCard
+import com.example.gymapp.ui.screen.ShowGymImages
 import com.example.gymapp.ui.screen.SplashScreen
 import com.example.gymapp.ui.screen.UserRegisterScreen
 
@@ -146,24 +144,19 @@ fun GymNavHost(
             }
             composable(route = ScreenName.HOME_SCREEN.name) {
                 HomeScreen(
-                    navigateToGymDetails = {
-//                        navController.navigate(route = "${GymDetailsNav.route}/${it}")
-                        navController.navigate(route = "${ScreenName.GYM_DETAILS.name}/${it}")
-//                        navController.navigate(route = ScreenName.GYM_DETAILS.name)
+                    onClickGymDetails = { gymId ->
+                        navController.navigate(route = "${ScreenName.GYM_DETAILS.name}/${gymId}")
                     }
                 )
             }
             composable(
-                route = ScreenName.GYM_DETAILS.name + "/{itemId}",
-                arguments = listOf(navArgument("itemId") {
+                route = ScreenName.GYM_DETAILS.name + "/{gymId}",
+                arguments = listOf(navArgument("gymId") {
                     type = NavType.IntType
                 }
                 )
             ) {
-                ShowGymCard(
-                    navigateBack = { navController.popBackStack() },
-                    onNavigateUp = { navController.navigateUp() }
-                )
+                ShowGymImages()
             }
             composable(route = ScreenName.LOCATION_PERMISSION_SCREEN.name) {
                 LocationPermissionScreen()

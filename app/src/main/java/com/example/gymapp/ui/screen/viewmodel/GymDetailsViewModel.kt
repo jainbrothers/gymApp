@@ -36,10 +36,10 @@ data class GymDetailsUiState(val gym: Gym = Gym(id = 0,
 class GymDetailsViewModel @Inject constructor(savedStateHandle: SavedStateHandle,
                                               val gymRepository: GymRepository) : ViewModel() {
 
-    private val itemId: Int = checkNotNull(savedStateHandle["itemId"])
+    private val gymId: Int = checkNotNull(savedStateHandle["gymId"])
 
     val gymDetailsUiState: StateFlow<GymDetailsUiState> =
-        gymRepository.getGymDetailsWithId(itemId)
+        gymRepository.getGymDetailsWithId(gymId)
             .map {GymDetailsUiState(it)}
             .stateIn(
                 scope = viewModelScope,

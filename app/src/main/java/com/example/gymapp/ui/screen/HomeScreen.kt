@@ -16,19 +16,14 @@
 
 package com.example.gymapp.ui.screen
 
-import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.Card
-import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CardElevation
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -79,8 +74,8 @@ object GymDetailsNav : NavigationDestination {
 
 
 @Composable
-fun HomeScreen(navigateToGymDetails: (Int) -> Unit) {
-    GymListApp(onItemClick = navigateToGymDetails)
+fun HomeScreen(onClickGymDetails: (Int) -> Unit) {
+    GymListApp(onItemClick = onClickGymDetails)
 //    ShowGymDetails()
 }
 
