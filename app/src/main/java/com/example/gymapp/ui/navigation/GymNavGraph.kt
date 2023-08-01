@@ -129,9 +129,11 @@ fun GymNavHost(
             composable(route = ScreenName.USER_REGISTER_SCREEN.name) {
                 UserRegisterScreen(
                     onSuccessfulOtpGeneration = {
+                        navController.popBackStack()
                         navController.navigate(route = ScreenName.OTP_VERIFICATION_SCREEN.name)
                     },
                     postSuccessfulRegistration = {
+                        navController.popBackStack()
                         navController.navigate(route = ScreenName.HOME_SCREEN.name)
                     }
                 )
@@ -139,7 +141,12 @@ fun GymNavHost(
             composable(route = ScreenName.OTP_VERIFICATION_SCREEN.name) {
                 OtpVerificationScreen(
                     onSuccessfulOtpVerification = {
+                        navController.popBackStack()
                         navController.navigate(route = ScreenName.HOME_SCREEN.name)
+                    },
+                    onClickChangeMobileNumberButton = {
+                        navController.popBackStack()
+                        navController.navigate(route = ScreenName.USER_REGISTER_SCREEN.name)
                     }
                 )
             }

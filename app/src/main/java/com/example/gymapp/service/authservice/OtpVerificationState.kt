@@ -8,4 +8,5 @@ sealed class OtpVerificationState {
     class Error(val exception: Throwable?): OtpVerificationState()
     class OtpSent(val message: String?): OtpVerificationState()
     class OtpAutoFeedDone(val message: String?): OtpVerificationState()
+    class ChangeMobileNumber(val message: String?): OtpVerificationState()
 }

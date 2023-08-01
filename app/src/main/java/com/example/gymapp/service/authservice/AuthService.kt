@@ -22,6 +22,7 @@ interface AuthService {
 
     fun onVerificationFailed(exception: Exception)
     fun getUserPhone(): String
+    fun updateStateForChangeMobileNumber()
 }
 
 data class OtpVerificationStatus(

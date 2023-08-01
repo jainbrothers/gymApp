@@ -53,6 +53,9 @@ class AuthServiceImpl @Inject constructor(
                 )
             }
         }
+        override fun onCodeAutoRetrievalTimeOut(var1: String) {
+            Log.d(TAG, "onCodeAutoRetrievalTimeOut called")
+        }
     }
     private val authBuilder: PhoneAuthOptions.Builder = PhoneAuthOptions.newBuilder(auth)
         .setCallbacks(authCallbacks)
@@ -93,7 +96,7 @@ class AuthServiceImpl @Inject constructor(
         var otpVerificationState = otpVerificationStatus.value.otpVerificationState
         var errorCode = otpVerificationStatus.value.errorCode
         try {
-            Log.d(TAG, "OTP verification debugging, inside authenticate function mobile${phoneNumber}")
+            Log.d(TAG, "OTP verification debugging, inside authenticate function mobile ${phoneNumber}")
             val options = authBuilder.setPhoneNumber(phoneNumber).build()
             PhoneAuthProvider.verifyPhoneNumber(options)
             otpVerificationState = OtpVerificationState.OtpGenerationInProgress(context.getString(R.string.otp_dispatch_is_triggered))
@@ -153,5 +156,16 @@ class AuthServiceImpl @Inject constructor(
     }
     override fun getUserPhone(): String {
         TODO("Not yet implemented")
+    }
+
+    override fun updateStateForChangeMobileNumber() {
+        var savedVerificationId: String = ""
+        var saveToken: PhoneAuthProvider.ForceResendingToken ?= null
+        otpVerificationStatus.update { currentOtpVerificationStatus ->
+            currentOtpVerificationStatus.copy(
+                otpVerificationState = OtpVerificationState.ChangeMobileNumber(context.getString(R.string.mobile_number_changed_by_user)),
+                errorCode = ErrorCode.None
+            )
+        }
     }
 }

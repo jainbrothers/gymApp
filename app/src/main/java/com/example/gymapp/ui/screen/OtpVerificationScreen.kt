@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.gymapp.R
 import com.example.gymapp.service.authservice.OtpVerificationState
 import com.example.gymapp.ui.screen.enumeration.ErrorCode
@@ -28,6 +29,7 @@ private const val TAG = "Otp verification screen tag"
 @Composable
 fun OtpVerificationScreen(
     onSuccessfulOtpVerification: () -> Unit,
+    onClickChangeMobileNumberButton: () -> Unit,
     modifier: Modifier = Modifier)
 {
     val otpViewModel: OtpVerificationViewModel = hiltViewModel()
@@ -61,6 +63,15 @@ fun OtpVerificationScreen(
             enabled = uiState.isVerifyOtpButtonEnabled
         ) {
             Text(stringResource(R.string.verify_otp_button_text))
+        }
+        Button(
+            onClick = {
+                otpViewModel.updateStateForChangeMobileNumber()
+                onClickChangeMobileNumberButton()
+            },
+            enabled = true
+        ) {
+            Text("Change mobile number")
         }
         if (otpVerificationStatus.errorCode != ErrorCode.None) {
             Text("OTP verification failed with error ${otpVerificationStatus.errorCode}, please try again",

@@ -42,7 +42,8 @@ fun UserRegisterScreen(
         is OtpVerificationState.NotInitialised,
         is OtpVerificationState.Error,
         is OtpVerificationState.Failed,
-        is OtpVerificationState.OtpGenerationInProgress -> GenerateOtp(modifier)
+        is OtpVerificationState.OtpGenerationInProgress,
+        is OtpVerificationState.ChangeMobileNumber -> GenerateOtp(modifier)
         is OtpVerificationState.OtpSent,
         is OtpVerificationState.OtpAutoFeedDone-> LaunchedEffect(otpVerificationStatus.otpVerificationState) {
             userRegistrationViewModel.saveUserMobileNumber()

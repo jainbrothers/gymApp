@@ -64,6 +64,10 @@ class OtpVerificationViewModel @Inject constructor(
         }
     }
 
+    fun updateStateForChangeMobileNumber() {
+        authService.updateStateForChangeMobileNumber()
+    }
+
     private fun isOtpValid(otp: String): Boolean {
         var valid = otp.isNullOrEmpty()
         valid = valid || otp.matches(NUMBER_PATTERN)
