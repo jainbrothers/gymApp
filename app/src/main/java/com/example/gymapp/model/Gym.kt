@@ -24,14 +24,41 @@ import kotlinx.serialization.Serializable
 /**
  * Data class that defines an amphibian which includes a name, type, description, and image URL.
  */
-@Entity
+
+@Serializable
+data class Location(
+    val latitude: Double,
+    val longitude: Double
+)
+
+@Serializable
+data class Address(
+    val id: Int,
+    val streetNameAndNumber: String,
+    val locality: String,
+    val city: String,
+    val pinCode: Int,
+    val location: Location
+)
+
+//@Entity
 @Serializable
 data class Gym(
-    @PrimaryKey(autoGenerate = true)
+//    @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
     val name: String,
     val type: String,
-    val address: String = "sample address",
+    val address: Address = Address(
+        1,
+        "3rd & 4th floor. 12th Cross Rd",
+        "Mahalakshmi Layout",
+        "Bengaluru",
+        560010,
+        Location(
+            3.2323,
+            4.232323
+        )
+    ),
     val description: String,
-    @SerialName("img_src") val imgsrc: String
+    @SerialName("img_src") val imgSrcLst: String
 )

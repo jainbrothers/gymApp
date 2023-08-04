@@ -16,15 +16,17 @@
 
 package com.example.gymapp.data.repository
 
+import com.example.gymapp.model.Address
 import com.example.gymapp.model.Gym
+import com.example.gymapp.model.Location
 import com.example.gymapp.network.GymApiService
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
 class OfflineGymRepository @Inject constructor(private val gymApiService: GymApiService) : GymRepository {
     override suspend fun getAmphibians(): List<Gym> = gymApiService.getAmphibians()
-    override fun getGymDetailsWithId(id: Int): Flow<Gym> = gymApiService.getGymDetailsWithIdService(id)
-
+//    override fun getGymDetailsWithId(id: Int): Flow<Gym> = gymApiService.getGymDetailsWithIdService(id)
 //    return Gym(
 //    1,
 //    "TAURUS FITNESS",
@@ -33,6 +35,29 @@ class OfflineGymRepository @Inject constructor(private val gymApiService: GymApi
 //    "This is the Gym Description",
 //    imgsrc = "https://developer.android.com/codelabs/basic-android-kotlin-compose-amphibians-app/img/great-basin-spadefoot.png"
 //    )
+
+    override fun getGymDetailsWithId(id: Int): Flow<Gym> = flow {
+        emit(
+            Gym(
+            1,
+            "Cult Gym Rajajinagar 12th Cross",
+            "Gym",
+            Address(
+                1,
+                "3rd & 4th floor. 12th Cross Rd",
+                "Mahalakshmi Layout",
+                "Bengaluru",
+                560010,
+               Location(
+                   3.2323,
+                   4.232323
+               )
+            ),
+            "This is the Gym Description",
+            imgSrcLst = "https://developer.android.com/codelabs/basic-android-kotlin-compose-amphibians-app/img/great-basin-spadefoot.png"
+        )
+        )
+    }
 
 }
 

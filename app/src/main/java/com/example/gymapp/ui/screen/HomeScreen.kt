@@ -218,6 +218,7 @@ fun ShowGymCard(
     gym: Gym,
     onItemClick: (Int) -> Unit,
 ): Unit {
+    val imgSrcLst = listOf(gym.imgSrcLst, gym.imgSrcLst)
     Card(
         modifier = Modifier
             .fillMaxSize()
@@ -232,18 +233,12 @@ fun ShowGymCard(
                 MaterialTheme.colorScheme.surfaceVariant
         )
     ) {
-
-        val images = listOf(
-            gym.imgsrc,
-            "https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__340.jpg",
-            "https://upload.wikimedia.org/wikipedia/commons/3/33/Vanamo_Logo.png"
-        )
             AutoSlidingCarousel(
-                itemsCount = images.size,
+                itemsCount = imgSrcLst.size,
                 itemContent = { index ->
                     AsyncImage(
                         model = ImageRequest.Builder(LocalContext.current)
-                            .data(images[index])
+                            .data(gym.imgSrcLst[index])
                             .build(),
                         contentDescription = null,
                         contentScale = ContentScale.Crop,
@@ -262,19 +257,19 @@ fun ShowGymCard(
 @Composable
 fun AmphibiansListScreenPreview() {
     MyApplicationTheme() {
-        val mockData = List(10) {
-            Gym(
-                1,
-                "Lorem Ipsum - $it",
-                "$it",
-                "address $it",
-                "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do" +
-                        " eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad" +
-                        " minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip" +
-                        " ex ea commodo consequat.",
-                imgsrc = "https://developer.android.com/codelabs/basic-android-kotlin-compose-amphibians-app/img/great-basin-spadefoot.png"
-            )
-        }
-        ShowGymList(mockData, modifier = Modifier.fillMaxSize(), onItemClick = {})
+//        val mockData = List(10) {
+//            Gym(
+//                1,
+//                "Lorem Ipsum - $it",
+//                "$it",
+//                "address $it",
+//                "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do" +
+//                        " eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad" +
+//                        " minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip" +
+//                        " ex ea commodo consequat.",
+//                imgSrcLst = listOf("https://developer.android.com/codelabs/basic-android-kotlin-compose-amphibians-app/img/great-basin-spadefoot.png")
+//            )
+//        }
+//        ShowGymList(mockData, modifier = Modifier.fillMaxSize(), onItemClick = {})
     }
 }
