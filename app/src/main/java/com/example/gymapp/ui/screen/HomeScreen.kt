@@ -25,14 +25,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.collectIsDraggedAsState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import com.example.gymapp.R
 import androidx.compose.foundation.lazy.items
@@ -59,6 +57,7 @@ import coil.request.ImageRequest
 import com.example.gymapp.ui.navigation.NavigationDestination
 import com.example.gymapp.ui.screen.enumeration.ScreenName
 import com.example.gymapp.ui.theme.MyApplicationTheme
+import com.example.gymapp.ui.utils.LoadingScreen
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.PagerState
@@ -95,18 +94,6 @@ fun GymListApp(
             else -> ErrorScreen(retryAction = {}, modifier.fillMaxSize())
         }
     }
-}
-
-/**
- * The home screen displaying the loading message.
- */
-@Composable
-fun LoadingScreen(modifier: Modifier = Modifier) {
-    Image(
-        painter = painterResource(R.drawable.loading_img),
-        contentDescription = stringResource(R.string.loading),
-        modifier = modifier
-    )
 }
 
 /**

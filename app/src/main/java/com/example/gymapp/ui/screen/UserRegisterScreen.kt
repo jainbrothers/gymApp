@@ -2,8 +2,10 @@ package com.example.gymapp.ui.screen
 
 import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -14,6 +16,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -25,6 +28,7 @@ import com.example.gymapp.ui.screen.enumeration.ErrorCode
 import com.example.gymapp.ui.screen.viewmodel.OtpVerificationViewModel
 import com.example.gymapp.ui.screen.viewmodel.UserRegistrationViewModel
 import com.example.gymapp.ui.screen.viewmodel.enumeration.UserRegistrationState
+import com.example.gymapp.ui.utils.Spinner
 
 private const val TAG = "GYM APP LOG"
 @OptIn(ExperimentalMaterial3Api::class)
@@ -45,7 +49,7 @@ fun UserRegisterScreen(
         is OtpVerificationState.OtpGenerationInProgress,
         is OtpVerificationState.ChangeMobileNumber -> GenerateOtp(modifier)
         is OtpVerificationState.OtpSent,
-        is OtpVerificationState.OtpAutoFeedDone-> LaunchedEffect(otpVerificationStatus.otpVerificationState) {
+        is OtpVerificationState.OtpAutoFeedDone -> LaunchedEffect(otpVerificationStatus.otpVerificationState) {
             userRegistrationViewModel.saveUserMobileNumber()
             onSuccessfulOtpGeneration()
         }
@@ -71,9 +75,6 @@ fun GenerateOtp(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier.fillMaxSize()
     ) {
-        if (otpVerificationStatus.otpVerificationState is OtpVerificationState.OtpGenerationInProgress) {
-            LoadingScreen()
-        }
         TextField(
             value = uiState.mobileNumber,
             onValueChange = {
@@ -82,13 +83,16 @@ fun GenerateOtp(
             label = {Text(stringResource(R.string.mobile_input_label))},
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
         )
-        Button(
-            onClick = {
-                userRegistrationViewModel.generateOtp(uiState.mobileNumber)
-            },
-            enabled = enabled
-        ) {
-            Text(stringResource(R.string.generate_otp_button_name))
+        Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Center) {
+            Button(
+                onClick = {
+                    userRegistrationViewModel.generateOtp(uiState.mobileNumber)
+                },
+                enabled = enabled
+            ) {
+                Text(stringResource(R.string.generate_otp_button_name))
+            }
+            Spinner(doShow = otpVerificationStatus.otpVerificationState is OtpVerificationState.OtpGenerationInProgress)
         }
         if (otpVerificationStatus.errorCode != ErrorCode.None) {
             Text("OTP generation failed with error: ${otpVerificationStatus.errorCode}, please try again",

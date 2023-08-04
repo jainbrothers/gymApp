@@ -9,11 +9,13 @@ import com.example.gymapp.service.authservice.OtpVerificationStatus
 import com.example.gymapp.ui.screen.viewmodel.enumeration.UserRegistrationState
 import com.example.gymapp.ui.screen.viewmodel.state.OtpVerificationUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 
@@ -43,7 +45,18 @@ class OtpVerificationViewModel @Inject constructor(
 
     fun verifyOtp(otp: String) {
         Log.d(TAG, "inside verifyOtp function, otp = ${otp}")
+        _otpVerificationUiState.update {currentState ->
+            currentState.copy(
+                isVerificationInProgress = true
+            )
+        }
         authService.verifyOtp(otp)
+
+        _otpVerificationUiState.update {currentState ->
+            currentState.copy(
+                isVerificationInProgress = false
+            )
+        }
     }
 
     fun updateRegistrationState(state: UserRegistrationState) {
@@ -57,8 +70,7 @@ class OtpVerificationViewModel @Inject constructor(
         if (isOtpValid(userInput)) {
             _otpVerificationUiState.update { stateCurrentValue ->
                 stateCurrentValue.copy(
-                    otp = userInput,
-                    isVerifyOtpButtonEnabled = isVerifyOtpButtonEnabled(userInput)
+                    otp = userInput
                 )
             }
         }
@@ -73,9 +85,5 @@ class OtpVerificationViewModel @Inject constructor(
         valid = valid || otp.matches(NUMBER_PATTERN)
         valid = valid && otp.length <= OTP_LENGTH
         return valid
-    }
-
-    private fun isVerifyOtpButtonEnabled(userInput: String) : Boolean {
-        return userInput.length == OTP_LENGTH
     }
 }
