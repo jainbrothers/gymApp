@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -19,8 +20,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.gymapp.R
 import com.example.gymapp.service.authservice.OtpVerificationState
@@ -71,7 +74,7 @@ fun GenerateOtp(
     Log.d(TAG, "uiState.isOtpGenerationEnabled ${uiState.isGenerateOtpButtonEnabled} " +
             "isMobileValid ${uiState.isMobileNumberValid}")
     Column(
-        verticalArrangement = Arrangement.SpaceEvenly,
+        verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier.fillMaxSize()
     ) {
@@ -81,9 +84,10 @@ fun GenerateOtp(
                 userRegistrationViewModel.setMobileNumber(it)
             },
             label = {Text(stringResource(R.string.mobile_input_label))},
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+            modifier = modifier.padding(top = 100.dp, bottom = 50.dp)
         )
-        Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Center) {
+        Box(modifier = Modifier.fillMaxWidth().padding(50.dp), contentAlignment = Center) {
             Button(
                 onClick = {
                     userRegistrationViewModel.generateOtp(uiState.mobileNumber)
@@ -96,7 +100,7 @@ fun GenerateOtp(
         }
         if (otpVerificationStatus.errorCode != ErrorCode.None) {
             Text("OTP generation failed with error: ${otpVerificationStatus.errorCode}, please try again",
-                modifier.align(CenterHorizontally))
+                modifier.align(CenterHorizontally).padding(50.dp))
         }
     }
 }
