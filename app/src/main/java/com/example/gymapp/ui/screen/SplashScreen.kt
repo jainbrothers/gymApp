@@ -18,8 +18,8 @@ import com.example.gymapp.ui.screen.viewmodel.enumeration.UserRegistrationState
 private const val TAG = "Splash Screen"
 @Composable
 fun SplashScreen(
-    navigateUnregisterUser: () -> Unit,
-    navigateRegisterUser: () -> Unit,
+    unregisteredUserHandler: () -> Unit,
+    registeredUserHandler: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val splashScreenViewModelviewModel: SplashScreenViewModel = hiltViewModel()
@@ -36,7 +36,7 @@ fun SplashScreen(
             if (uiState.userRegistrationState.equals(UserRegistrationState.REGISTERED)) {
                 Text("Redirecting to home screen")
                 LaunchedEffect(uiState.userRegistrationState) {
-                    navigateUnregisterUser()
+                    registeredUserHandler()
                 }
             } else {
                 Log.d(
@@ -45,7 +45,7 @@ fun SplashScreen(
                 )
                 Text("Redirecting to registration screen")
                 LaunchedEffect(uiState.userRegistrationState) {
-                    navigateUnregisterUser()
+                    unregisteredUserHandler()
                 }
             }
         }

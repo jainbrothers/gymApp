@@ -116,11 +116,11 @@ fun GymNavHost(
         ) {
             composable(route = ScreenName.SPLASH_SCREEN.name) {
                 SplashScreen(
-                    navigateUnregisterUser = {
+                    unregisteredUserHandler = {
                         navController.popBackStack()
                         navController.navigate(route = ScreenName.USER_REGISTER_SCREEN.name)
                     },
-                    navigateRegisterUser = {
+                    registeredUserHandler = {
                         navController.popBackStack()
                         navController.navigate(route = ScreenName.HOME_SCREEN.name)
                     }
