@@ -47,7 +47,6 @@ import com.example.gymapp.ui.screen.HomeScreen
 import com.example.gymapp.ui.screen.LocationPermissionScreen
 import com.example.gymapp.ui.screen.OtpVerificationScreen
 import com.example.gymapp.ui.screen.ShowGymDetailsPage
-import com.example.gymapp.ui.screen.ShowGymImages
 import com.example.gymapp.ui.screen.SplashScreen
 import com.example.gymapp.ui.screen.UserRegisterScreen
 import com.example.gymapp.ui.screen.enumeration.ScreenName

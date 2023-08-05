@@ -1,135 +1,65 @@
 package com.example.gymapp.ui.screen
 
-import androidx.compose.foundation.interaction.collectIsDraggedAsState
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.layout.wrapContentWidth
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.gymapp.R
 import com.example.gymapp.model.Address
-import com.example.gymapp.model.Gym
 import com.example.gymapp.model.Location
+import com.example.gymapp.model.PlannedActivitySchedule
 import com.example.gymapp.ui.screen.viewmodel.GymDetailsViewModel
 import com.example.gymapp.ui.theme.MyApplicationTheme
+import com.example.gymapp.ui.utils.AutoSlidingCarousel
 import com.google.accompanist.pager.ExperimentalPagerApi
-import com.google.accompanist.pager.HorizontalPager
-import com.google.accompanist.pager.PagerState
-import kotlinx.coroutines.delay
-
-// Icons downloaded from https://fonts.google.com/icons?icon.platform=android
-
-// gym details meaning
-// Image
-// text details
-// etc
-
-
-@Composable
-fun DotsIndicator1(
-    modifier: Modifier = Modifier,
-    totalDots: Int,
-    selectedIndex: Int,
-    selectedColor: Color = Color.Yellow /* Color.Yellow IndicatorSelectedColor */,
-    unSelectedColor: Color = Color.Gray /* Color.Gray IndicatorSelectedColor */,
-    dotSize: Dp
-) {
-    LazyRow(
-        modifier = modifier
-            .wrapContentWidth()
-            .wrapContentHeight()
-    ) {
-        items(totalDots) { index ->
-            IndicatorDot(
-                color = if (index == selectedIndex) selectedColor else unSelectedColor,
-                size = dotSize
-            )
-            if (index != totalDots - 1) {
-                Spacer(modifier = Modifier.padding(horizontal = 2.dp))
-            }
-        }
-    }
-}
-
-@OptIn(ExperimentalPagerApi::class)
-@Composable
-fun AutoSlidingCarousel1(
-    modifier: Modifier = Modifier,
-    autoSlideDuration: Long = 1000, // AUTO_SLIDE_DURATION,
-    pagerState: PagerState = remember { PagerState() },
-    itemsCount: Int,
-    itemContent: @Composable (index: Int) -> Unit,
-) {
-    val isDragged by pagerState.interactionSource.collectIsDraggedAsState()
-    if (isDragged) {
-        LaunchedEffect(pagerState.currentPage) {
-            delay(autoSlideDuration)
-            pagerState.animateScrollToPage((pagerState.currentPage + 1) % itemsCount)
-        }
-    }
-    Box(
-        modifier = modifier.fillMaxWidth(),
-    ) {
-        HorizontalPager(count = itemsCount, state = pagerState) { page ->
-            itemContent(page)
-        }
-
-        // you can remove the surface in case you don't want
-        // the transparent background
-        Surface(
-            modifier = Modifier
-                .padding(bottom = 8.dp)
-                .align(Alignment.BottomCenter),
-            shape = CircleShape,
-            color = Color.Black.copy(alpha = 0.5f)
-        ) {
-            DotsIndicator1(
-                modifier = Modifier
-                    .padding(horizontal = 8.dp, vertical = 6.dp),
-                totalDots = itemsCount,
-                selectedIndex = if (isDragged) pagerState.currentPage else pagerState.targetPage,
-                dotSize = 8.dp
-            )
-        }
-    }
-}
+import java.util.Locale
 
 
 @Composable
 fun ShowGymTitle(
-    modifier: Modifier = Modifier,
-    viewModel: GymDetailsViewModel = hiltViewModel(),
+    title: String
 ) {
+    Box(
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = title.uppercase(Locale.ROOT),
+            fontWeight = FontWeight.Bold,
+            style = TextStyle(fontSize = 25.sp),
+            modifier = Modifier.padding(20.dp)
+        )
+    }
 
 }
 
@@ -147,7 +77,8 @@ fun ShowGymAddress(address: Address) {
             Column(
                 Modifier
                     .padding(10.dp)
-                    .weight(1F)) {
+                    .weight(1F)
+            ) {
                 Text(text = address.locality, fontWeight = FontWeight.Bold)
                 Text(text = address.streetNameAndNumber + " " + address.locality)
             }
@@ -161,86 +92,135 @@ fun ShowGymAddress(address: Address) {
 }
 
 @Composable
-fun ShowGymSchedule() {
+fun ShowPlannedActivitySchedules(plannedActivityScheduleList: List<PlannedActivitySchedule>) {
+    // Sample data
+    var expanded by remember { mutableStateOf(false) }
+    val items = listOf(
+        Item("Gym Timings", plannedActivityScheduleList),
+    )
+    LazyColumn {
+        items.forEach { group ->
+            item {
+                Text(
+                    text = group.title,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier
+                        .padding(vertical = 16.dp, horizontal = 24.dp)
+                        .clickable { expanded = !expanded }
+                )
+            }
 
+            if (expanded) {
+                group.items.forEach { schedule ->
+                    item {
+                        Row() {
+                            Text(
+                                text = schedule.day,
+                                modifier = Modifier
+                                    .padding(horizontal = 48.dp, vertical = 8.dp)
+                            )
+                            Text(
+                                text = schedule.beginHour.toString() +":"+schedule.beginMinute + " - "
+                                        + schedule.endHour.toString() +":"+schedule.endMinute,
+                                modifier = Modifier.padding(horizontal = 48.dp, vertical = 8.dp)
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
 
 @Composable
-fun ShowFacility(facility: String){
+fun ShowAmenity(facility: String, facilityResId: Int) {
     Row() {
         Icon(
-            painter = painterResource(id = R.drawable.round_location_on_24),
+            painter = painterResource(id = facilityResId),
             contentDescription = null, // decorative element
             modifier = Modifier
                 .padding(5.dp)
                 .size(30.dp)
         )
-        Text(text = facility)
+        Text(text = facility, modifier = Modifier.padding(9.dp))
     }
 }
 
-
 @Composable
-fun ShowGymFacilities() {
+fun ShowAmenities(facilities: List<String>) {
+    Column() {
+        Text(
+            text = "Facilities",
+            Modifier.padding(top = 10.dp, bottom = 10.dp, start = 10.dp),
+            fontWeight = FontWeight.Bold
+        )
+        LazyVerticalGrid(
+            columns = GridCells.Adaptive(148.dp),
 
+            // content padding
+            contentPadding = PaddingValues(
+                start = 2.dp,
+                top = 6.dp,
+                end = 2.dp,
+                bottom = 6.dp
+            ),
+            content = {
+                items(facilities) { facility ->
+                    val facilityResId: Int = when (facility) {
+                        "Parking" -> R.drawable.round_directions_car_24
+                        "Locker" -> R.drawable.round_lock_24
+                        "CCTV" -> R.drawable.round_camera_outdoor_24
+                        else -> {
+                            0
+                        }
+                    }
+                    ShowAmenity(facility, facilityResId)
+                }
+            }
+        )
+    }
 }
-
-
-@Composable
-fun ShowGymImages(
-    modifier: Modifier = Modifier
-) {
-    AsyncImage(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(bottom = 2.dp),
-        model = ImageRequest.Builder(context = LocalContext.current)
-//                .data(imgSrc)
-            .data(R.drawable.loading_img)
-            .crossfade(true)
-            .build(),
-        contentDescription = null,
-//        error = painterResource(id = R.drawable.ic_broken_image),
-        error = painterResource(id = R.drawable.loading_img),
-        placeholder = painterResource(id = R.drawable.loading_img)
-//        placeholder = painterResource(id = R.drawable.loading_img)
-    )
-    Text(text = "test text")
-}
-
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun ShowGymDetailsPage(
-    gymDetailsViewModel : GymDetailsViewModel = hiltViewModel()
+    gymDetailsViewModel: GymDetailsViewModel = hiltViewModel()
 ) {
     val uiState by gymDetailsViewModel.gymDetailsUiState.collectAsState()
-    val gym = uiState.gym
-    val imgSrcLst = listOf(gym.imgSrcLst, gym.imgSrcLst)
+    val imgSrcLst = listOf(uiState.gym.imageUrls, uiState.gym.imageUrls)
     Column(Modifier.fillMaxSize()) {
-        AutoSlidingCarousel1(
+        AutoSlidingCarousel(
             itemsCount = imgSrcLst.size,
             itemContent = { index ->
                 AsyncImage(
                     model = ImageRequest.Builder(LocalContext.current)
                         .data(imgSrcLst[index])
                         .build(),
-                    contentDescription = null,
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier.height(200.dp)
+                    contentDescription = "Gym Images",
+                    contentScale = ContentScale.Crop, // need to check this
+                    modifier = Modifier.height(200.dp) // to put it as constant
                 )
-            }
+            },
+            autoScroll = false
         )
-        ShowGymAddress(gym.address)
+        ShowGymTitle(uiState.gym.name)
+        Divider(thickness = 1.dp)
+        ShowGymAddress(uiState.gym.address)
+        Divider(thickness = 1.dp)
+        ShowPlannedActivitySchedules(uiState.gym.plannedActivitySchedules)
+        Divider(thickness = 1.dp)
+        ShowAmenities(uiState.gym.amenities)
+        Divider(thickness = 1.dp)
     }
 }
 
+data class Item(val title: String, val items: List<PlannedActivitySchedule>)
 
 
 @Preview(showBackground = true)
 @Composable
 fun GymDetailsScreenPreview() {
-    MyApplicationTheme() {
+    MyApplicationTheme {
 //        val mockData =
 //            Gym(
 //                1,
@@ -263,8 +243,12 @@ fun GymDetailsScreenPreview() {
             )
         )
 
-        ShowGymAddress(address)
-//        ShowFacility("Parking")
+//        ShowGymAddress(address)
+//        Divider()
+//        ShowFacilities(listOf("Parking", "Locker"))
+//        Divider()
+//        ShowFacilities(listOf("Parking", "Locker"))
+//        Divider()
     }
 }
 

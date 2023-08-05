@@ -16,14 +16,21 @@
 
 package com.example.gymapp.model
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 /**
  * Data class that defines an amphibian which includes a name, type, description, and image URL.
  */
+
+@Serializable
+data class PlannedActivitySchedule(
+    val day: String,
+    val beginHour: Int,
+    val beginMinute: Int,
+    val endHour: Int,
+    val endMinute: Int
+)
 
 @Serializable
 data class Location(
@@ -60,5 +67,17 @@ data class Gym(
         )
     ),
     val description: String,
-    @SerialName("img_src") val imgSrcLst: String
+    @SerialName("img_src") val imageUrls: String,
+    val plannedActivitySchedules: List<PlannedActivitySchedule> =  listOf(
+        PlannedActivitySchedule("Mon", 6, 0, 22, 0),
+        PlannedActivitySchedule("Tue", 6, 0, 22, 0),
+        PlannedActivitySchedule("Wed", 6, 0, 22, 0),
+        PlannedActivitySchedule("Thu", 6, 0, 22, 0),
+        PlannedActivitySchedule("Fri", 6, 0, 22, 0),
+        PlannedActivitySchedule("Sat", 6, 0, 22, 0),
+        PlannedActivitySchedule("Sun", 6, 0, 22, 0)
+    ),
+    val amenities: List<String> = listOf(
+        "Parking", "CCTV", "Locker"
+    )
 )

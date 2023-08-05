@@ -7,6 +7,7 @@ import com.example.gymapp.data.repository.GymRepository
 import com.example.gymapp.model.Address
 import com.example.gymapp.model.Gym
 import com.example.gymapp.model.Location
+import com.example.gymapp.model.PlannedActivitySchedule
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -37,7 +38,16 @@ data class GymDetailsUiState(
             )
         ),
         "This is the Gym Description",
-        imgSrcLst = "https://developer.android.com/codelabs/basic-android-kotlin-compose-amphibians-app/img/great-basin-spadefoot.png"
+        imageUrls = "https://developer.android.com/codelabs/basic-android-kotlin-compose-amphibians-app/img/great-basin-spadefoot.png",
+        plannedActivitySchedules =  listOf(
+            PlannedActivitySchedule("Mon", 6, 0, 22, 0),
+            PlannedActivitySchedule("Tue", 6, 0, 22, 0),
+            PlannedActivitySchedule("Wed", 6, 0, 22, 0),
+            PlannedActivitySchedule("Thu", 6, 0, 22, 0),
+            PlannedActivitySchedule("Fri", 6, 0, 22, 0),
+            PlannedActivitySchedule("Sat", 6, 0, 22, 0),
+            PlannedActivitySchedule("Sun", 6, 0, 22, 0)
+        )
     )
 )
 
