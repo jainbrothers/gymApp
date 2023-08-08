@@ -41,30 +41,19 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.gymapp.model.Gym
-import com.example.gymapp.ui.screen.viewmodel.AmphibiansUiState
+import com.example.gymapp.ui.screen.viewmodel.GymsUiState
 import com.example.gymapp.ui.screen.viewmodel.GymViewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import com.example.gymapp.ui.navigation.NavigationDestination
-import com.example.gymapp.ui.screen.enumeration.ScreenName
 import com.example.gymapp.ui.theme.MyApplicationTheme
 import com.example.gymapp.ui.utils.AutoSlidingCarousel
 import com.example.gymapp.ui.utils.Spinner
 import com.google.accompanist.pager.ExperimentalPagerApi
 
-object GymDetailsNav : NavigationDestination {
-//    override val route = "gym_details"
-    override val route = ScreenName.GYM_DETAILS.name
-    override val titleRes = R.string.app_name
-    const val itemIdArg = "itemId"
-    val routeWithArgs = "$route/{$itemIdArg}"
-}
-
 
 @Composable
 fun HomeScreen(onClickGymDetails: (Int) -> Unit) {
     GymListApp(onItemClick = onClickGymDetails)
-//    ShowGymDetails()
 }
 
 @Composable
@@ -73,19 +62,22 @@ fun GymListApp(
     onItemClick: (Int) -> Unit,
     viewModel: GymViewModel = hiltViewModel()
 ) {
-    val amphibiansUiState = viewModel.amphibiansUiState
+    val uiState = viewModel.gymsUiState
     Column {
-        when (amphibiansUiState) {
-            is AmphibiansUiState.Loading ->
+        when (uiState) {
+            is GymsUiState.Loading ->
                 Spinner(
-                    doShow = amphibiansUiState is AmphibiansUiState.Loading,
+                    doShow = uiState is GymsUiState.Loading,
                     modifier = Modifier.padding(200.dp)
                 )
 
 //                LoadingScreen(
 //                modifier.fillMaxSize().size(200.dp))
-            is AmphibiansUiState.Success -> ShowGymList(amphibiansUiState.amphibians,
-                modifier = modifier.fillMaxSize(), onItemClick = onItemClick)
+            is GymsUiState.Success -> ShowGymList(
+                uiState.gyms,
+                modifier = modifier.fillMaxSize(), onItemClick = onItemClick
+            )
+
             else -> ErrorScreen(retryAction = {}, modifier.fillMaxSize())
         }
     }
@@ -134,7 +126,7 @@ fun ShowGymCard(
     Card(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp)
+            .padding(start = 8.dp, end = 8.dp, top = 4.dp, bottom = 4.dp)
             .clickable { onItemClick(gym.id) },
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(
@@ -145,40 +137,39 @@ fun ShowGymCard(
                 MaterialTheme.colorScheme.surfaceVariant
         )
     ) {
-            AutoSlidingCarousel(
-                itemsCount = imageUrls.size,
-                itemContent = { index ->
-                    AsyncImage(
-                        model = ImageRequest.Builder(LocalContext.current)
-                            .data(imageUrls[index])
-                            .build(),
-                        contentDescription = null,
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier.height(200.dp),
-                        placeholder = painterResource(id = R.drawable.loading_img)
-                    )
-                },
-                autoScroll = true
-            )
+        AutoSlidingCarousel(
+            itemsCount = imageUrls.size,
+            itemContent = { index ->
+                AsyncImage(
+                    model = ImageRequest.Builder(LocalContext.current)
+                        .data(imageUrls[index])
+                        .build(),
+                    contentDescription = null,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier.height(200.dp),
+                    placeholder = painterResource(id = R.drawable.loading_img)
+                )
+            },
+            autoScroll = true
+        )
         Column() {
-                    Text(
-                        text = gym.name,
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier.padding(start = 10.dp, top = 10.dp, bottom = 3.dp)
-                    )
-                    Row() {
-                        Icon(
-                            painter = painterResource(id = R.drawable.round_location_on_24),
-                            contentDescription = "Location", // decorative element
-                            modifier = Modifier
-                                .padding(5.dp)
-                                .size(20.dp)
-                        )
-                        Text(
-                            text = gym.address.locality,
-                            modifier = Modifier.padding(start = 10.dp, bottom = 10.dp)
-                        )
-                    }
+            Text(
+                text = gym.name,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(start = 10.dp, top = 10.dp, bottom = 3.dp)
+            )
+            Row(modifier = Modifier.padding(start = 10.dp, bottom = 10.dp)) {
+                Icon(
+                    painter = painterResource(id = R.drawable.round_location_on_24),
+                    contentDescription = "Location", // decorative element
+                    modifier = Modifier
+                        .padding(end = 5.dp)
+                        .size(20.dp)
+                )
+                Text(
+                    text = gym.address.locality
+                )
+            }
         }
     }
 }

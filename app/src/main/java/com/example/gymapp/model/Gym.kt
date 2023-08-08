@@ -55,15 +55,15 @@ data class Gym(
     val id: Int = 0,
     val name: String,
     val type: String,
+    val availableWorkouts: List<String> = listOf("Cardio", "Gym", "Zumba", "Yoga", "HIIT"),
     val address: Address = Address(
         1,
-        "3rd & 4th floor. 12th Cross Rd",
-        "Mahalakshmi Layout",
+        "77, Ground Floor, Below Stories Pub",
+        "Mahalakshmi Metro Nandini Layout",
         "Bengaluru",
         560010,
         Location(
-            3.2323,
-            4.232323
+            13.00868,77.54906
         )
     ),
     val description: String,

@@ -25,8 +25,11 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
-class OfflineGymRepository @Inject constructor(private val gymApiService: GymApiService) : GymRepository {
-    override suspend fun getAmphibians(): List<Gym> = gymApiService.getAmphibians()
+
+
+class OfflineGymRepository @Inject constructor(private val gymApiService: GymApiService) :
+    GymRepository {
+    override suspend fun getGyms(): List<Gym> = gymApiService.getAmphibians()
 //    override fun getGymDetailsWithId(id: Int): Flow<Gym> = gymApiService.getGymDetailsWithIdService(id)
 //    return Gym(
 //    1,
@@ -39,35 +42,37 @@ class OfflineGymRepository @Inject constructor(private val gymApiService: GymApi
 
     override fun getGymDetailsWithId(id: Int): Flow<Gym> = flow {
         emit(
-            Gym(
-            1,
-            "Cult Gym Rajajinagar 12th Cross",
-            "Gym",
-            Address(
+          Gym(
                 1,
-                "3rd & 4th floor. 12th Cross Rd",
-                "Mahalakshmi Layout",
-                "Bengaluru",
-                560010,
-               Location(
-                   3.2323,
-                   4.232323
-               )
-            ),
-            "This is the Gym Description",
-            imageUrls = "https://developer.android.com/codelabs/basic-android-kotlin-compose-amphibians-app/img/great-basin-spadefoot.png",
-            plannedActivitySchedules =  listOf(
-                PlannedActivitySchedule("Mon", 6, 0, 22, 0),
-                PlannedActivitySchedule("Tue", 6, 0, 22, 0),
-                PlannedActivitySchedule("Wed", 6, 0, 22, 0),
-                PlannedActivitySchedule("Thu", 6, 0, 22, 0),
-                PlannedActivitySchedule("Fri", 6, 0, 22, 0),
-                PlannedActivitySchedule("Sat", 6, 0, 22, 0),
-                PlannedActivitySchedule("Sun", 6, 0, 22, 0)
-            ),
-                amenities = listOf("Parking", "CCTV", "Locker")
+        "Cult Gym Rajajinagar",
+        "Gym",
+        listOf("Cardio", "Gym", "Zumba", "Yoga", "HIIT"),
+        address = Address(
+            1,
+            "77, Ground Floor, Below Stories Pub",
+            "Mahalakshmi Metro Nandini Layout",
+            "Bengaluru",
+            560010,
+            Location(
+                13.00868, 77.54906
+            )
+        ),
+        "This is the Gym Description",
+        imageUrls = "https://developer.android.com/codelabs/basic-android-kotlin-compose-amphibians-app/img/great-basin-spadefoot.png",
+        plannedActivitySchedules = listOf(
+            PlannedActivitySchedule("Mon", 6, 0, 22, 0),
+            PlannedActivitySchedule("Tue", 6, 0, 22, 0),
+            PlannedActivitySchedule("Wed", 6, 0, 22, 0),
+            PlannedActivitySchedule("Thu", 6, 0, 22, 0),
+            PlannedActivitySchedule("Fri", 6, 0, 22, 0),
+            PlannedActivitySchedule("Sat", 6, 0, 22, 0),
+            PlannedActivitySchedule("Sun", 6, 0, 22, 0)
+        ),
+        amenities = listOf("Parking", "CCTV", "Locker")
         )
+
         )
+
     }
 
 }

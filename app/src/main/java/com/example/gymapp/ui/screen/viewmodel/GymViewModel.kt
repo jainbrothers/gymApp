@@ -34,10 +34,10 @@ import javax.inject.Inject
  */
 data class HomeUiState(val gymList: List<Gym> = listOf())
 
-sealed interface AmphibiansUiState {
-    data class Success(val amphibians: List<Gym>) : AmphibiansUiState
-    object Error : AmphibiansUiState
-    object Loading : AmphibiansUiState
+sealed interface GymsUiState {
+    data class Success(val gyms: List<Gym>) : GymsUiState
+    object Error : GymsUiState
+    object Loading : GymsUiState
 }
 
 /**
@@ -47,22 +47,22 @@ sealed interface AmphibiansUiState {
 @HiltViewModel
 class GymViewModel @Inject constructor(val gymRepository: GymRepository) : ViewModel() {
 
-    var amphibiansUiState: AmphibiansUiState by mutableStateOf(AmphibiansUiState.Loading)
+    var gymsUiState: GymsUiState by mutableStateOf(GymsUiState.Loading)
         private set
 
     init {
-        getAmphibians()
+        getGyms()
     }
 
-    private fun getAmphibians() {
+    private fun getGyms() {
         viewModelScope.launch {
-            amphibiansUiState = AmphibiansUiState.Loading
-            amphibiansUiState = try {
-                AmphibiansUiState.Success(gymRepository.getAmphibians())
+            gymsUiState = GymsUiState.Loading
+            gymsUiState = try {
+                GymsUiState.Success(gymRepository.getGyms())
             } catch (e: IOException) {
-                AmphibiansUiState.Error
+                GymsUiState.Error
             } catch (e: HttpException) {
-                AmphibiansUiState.Error
+                GymsUiState.Error
             }
         }
     }

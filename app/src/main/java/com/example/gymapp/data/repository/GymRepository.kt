@@ -23,7 +23,7 @@ import kotlinx.coroutines.flow.Flow
  * Repository that provides insert, update, delete, and retrieve of [Item] from a given data source.
  */
 interface GymRepository {
-    suspend fun getAmphibians(): List<Gym>
+    suspend fun getGyms(): List<Gym>
     fun getGymDetailsWithId(itemId: Int): Flow<Gym>
 
     /**
