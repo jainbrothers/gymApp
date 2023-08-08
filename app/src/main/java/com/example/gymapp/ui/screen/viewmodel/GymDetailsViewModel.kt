@@ -7,7 +7,7 @@ import com.example.gymapp.data.repository.GymRepository
 import com.example.gymapp.model.Address
 import com.example.gymapp.model.Gym
 import com.example.gymapp.model.Location
-import com.example.gymapp.model.PlannedActivitySchedule
+import com.example.gymapp.model.Timings
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -26,6 +26,7 @@ data class GymDetailsUiState(
         1,
         "Cult Gym Rajajinagar 12th Cross",
         "Gym",
+        listOf("GYM"),
         Address(
             1,
             "3rd & 4th floor. 12th Cross Rd",
@@ -39,14 +40,14 @@ data class GymDetailsUiState(
         ),
         "This is the Gym Description",
         imageUrls = "https://developer.android.com/codelabs/basic-android-kotlin-compose-amphibians-app/img/great-basin-spadefoot.png",
-        plannedActivitySchedules =  listOf(
-            PlannedActivitySchedule("Mon", 6, 0, 22, 0),
-            PlannedActivitySchedule("Tue", 6, 0, 22, 0),
-            PlannedActivitySchedule("Wed", 6, 0, 22, 0),
-            PlannedActivitySchedule("Thu", 6, 0, 22, 0),
-            PlannedActivitySchedule("Fri", 6, 0, 22, 0),
-            PlannedActivitySchedule("Sat", 6, 0, 22, 0),
-            PlannedActivitySchedule("Sun", 6, 0, 22, 0)
+        timings =  listOf(
+            Timings("Mon", 6, 0, 22, 0),
+            Timings("Tue", 6, 0, 22, 0),
+            Timings("Wed", 6, 0, 22, 0),
+            Timings("Thu", 6, 0, 22, 0),
+            Timings("Fri", 6, 0, 22, 0),
+            Timings("Sat", 6, 0, 22, 0),
+            Timings("Sun", 6, 0, 22, 0)
         )
     )
 )
@@ -67,4 +68,6 @@ class GymDetailsViewModel @Inject constructor(
                 started = SharingStarted.WhileSubscribed(5000L),
                 initialValue = GymDetailsUiState()
             )
+
+
 }

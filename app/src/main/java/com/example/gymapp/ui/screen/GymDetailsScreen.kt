@@ -6,15 +6,20 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.Tab
+import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -37,8 +42,9 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.gymapp.R
 import com.example.gymapp.model.Address
+import com.example.gymapp.model.Gym
 import com.example.gymapp.model.Location
-import com.example.gymapp.model.PlannedActivitySchedule
+import com.example.gymapp.model.Timings
 import com.example.gymapp.ui.screen.viewmodel.GymDetailsViewModel
 import com.example.gymapp.ui.theme.MyApplicationTheme
 import com.example.gymapp.ui.utils.AutoSlidingCarousel
@@ -92,11 +98,11 @@ fun ShowGymAddress(address: Address) {
 }
 
 @Composable
-fun ShowPlannedActivitySchedules(plannedActivityScheduleList: List<PlannedActivitySchedule>) {
+fun ShowTimings(timingsList: List<Timings>) {
     // Sample data
     var expanded by remember { mutableStateOf(false) }
     val items = listOf(
-        Item("Gym Timings", plannedActivityScheduleList),
+        Item("Gym Timings", timingsList),
     )
     LazyColumn {
         items.forEach { group ->
@@ -133,29 +139,37 @@ fun ShowPlannedActivitySchedules(plannedActivityScheduleList: List<PlannedActivi
 }
 
 @Composable
-fun ShowAmenity(facility: String, facilityResId: Int) {
-    Row() {
+fun ShowAmenity(facility: String) {
+    val facilityResId: Int = when (facility) {
+        "GYM" -> R.drawable.gym
+        "YOGA" -> R.drawable.yoga
+        "Parking" -> R.drawable.round_directions_car_24
+        "Locker" -> R.drawable.round_lock_24
+        "CCTV" -> R.drawable.round_camera_outdoor_24
+        else -> {
+            0
+        }
+    }
+    Column(modifier = Modifier.padding(start = 20.dp)) {
         Icon(
             painter = painterResource(id = facilityResId),
             contentDescription = null, // decorative element
-            modifier = Modifier
-                .padding(5.dp)
-                .size(30.dp)
+            modifier = Modifier.size(30.dp)
         )
-        Text(text = facility, modifier = Modifier.padding(9.dp))
+        Text(text = facility)
     }
 }
 
 @Composable
 fun ShowAmenities(facilities: List<String>) {
-    Column() {
+    Column(modifier = Modifier.fillMaxWidth()) {
         Text(
             text = "Facilities",
             Modifier.padding(top = 10.dp, bottom = 10.dp, start = 10.dp),
             fontWeight = FontWeight.Bold
         )
         LazyVerticalGrid(
-            columns = GridCells.Adaptive(148.dp),
+            columns = GridCells.Adaptive(80.dp),
 
             // content padding
             contentPadding = PaddingValues(
@@ -166,20 +180,40 @@ fun ShowAmenities(facilities: List<String>) {
             ),
             content = {
                 items(facilities) { facility ->
-                    val facilityResId: Int = when (facility) {
-                        "Parking" -> R.drawable.round_directions_car_24
-                        "Locker" -> R.drawable.round_lock_24
-                        "CCTV" -> R.drawable.round_camera_outdoor_24
-                        else -> {
-                            0
-                        }
-                    }
-                    ShowAmenity(facility, facilityResId)
+                    ShowAmenity(facility)
                 }
             }
         )
     }
 }
+
+@Composable
+fun ShowWorkouts(workouts: List<String>) {
+    Column() {
+        Text(
+            text = "Available Workouts",
+            Modifier.padding(top = 10.dp, bottom = 10.dp, start = 10.dp),
+            fontWeight = FontWeight.Bold
+        )
+        LazyVerticalGrid(
+            columns = GridCells.Adaptive(80.dp),
+
+            // content padding
+            contentPadding = PaddingValues(
+                start = 2.dp,
+                top = 6.dp,
+                end = 2.dp,
+                bottom = 6.dp
+            ),
+            content = {
+                items(workouts) { workout ->
+                    ShowAmenity(workout)
+                }
+            }
+        )
+    }
+}
+
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
@@ -207,31 +241,63 @@ fun ShowGymDetailsPage(
         Divider(thickness = 1.dp)
         ShowGymAddress(uiState.gym.address)
         Divider(thickness = 1.dp)
-        ShowPlannedActivitySchedules(uiState.gym.plannedActivitySchedules)
+        ShowWorkouts(uiState.gym.workouts)
+        Divider(thickness = 1.dp)
+        ShowTimings(uiState.gym.timings)
         Divider(thickness = 1.dp)
         ShowAmenities(uiState.gym.amenities)
         Divider(thickness = 1.dp)
     }
 }
 
-data class Item(val title: String, val items: List<PlannedActivitySchedule>)
+
+@Composable
+fun BookWorkoutSession(){
+    Column(Modifier.fillMaxWidth().height(80.dp)) {
+        Button(
+            onClick = {},
+            Modifier
+                .align(Alignment.CenterHorizontally)
+        ) {
+            Text(text = "Book Session")
+        }
+    }
+}
+
+@Composable
+fun ShowWorkoutOptions(
+    selectedTabIndex: Int,
+    tabTitles: List<String>,
+    onSelectedTab: (Int) -> Unit
+) {
+    TabRow(
+        selectedTabIndex = selectedTabIndex,
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        tabTitles.forEachIndexed { index, title ->
+            Tab(
+                text = { Text(title) },
+                selected = selectedTabIndex == index,
+                onClick = { onSelectedTab(index) }
+            )
+        }
+    }
+}
+
+data class Item(val title: String, val items: List<Timings>)
+
 
 
 @Preview(showBackground = true)
 @Composable
 fun GymDetailsScreenPreview() {
     MyApplicationTheme {
-//        val mockData =
-//            Gym(
-//                1,
-//                "TAURUS FITNESS",
-//                "Gym",
-//                "Rajajinagar, No 46, 2nd Floor 10th CrossWest off Chord Road Above Tata motors, Rajajinagar",
-//                "This is the Gym Description",
-//                imgSrcLst = listOf("https://developer.android.com/codelabs/basic-android-kotlin-compose-amphibians-app/img/great-basin-spadefoot.png")
-//            )
-//        ShowGymDetailsPage()
-        val address = Address(
+        val gym: Gym = Gym(
+        1,
+        "Cult Gym Rajajinagar 12th Cross",
+        "Gym",
+        listOf("GYM", "YOGA"),
+        Address(
             1,
             "3rd & 4th floor. 12th Cross Rd",
             "Mahalakshmi Layout",
@@ -241,14 +307,35 @@ fun GymDetailsScreenPreview() {
                 3.2323,
                 4.232323
             )
+        ),
+        "This is the Gym Description",
+        imageUrls = "https://developer.android.com/codelabs/basic-android-kotlin-compose-amphibians-app/img/great-basin-spadefoot.png",
+        timings =  listOf(
+            Timings("Mon", 6, 0, 22, 0),
+            Timings("Tue", 6, 0, 22, 0),
+            Timings("Wed", 6, 0, 22, 0),
+            Timings("Thu", 6, 0, 22, 0),
+            Timings("Fri", 6, 0, 22, 0),
+            Timings("Sat", 6, 0, 22, 0),
+            Timings("Sun", 6, 0, 22, 0)
+        ),
+        amenities = listOf("Parking", "CCTV", "Locker")
         )
-
-//        ShowGymAddress(address)
-//        Divider()
-//        ShowFacilities(listOf("Parking", "Locker"))
-//        Divider()
-//        ShowFacilities(listOf("Parking", "Locker"))
-//        Divider()
+        Column() {
+            ShowWorkouts(gym.workouts)
+            Divider(thickness = 1.dp)
+            BookWorkoutSession()
+            Divider(thickness = 1.dp)
+            ShowTimings(gym.timings)
+            Divider(thickness = 1.dp)
+            ShowAmenities(gym.amenities)
+            Divider(thickness = 1.dp)
+            ShowWorkoutOptions(
+                selectedTabIndex = 0,
+                tabTitles = listOf("Gym", "Yoga", "Dance"),
+                onSelectedTab = {}
+            )
+        }
     }
 }
 
