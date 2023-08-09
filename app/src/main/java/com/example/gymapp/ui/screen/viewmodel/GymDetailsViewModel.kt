@@ -69,5 +69,4 @@ class GymDetailsViewModel @Inject constructor(
                 initialValue = GymDetailsUiState()
             )
 
-
 }

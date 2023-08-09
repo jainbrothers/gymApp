@@ -55,7 +55,7 @@ data class Gym(
     val id: Int = 0,
     val name: String,
     val type: String,
-    val workouts: List<String> = listOf("GYM"),
+    val activities: List<String> = listOf("GYM"),
     val address: Address = Address(
         1,
         "3rd & 4th floor. 12th Cross Rd",

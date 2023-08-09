@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -241,7 +240,7 @@ fun ShowGymDetailsPage(
         Divider(thickness = 1.dp)
         ShowGymAddress(uiState.gym.address)
         Divider(thickness = 1.dp)
-        ShowWorkouts(uiState.gym.workouts)
+        ShowWorkouts(uiState.gym.activities)
         Divider(thickness = 1.dp)
         ShowTimings(uiState.gym.timings)
         Divider(thickness = 1.dp)
@@ -322,7 +321,7 @@ fun GymDetailsScreenPreview() {
         amenities = listOf("Parking", "CCTV", "Locker")
         )
         Column() {
-            ShowWorkouts(gym.workouts)
+            ShowWorkouts(gym.activities)
             Divider(thickness = 1.dp)
             BookWorkoutSession()
             Divider(thickness = 1.dp)
