@@ -20,6 +20,7 @@ private const val TAG = "Splash Screen"
 fun SplashScreen(
     unregisteredUserHandler: () -> Unit,
     registeredUserHandler: () -> Unit,
+    otpVerifiedUserHandler: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val splashScreenViewModelviewModel: SplashScreenViewModel = hiltViewModel()
@@ -33,19 +34,23 @@ fun SplashScreen(
             //TODO: Render loading image
             Text("App is initializing")
         } else {
-            if (uiState.userRegistrationState.equals(UserRegistrationState.REGISTERED)) {
-                Text("Redirecting to home screen")
-                LaunchedEffect(uiState.userRegistrationState) {
-                    registeredUserHandler()
+            when(uiState.userRegistrationState) {
+                UserRegistrationState.REGISTERED -> {
+                    Text("Redirecting to home screen")
+                    LaunchedEffect(uiState.userRegistrationState) {
+                        registeredUserHandler()
+                    }
                 }
-            } else {
-                Log.d(
-                    TAG,
-                    "uiState state ${uiState.userRegistrationState}, enum ${UserRegistrationState.REGISTERED}"
-                )
-                Text("Redirecting to registration screen")
-                LaunchedEffect(uiState.userRegistrationState) {
-                    unregisteredUserHandler()
+                UserRegistrationState.UNREGISTERED -> {
+                    Text("Redirecting to registration screen")
+                    LaunchedEffect(uiState.userRegistrationState) {
+                        unregisteredUserHandler()
+                    }
+                }
+                UserRegistrationState.OTP_VERICATION_SUCCESSFUL -> {
+                    LaunchedEffect(uiState.userRegistrationState) {
+                        otpVerifiedUserHandler()
+                    }
                 }
             }
         }

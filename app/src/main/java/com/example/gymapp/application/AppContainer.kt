@@ -21,15 +21,19 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
 import com.example.gymapp.MainActivity
+import com.example.gymapp.data.repository.FirebaseUserRepository
 import com.example.gymapp.data.repository.GymRepository
 import com.example.gymapp.data.repository.OfflineGymRepository
 import com.example.gymapp.data.repository.UserDetailPreferencesRepository
 import com.example.gymapp.data.repository.UserDetailRepository
+import com.example.gymapp.data.repository.UserRepository
 import com.example.gymapp.network.GymApiService
 import com.example.gymapp.service.authservice.AuthService
 import com.example.gymapp.service.authservice.AuthServiceImpl
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import dagger.Binds
@@ -77,6 +81,9 @@ object AppModule {
     fun provideFirebaseAuth(): FirebaseAuth = Firebase.auth
     @Singleton
     @Provides
+    fun provideFirebaseDB(): FirebaseFirestore = Firebase.firestore
+    @Singleton
+    @Provides
     fun provideMainActivity(): MainActivity = MainActivity.getInstance() as MainActivity
 }
 
@@ -105,7 +112,13 @@ abstract class ServiceModule {
     abstract fun bindAuthService(
         authServiceImpl: AuthServiceImpl
     ): AuthService
+    @Binds
+    @Singleton
+    abstract fun bindUserRepository(
+        firebaseUserRepository: FirebaseUserRepository
+    ): UserRepository
 }
+
 @Qualifier
 @Documented
 @Retention(RetentionPolicy.RUNTIME)

@@ -20,7 +20,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -30,7 +29,6 @@ import com.example.gymapp.service.authservice.OtpVerificationState
 import com.example.gymapp.ui.screen.enumeration.ErrorCode
 import com.example.gymapp.ui.screen.viewmodel.OtpVerificationViewModel
 import com.example.gymapp.ui.screen.viewmodel.UserRegistrationViewModel
-import com.example.gymapp.ui.screen.viewmodel.enumeration.UserRegistrationState
 import com.example.gymapp.ui.utils.Spinner
 
 private const val TAG = "GYM APP LOG"
@@ -57,7 +55,7 @@ fun UserRegisterScreen(
             onSuccessfulOtpGeneration()
         }
         is OtpVerificationState.Successful -> LaunchedEffect(otpVerificationStatus.otpVerificationState) {
-            otpVerificationViewModel.updateRegistrationState(UserRegistrationState.REGISTERED)
+            otpVerificationViewModel.persistDetailsOfAuthenticatedUser()
             postSuccessfulRegistration()
         }
     }

@@ -3,19 +3,22 @@ package com.example.gymapp.ui.screen.viewmodel
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.gymapp.data.repository.UserDetailRepository
+import com.example.gymapp.data.repository.UserRepository
+import com.example.gymapp.model.User
 import com.example.gymapp.service.authservice.AuthService
+import com.example.gymapp.service.authservice.OtpVerificationState
 import com.example.gymapp.service.authservice.OtpVerificationStatus
 import com.example.gymapp.ui.screen.viewmodel.enumeration.UserRegistrationState
 import com.example.gymapp.ui.screen.viewmodel.state.OtpVerificationUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
+import java.util.UUID
 import javax.inject.Inject
 
 
@@ -24,7 +27,8 @@ private const val TAG = "Otp View tag"
 @HiltViewModel
 class OtpVerificationViewModel @Inject constructor(
     val userDetailRepository: UserDetailRepository,
-    val authService: AuthService
+    val authService: AuthService,
+    val userRepository: UserRepository
 ): ViewModel()
 {
     private val _otpVerificationUiState = MutableStateFlow(OtpVerificationUiState())
@@ -35,37 +39,35 @@ class OtpVerificationViewModel @Inject constructor(
     }
     private fun populateUserDetail() {
         viewModelScope.launch {
-            userDetailRepository.userMobileNumber.collect {mobileNumber ->
-                _otpVerificationUiState.update {currentState ->
-                    currentState.copy(mobileNumber = mobileNumber)
+            userDetailRepository.userRegistrationStatus.collect { userRegistrationState ->
+                userDetailRepository.userMobileNumber.collect { mobileNumber ->
+                    _otpVerificationUiState.update { currentState ->
+                        currentState.copy(
+                            userRegistrationState = userRegistrationState,
+                            mobileNumber = mobileNumber
+                        )
+                    }
                 }
             }
         }
     }
 
-    fun verifyOtp(otp: String) {
-        Log.d(TAG, "inside verifyOtp function, otp = ${otp}")
-        _otpVerificationUiState.update {currentState ->
-            currentState.copy(
-                isVerificationInProgress = true
-            )
-        }
-        authService.verifyOtp(otp)
-
-        _otpVerificationUiState.update {currentState ->
-            currentState.copy(
-                isVerificationInProgress = false
-            )
-        }
-    }
-
-    fun updateRegistrationState(state: UserRegistrationState) {
+    suspend fun verifyOtp(otp: String) {
         viewModelScope.launch {
-            Log.d(TAG, "updating registration ${state}")
-            userDetailRepository.saveUserRegistrationState(state)
+            Log.d(TAG, "inside verifyOtp function, otp = ${otp}")
+            _otpVerificationUiState.update {currentState ->
+                currentState.copy(
+                    isVerificationInProgress = true
+                )
+            }
+            authService.verifyOtp(otp)
+            _otpVerificationUiState.update {currentState ->
+                currentState.copy(
+                    isVerificationInProgress = false
+                )
+            }
         }
     }
-
     fun setOtpValue(userInput: String) {
         if (isOtpValid(userInput)) {
             _otpVerificationUiState.update { stateCurrentValue ->
@@ -85,5 +87,16 @@ class OtpVerificationViewModel @Inject constructor(
         valid = valid || otp.matches(NUMBER_PATTERN)
         valid = valid && otp.length <= OTP_LENGTH
         return valid
+    }
+    suspend fun persistDetailsOfAuthenticatedUser() {
+        viewModelScope.launch {
+            val user: User = User(
+                mobileNumber = otpVerificationUiState.value.mobileNumber,
+                userId = UUID.randomUUID().toString()
+            )
+            userRepository.create(user)
+            userDetailRepository.saveUserId(user.userId)
+            userDetailRepository.saveUserRegistrationState(UserRegistrationState.REGISTERED)
+        }
     }
 }

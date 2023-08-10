@@ -17,7 +17,7 @@ import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
 //sealed interface GymDetailsUiState {
-//    data class Success(val amphibians: Gym) : GymDetailsUiState
+//    data class Successful(val amphibians: Gym) : GymDetailsUiState
 //    object Error : GymDetailsUiState
 //    object Loading : GymDetailsUiState
 //}

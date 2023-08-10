@@ -14,7 +14,6 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import java.io.IOException
 import javax.inject.Inject
-import javax.inject.Named
 
 private const val TAG = "User Detail Preference Repository"
 
@@ -25,6 +24,7 @@ class UserDetailPreferencesRepository @Inject constructor(
     private companion object {
         val USER_MOBILE_NUMBER_KEY = stringPreferencesKey("user_mobile_number_key")
         val USER_REGISTRATION_STATUS = stringPreferencesKey("user_registration_status_key")
+        val USER_ID = stringPreferencesKey("user_id")
     }
 
     override val userMobileNumber: Flow<String> = dataStore.data
@@ -49,24 +49,41 @@ class UserDetailPreferencesRepository @Inject constructor(
                 throw it
             }
         }
-        .map {preferences ->
+        .map { preferences ->
             enumValueOf<UserRegistrationState>(
                 preferences[USER_REGISTRATION_STATUS] ?: UserRegistrationState.UNREGISTERED.name
             )
         }
+    override val userId: Flow<String> = dataStore.data
+        .catch {
+            if (it is IOException) {
+                Log.e(TAG, "Error reading preferences.", it)
+                emit(emptyPreferences())
+            } else {
+                throw it
+            }
+        }
+        .map { preferences ->
+            preferences[USER_ID] ?: ""
+        }
 
     override suspend fun saveUserMobileNumber(mobileNumber: String) {
-        Log.d(TAG, "entered saveUserMobileNumber ${mobileNumber} input")
+        Log.d(TAG, "saved user mobile number ${mobileNumber} into preferences")
         dataStore.edit {preferences ->
             preferences[USER_MOBILE_NUMBER_KEY] = mobileNumber
         }
-        var output = userMobileNumber.first()
-        Log.d(TAG, "Exiting saveUserMobileNumber flow userMobileNumber ${output}")
     }
 
     override suspend fun saveUserRegistrationState(userRegistrationState: UserRegistrationState) {
+        Log.d(TAG, "saved user user registration state ${userRegistrationState} into preferences")
         dataStore.edit {preferences ->
             preferences[USER_REGISTRATION_STATUS] = userRegistrationState.name
+        }
+    }
+    override suspend fun saveUserId(userId: String) {
+        Log.d(TAG, "saved user user id ${userId} into preferences")
+        dataStore.edit {preferences ->
+            preferences[USER_ID] = userId
         }
     }
 }

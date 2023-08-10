@@ -1,6 +1,7 @@
 package com.example.gymapp.ui.screen.viewmodel.enumeration
 
 enum class UserRegistrationState {
-    UNREGISTERED,
-    REGISTERED
+    OTP_VERICATION_SUCCESSFUL,
+    REGISTERED,
+    UNREGISTERED
 }

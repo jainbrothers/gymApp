@@ -123,6 +123,10 @@ fun GymNavHost(
                     registeredUserHandler = {
                         navController.popBackStack()
                         navController.navigate(route = ScreenName.HOME_SCREEN.name)
+                    },
+                    otpVerifiedUserHandler = {
+                        navController.popBackStack()
+                        navController.navigate(route = ScreenName.OTP_VERIFICATION_SCREEN.name)
                     }
                 )
             }
