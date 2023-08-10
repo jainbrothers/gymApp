@@ -8,7 +8,7 @@ import com.example.gymapp.data.repository.OfflineGymRepository
 import com.example.gymapp.model.Address
 import com.example.gymapp.model.Gym
 import com.example.gymapp.model.Location
-import com.example.gymapp.model.PlannedActivitySchedule
+import com.example.gymapp.model.Timings
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -27,7 +27,7 @@ data class GymDetailsUiState( // Create Gym object with None values
         1,
         "",
         "",
-        listOf("Cardio", "Gym", "Zumba", "Yoga", "HIIT"),
+        listOf("Cardio", "GYM", "Zumba", "YOGA", "HIIT"),
         address = Address(
             1,
             "77, Ground Floor, Below Stories Pub",
@@ -40,16 +40,15 @@ data class GymDetailsUiState( // Create Gym object with None values
         ),
         "This is the Gym Description",
         imageUrls = "https://developer.android.com/codelabs/basic-android-kotlin-compose-amphibians-app/img/great-basin-spadefoot.png",
-        plannedActivitySchedules = listOf(
-            PlannedActivitySchedule("Mon", 6, 0, 22, 0),
-            PlannedActivitySchedule("Tue", 6, 0, 22, 0),
-            PlannedActivitySchedule("Wed", 6, 0, 22, 0),
-            PlannedActivitySchedule("Thu", 6, 0, 22, 0),
-            PlannedActivitySchedule("Fri", 6, 0, 22, 0),
-            PlannedActivitySchedule("Sat", 6, 0, 22, 0),
-            PlannedActivitySchedule("Sun", 6, 0, 22, 0)
-        ),
-        amenities = listOf("Parking", "CCTV", "Locker")
+        timings =  listOf(
+            Timings("Mon", 6, 0, 22, 0),
+            Timings("Tue", 6, 0, 22, 0),
+            Timings("Wed", 6, 0, 22, 0),
+            Timings("Thu", 6, 0, 22, 0),
+            Timings("Fri", 6, 0, 22, 0),
+            Timings("Sat", 6, 0, 22, 0),
+            Timings("Sun", 6, 0, 22, 0)
+        )
     )
 )
 
@@ -68,4 +67,5 @@ class GymDetailsViewModel @Inject constructor(
                 started = SharingStarted.WhileSubscribed(5000L),
                 initialValue = GymDetailsUiState()
             )
+
 }

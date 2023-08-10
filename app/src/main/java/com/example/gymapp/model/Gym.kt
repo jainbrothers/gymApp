@@ -24,7 +24,7 @@ import kotlinx.serialization.Serializable
  */
 
 @Serializable
-data class PlannedActivitySchedule(
+data class Timings(
     val day: String,
     val beginHour: Int,
     val beginMinute: Int,
@@ -55,7 +55,7 @@ data class Gym(
     val id: Int = 0,
     val name: String,
     val type: String,
-    val availableWorkouts: List<String> = listOf("Cardio", "Gym", "Zumba", "Yoga", "HIIT"),
+    val activities: List<String> = listOf("GYM", "Zumba", "YOGA", "HIIT"),
     val address: Address = Address(
         1,
         "77, Ground Floor, Below Stories Pub",
@@ -68,14 +68,14 @@ data class Gym(
     ),
     val description: String,
     @SerialName("img_src") val imageUrls: String,
-    val plannedActivitySchedules: List<PlannedActivitySchedule> =  listOf(
-        PlannedActivitySchedule("Mon", 6, 0, 22, 0),
-        PlannedActivitySchedule("Tue", 6, 0, 22, 0),
-        PlannedActivitySchedule("Wed", 6, 0, 22, 0),
-        PlannedActivitySchedule("Thu", 6, 0, 22, 0),
-        PlannedActivitySchedule("Fri", 6, 0, 22, 0),
-        PlannedActivitySchedule("Sat", 6, 0, 22, 0),
-        PlannedActivitySchedule("Sun", 6, 0, 22, 0)
+    val timings: List<Timings> =  listOf(
+        Timings("Mon", 6, 0, 22, 0),
+        Timings("Tue", 6, 0, 22, 0),
+        Timings("Wed", 6, 0, 22, 0),
+        Timings("Thu", 6, 0, 22, 0),
+        Timings("Fri", 6, 0, 22, 0),
+        Timings("Sat", 6, 0, 22, 0),
+        Timings("Sun", 6, 0, 22, 0)
     ),
     val amenities: List<String> = listOf(
         "Parking", "CCTV", "Locker"

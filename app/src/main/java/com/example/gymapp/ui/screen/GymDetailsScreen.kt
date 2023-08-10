@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -16,6 +17,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -44,8 +46,9 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.gymapp.R
 import com.example.gymapp.model.Address
+import com.example.gymapp.model.Gym
 import com.example.gymapp.model.Location
-import com.example.gymapp.model.PlannedActivitySchedule
+import com.example.gymapp.model.Timings
 import com.example.gymapp.ui.screen.viewmodel.GymDetailsViewModel
 import com.example.gymapp.ui.theme.MyApplicationTheme
 import com.example.gymapp.ui.utils.AutoSlidingCarousel
@@ -116,14 +119,15 @@ fun ShowGymAddress(gymName:String, address: Address) {
 }
 
 
+data class TimingsList(val title: String, val timingsList: List<Timings>)
 
 
 @Composable
-fun ShowTimings(plannedActivityScheduleList: List<PlannedActivitySchedule>) {
+fun ShowTimings(timingsList: List<Timings>) {
     // Sample data
     var expanded by remember { mutableStateOf(false) }
     val items = listOf(
-        Item("Gym Timings", plannedActivityScheduleList),
+        TimingsList("Gym Timings", timingsList),
     )
     LazyColumn {
         items.forEach { group ->
@@ -138,7 +142,7 @@ fun ShowTimings(plannedActivityScheduleList: List<PlannedActivitySchedule>) {
             }
 
             if (expanded) {
-                group.items.forEach { schedule ->
+                group.timingsList.forEach { schedule ->
                     item {
                         Row() {
                             Text(
@@ -161,25 +165,23 @@ fun ShowTimings(plannedActivityScheduleList: List<PlannedActivitySchedule>) {
 
 @Composable
 fun ShowAmenity(facility: String) {
-        val facilityResId: Int = when (facility) {
-            // "dance" -> R.drawable.gym
-            // "dance" -> R.drawable.dance_background
-            "Parking" -> R.drawable.round_directions_car_24
-            "Locker" -> R.drawable.round_lock_24
-            "CCTV" -> R.drawable.round_camera_outdoor_24
-            else -> {
-                0
-            }
+    val facilityResId: Int = when (facility) {
+        "GYM" -> R.drawable.gym
+        "YOGA" -> R.drawable.yoga
+        "Parking" -> R.drawable.round_directions_car_24
+        "Locker" -> R.drawable.round_lock_24
+        "CCTV" -> R.drawable.round_camera_outdoor_24
+        else -> {
+            R.drawable.gym
         }
-    Row() {
+    }
+    Column(modifier = Modifier.padding(start = 20.dp)) {
         Icon(
             painter = painterResource(id = facilityResId),
             contentDescription = null, // decorative element
-            modifier = Modifier
-                .padding(5.dp)
-                .size(30.dp)
+            modifier = Modifier.size(30.dp)
         )
-        Text(text = facility, modifier = Modifier.padding(9.dp))
+        Text(text = facility)
     }
 }
 
@@ -187,14 +189,14 @@ fun ShowAmenity(facility: String) {
 
 @Composable
 fun ShowAmenities(facilities: List<String>) {
-    Column() {
+    Column(modifier = Modifier.fillMaxWidth()) {
         Text(
             text = "Amenities",
             Modifier.padding(top = 10.dp, bottom = 10.dp, start = 10.dp),
             fontWeight = FontWeight.Bold
         )
         LazyVerticalGrid(
-            columns = GridCells.Adaptive(148.dp),
+            columns = GridCells.Adaptive(80.dp),
 
             // content padding
             contentPadding = PaddingValues(
@@ -204,7 +206,7 @@ fun ShowAmenities(facilities: List<String>) {
                 bottom = 6.dp
             ),
             content = {
-                items(facilities) { facility -> // to be shifted to ShowAmenity
+                items(facilities) { facility ->
                     ShowAmenity(facility)
                 }
             }
@@ -216,13 +218,12 @@ fun ShowAmenities(facilities: List<String>) {
 fun ShowWorkouts(workouts: List<String>) {
     Column() {
         Text(
-            text = "Amenities",
+            text = "Available Workouts",
             Modifier.padding(top = 10.dp, bottom = 10.dp, start = 10.dp),
             fontWeight = FontWeight.Bold
         )
         LazyVerticalGrid(
-            columns = GridCells.Adaptive(148.dp),
-
+            columns = GridCells.Adaptive(80.dp),
             // content padding
             contentPadding = PaddingValues(
                 start = 2.dp,
@@ -231,7 +232,7 @@ fun ShowWorkouts(workouts: List<String>) {
                 bottom = 6.dp
             ),
             content = {
-                items(workouts) { workout -> // to be shifted to ShowAmenity
+                items(workouts) { workout ->
                     ShowAmenity(workout)
                 }
             }
@@ -266,15 +267,50 @@ fun ShowGymDetailsPage(
         Divider(thickness = 1.dp)
         ShowGymAddress(uiState.gym.name, uiState.gym.address)
         Divider(thickness = 1.dp)
-        // ShowPlannedActivitySchedules(uiState.gym.plannedActivitySchedules) // schedule inside planned activity
-        // Divider(thickness = 1.dp)
+        ShowWorkouts(uiState.gym.activities)
+        Divider(thickness = 1.dp)
+        ShowTimings(uiState.gym.timings)
+        Divider(thickness = 1.dp)
         ShowAmenities(uiState.gym.amenities)
         Divider(thickness = 1.dp)
-        TabbedPages()
+//        TabbedPages()
     }
 }
 
-data class Item(val title: String, val items: List<PlannedActivitySchedule>)
+
+@Composable
+fun BookWorkoutSession(){
+    Column(Modifier.fillMaxWidth().height(80.dp)) {
+        Button(
+            onClick = {},
+            Modifier
+                .align(Alignment.CenterHorizontally)
+        ) {
+            Text(text = "Book Session")
+        }
+    }
+}
+
+@Composable
+fun ShowWorkoutOptions(
+    selectedTabIndex: Int,
+    tabTitles: List<String>,
+    onSelectedTab: (Int) -> Unit
+) {
+    TabRow(
+        selectedTabIndex = selectedTabIndex,
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        tabTitles.forEachIndexed { index, title ->
+            Tab(
+                text = { Text(title) },
+                selected = selectedTabIndex == index,
+                onClick = { onSelectedTab(index) }
+            )
+        }
+    }
+}
+
 
 
 fun ShowSessionDetails(){}
@@ -313,180 +349,16 @@ fun TabbedPages() {
 }
 
 
-// Creating a composable function to
-// create a Button and a Bottom Sheet
-// Calling this function as content
-// in the above function
-//@ExperimentalMaterialApi
-//@Composable
-//fun MyContent(){
-//
-//    // Declaring a Boolean value to
-//    // store bottom sheet collapsed state
-//    val bottomSheetScaffoldState = rememberBottomSheetScaffoldState(bottomSheetState =
-//    BottomSheetState(BottomSheetValue.Collapsed))
-//
-//    // Declaring Coroutine scope
-//    val coroutineScope = rememberCoroutineScope()
-//
-//    // Creating a Bottom Sheet
-//    BottomSheetScaffold(
-//        scaffoldState = bottomSheetScaffoldState,
-//        sheetContent =  {
-//            Box(Modifier.fillMaxWidth().height(200.dp).background(Color(0XFF0F9D58))) {
-//                Column(Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
-//                    Text(text = "Hello Geek!", fontSize = 20.sp, color = Color.White)
-//                }
-//            }
-//        },
-//        sheetPeekHeight = 0.dp
-//    ){}
-//
-//    Column(
-//        Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
-//
-//        // Creating a button that changes
-//        // bottomSheetScaffoldState value upon click
-//        // when bottomSheetScaffoldState is collpased,
-//        // it expands and vice-versa
-//        Button(onClick = {
-//            coroutineScope.launch {
-//                if (bottomSheetScaffoldState.bottomSheetState.isCollapsed){
-//                    bottomSheetScaffoldState.bottomSheetState.expand()
-//                }else{
-//                    bottomSheetScaffoldState.bottomSheetState.collapse()
-//                }
-//            }
-//        }, colors = ButtonDefaults.buttonColors(backgroundColor = Color(0XFF0F9D58))) {
-//            Text(text = "Click Me", color = Color.White)
-//        }
-//    }
-//}
-
-// For displaying preview in
-// the Android Studio IDE emulator
-//@ExperimentalMaterialApi
-//@Preview(showBackground = true)
-//@Composable
-//fun DefaultPreview() {
-//    MainContent()
-//}
-
-//@Composable
-//fun BottomSheet(){
-//    ModalBottomSheetLayout(
-//        sheetContent = {
-//            // Add your sheet content here.
-//            // This can be any Composable.
-//        },
-//        sheetState = bottomSheetState
-//    ) {
-//        // Add your main content here.
-//        // This can be any Composable.
-//    }
-//}
-
-//@Composable
-//fun BottomSheetExample() {
-//    var expanded by remember { mutableStateOf(false) }
-//    val bottomSheetScaffoldState = rememberBottomSheetScaffoldState(
-//        bottomSheetState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
-//    )
-//
-//    BottomSheetScaffold(
-//        scaffoldState = bottomSheetScaffoldState,
-//        sheetContent = {
-//            // Content for the bottom sheet goes here
-//        },
-//        sheetPeekHeight = if (expanded) 300.dp else 50.dp,
-//        sheetBehavior = if (expanded) BottomSheetBehavior.Expanded else BottomSheetBehavior.PeekHeight,
-//        sheetBackgroundColor = MaterialTheme.colors.background
-//    ) {
-//        // Content for the screen goes here
-//    }
-//}
-
-@OptIn(ExperimentalMaterial3Api::class)
-//@Composable
-//fun CustomBottomSheet() {
-//
-//    ModalBottomSheet(modifier = Modifier, sheetState = rememberModalBottomSheetState(
-//        skipPartiallyExpanded = false), onDismissRequest = {
-//    }, shape = RoundedCornerShape(
-//        topStart = 10.dp,
-//        topEnd = 10.dp
-//    ),
-//    ) {
-//        CustomBottomSheetContainer()
-//    }
-//}
-//
-//@Composable
-//fun CustomBottomSheetContainer() {
-//    Scaffold(topBar = {
-//        Column {
-//            Text(text = "Theme", modifier = Modifier.height(75.dp)
-//                .padding(start = 29.dp, top = 26.dp),fontSize = 23.sp)
-//            Divider(color = Color.Black, thickness = 1.dp)
-//        }
-//    }) {
-//        Column(modifier = Modifier.padding(it)) {
-//            Text(text = "Select theme", modifier = Modifier
-//                .padding(start = 29.dp, top = 20.dp, bottom = 10.dp)
-//                .height(40.dp),fontSize = 20.sp)
-//            CustomItem("Light")
-//            CustomItem("Dark")
-//            CustomItem("System default")
-//        }
-//    }
-//}
-//
-//@Composable
-//fun CustomItem(text: String) {
-//    Row(modifier = Modifier.height(40.dp), verticalAlignment = Alignment.CenterVertically) {
-//        Image(
-//            painter = painterResource(id = R.drawable.frame_1),
-//            modifier = Modifier.padding(start = 31.dp, top = 9.dp), contentDescription = ""
-//        )
-//        Text(
-//            text = text, modifier = Modifier
-//                .height(40.dp)
-//                .padding(start = 20.dp, top = 11.dp),
-//            fontSize = 18.sp
-//        )
-//    }
-//}
-
-//@OptIn(ExperimentalMaterial3Api::class)
-//@Composable
-//fun CustomBottomSheet() {
-//
-//    ModalBottomSheet(modifier = Modifier, sheetState = rememberModalBottomSheetState(
-//        skipPartiallyExpanded = false), onDismissRequest = {
-//    }, shape = RoundedCornerShape(
-//        topStart = 10.dp,
-//        topEnd = 10.dp
-//    ), dragHandle = null,
-//    ) {
-//        CustomBottomSheetContainer()
-//    }
-//}
-
 @Preview(showBackground = true)
 @Composable
 fun GymDetailsScreenPreview() {
     MyApplicationTheme {
-//        val mockData =
-//            Gym(
-//                1,
-//                "TAURUS FITNESS",
-//                "Gym",
-//                "Rajajinagar, No 46, 2nd Floor 10th CrossWest off Chord Road Above Tata motors, Rajajinagar",
-//                "This is the Gym Description",
-//                imgSrcLst = listOf("https://developer.android.com/codelabs/basic-android-kotlin-compose-amphibians-app/img/great-basin-spadefoot.png")
-//            )
-//        ShowGymDetailsPage()
-        val address = Address(
+        val gym: Gym = Gym(
+        1,
+        "Cult Gym Rajajinagar 12th Cross",
+        "Gym",
+        listOf("GYM", "YOGA"),
+        Address(
             1,
             "3rd & 4th floor. 12th Cross Rd",
             "Mahalakshmi Layout",
@@ -496,14 +368,35 @@ fun GymDetailsScreenPreview() {
                 3.2323,
                 4.232323
             )
+        ),
+        "This is the Gym Description",
+        imageUrls = "https://developer.android.com/codelabs/basic-android-kotlin-compose-amphibians-app/img/great-basin-spadefoot.png",
+        timings =  listOf(
+            Timings("Mon", 6, 0, 22, 0),
+            Timings("Tue", 6, 0, 22, 0),
+            Timings("Wed", 6, 0, 22, 0),
+            Timings("Thu", 6, 0, 22, 0),
+            Timings("Fri", 6, 0, 22, 0),
+            Timings("Sat", 6, 0, 22, 0),
+            Timings("Sun", 6, 0, 22, 0)
+        ),
+        amenities = listOf("Parking", "CCTV", "Locker")
         )
         Column() {
-            ShowGymAddress("sdfsdfa", address)
-            Divider()
-            ShowAmenities(listOf("Parking", "CCTV"))
-            Divider()
+            ShowWorkouts(gym.activities)
+            Divider(thickness = 1.dp)
+            BookWorkoutSession()
+            Divider(thickness = 1.dp)
+            ShowTimings(gym.timings)
+            Divider(thickness = 1.dp)
+            ShowAmenities(gym.amenities)
+            Divider(thickness = 1.dp)
+            ShowWorkoutOptions(
+                selectedTabIndex = 0,
+                tabTitles = listOf("Gym", "Yoga", "Dance"),
+                onSelectedTab = {}
+            )
         }
-
     }
 }
 
