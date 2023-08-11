@@ -23,7 +23,7 @@ import androidx.datastore.preferences.preferencesDataStore
 import com.example.gymapp.MainActivity
 import com.example.gymapp.data.repository.user.FirebaseUserRepository
 import com.example.gymapp.data.repository.GymRepository
-import com.example.gymapp.data.repository.OfflineGymRepository
+import com.example.gymapp.data.repository.FirebaseGymRepository
 import com.example.gymapp.data.repository.UserDetailPreferencesRepository
 import com.example.gymapp.data.repository.UserDetailRepository
 import com.example.gymapp.data.repository.user.UserRepository
@@ -91,7 +91,7 @@ object AppModule {
 abstract class GymRepositoryModule {
     @Binds
     abstract fun bindGymRepository(
-        offlineGymRepository: OfflineGymRepository
+        firebaseGymRepository: FirebaseGymRepository
     ): GymRepository
 }
 

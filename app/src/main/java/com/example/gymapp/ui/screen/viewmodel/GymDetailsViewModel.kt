@@ -4,7 +4,6 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.gymapp.data.repository.GymRepository
-import com.example.gymapp.data.repository.OfflineGymRepository
 import com.example.gymapp.model.Address
 import com.example.gymapp.model.Gym
 import com.example.gymapp.model.Location
@@ -23,33 +22,7 @@ import javax.inject.Inject
 //}
 
 data class GymDetailsUiState( // Create Gym object with None values
-    val gym: Gym = Gym(
-        1,
-        "",
-        "",
-        listOf("Cardio", "GYM", "Zumba", "YOGA", "HIIT"),
-        address = Address(
-            1,
-            "77, Ground Floor, Below Stories Pub",
-            "Mahalakshmi Metro Nandini Layout",
-            "Bengaluru",
-            560010,
-            Location(
-                13.00868, 77.54906
-            )
-        ),
-        "This is the Gym Description",
-        imageUrls = "https://developer.android.com/codelabs/basic-android-kotlin-compose-amphibians-app/img/great-basin-spadefoot.png",
-        timings =  listOf(
-            Timings("Mon", 6, 0, 22, 0),
-            Timings("Tue", 6, 0, 22, 0),
-            Timings("Wed", 6, 0, 22, 0),
-            Timings("Thu", 6, 0, 22, 0),
-            Timings("Fri", 6, 0, 22, 0),
-            Timings("Sat", 6, 0, 22, 0),
-            Timings("Sun", 6, 0, 22, 0)
-        )
-    )
+    val gym: Gym = Gym()
 )
 
 @HiltViewModel

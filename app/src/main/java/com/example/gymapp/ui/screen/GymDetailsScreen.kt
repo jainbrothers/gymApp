@@ -312,9 +312,6 @@ fun ShowWorkoutOptions(
 }
 
 
-
-fun ShowSessionDetails(){}
-
 @Composable
 fun TabbedPages() {
     val tabs = listOf("Gym Sessions")
@@ -353,35 +350,7 @@ fun TabbedPages() {
 @Composable
 fun GymDetailsScreenPreview() {
     MyApplicationTheme {
-        val gym: Gym = Gym(
-        1,
-        "Cult Gym Rajajinagar 12th Cross",
-        "Gym",
-        listOf("GYM", "YOGA"),
-        Address(
-            1,
-            "3rd & 4th floor. 12th Cross Rd",
-            "Mahalakshmi Layout",
-            "Bengaluru",
-            560010,
-            Location(
-                3.2323,
-                4.232323
-            )
-        ),
-        "This is the Gym Description",
-        imageUrls = "https://developer.android.com/codelabs/basic-android-kotlin-compose-amphibians-app/img/great-basin-spadefoot.png",
-        timings =  listOf(
-            Timings("Mon", 6, 0, 22, 0),
-            Timings("Tue", 6, 0, 22, 0),
-            Timings("Wed", 6, 0, 22, 0),
-            Timings("Thu", 6, 0, 22, 0),
-            Timings("Fri", 6, 0, 22, 0),
-            Timings("Sat", 6, 0, 22, 0),
-            Timings("Sun", 6, 0, 22, 0)
-        ),
-        amenities = listOf("Parking", "CCTV", "Locker")
-        )
+        val gym: Gym = Gym()
         Column() {
             ShowWorkouts(gym.activities)
             Divider(thickness = 1.dp)
