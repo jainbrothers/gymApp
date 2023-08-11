@@ -5,7 +5,9 @@
   - query based on location(user) 
 
 - session booking by user
-  - 
+  - button on gym details page -> on click (GYM, YOGA) ->  next page
+    - tabbed activities -> GYM, YOGA etc -> on selection of GYM
+    - 
 
 
 # P1 tasks
