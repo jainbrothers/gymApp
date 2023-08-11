@@ -42,14 +42,18 @@ fun OtpVerificationScreen(
 {
     val otpViewModel: OtpVerificationViewModel = hiltViewModel()
     val uiState by otpViewModel.otpVerificationUiState.collectAsState()
-    val otpVerificationStatus by otpViewModel.otpVerificationStatus.collectAsState()
+//    val otpVerificationStatus by otpViewModel.otpVerificationStatus.collectAsState()
     val isOtpVerificationDone = (
-            otpVerificationStatus.otpVerificationState is OtpVerificationState.Successful
+            uiState.otpVerificationState is OtpVerificationState.Successful
                     || uiState.userRegistrationState == UserRegistrationState.OTP_VERICATION_SUCCESSFUL
             )
     if (isOtpVerificationDone) {
-        LaunchedEffect(otpVerificationStatus.otpVerificationState) {
+        LaunchedEffect(uiState.otpVerificationState) {
             otpViewModel.persistDetailsOfAuthenticatedUser()
+        }
+    }
+    if (uiState.userRegistrationState == UserRegistrationState.REGISTERED) {
+        LaunchedEffect(uiState.userRegistrationState) {
             onSuccessfulOtpVerification()
         }
     }
@@ -70,9 +74,12 @@ fun OtpVerificationScreen(
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
             modifier = modifier.padding(50.dp)
         )
-        if (otpVerificationStatus.errorCode != ErrorCode.None) {
-            Text("OTP verification failed with error ${otpVerificationStatus.errorCode}, please try again",
+        if (uiState.authServiceErrorCode != ErrorCode.None) {
+            Text("Error occurred during OTP verification ${uiState.authServiceErrorCode}",
                 modifier.align(Alignment.CenterHorizontally))
+        }
+        if (uiState.errorCode != ErrorCode.None) {
+            Text("Backgroud processing failure: ${uiState.errorCode}")
         }
 
         Box(modifier = modifier.fillMaxWidth().padding(50.dp),
