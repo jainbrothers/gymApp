@@ -52,14 +52,14 @@ import com.google.accompanist.pager.ExperimentalPagerApi
 
 
 @Composable
-fun HomeScreen(onClickGymDetails: (Int) -> Unit) {
+fun HomeScreen(onClickGymDetails: (String) -> Unit) {
     GymListApp(onItemClick = onClickGymDetails)
 }
 
 @Composable
 fun GymListApp(
     modifier: Modifier = Modifier,
-    onItemClick: (Int) -> Unit,
+    onItemClick: (String) -> Unit,
     viewModel: GymViewModel = hiltViewModel()
 ) {
     val uiState = viewModel.gymsUiState
@@ -104,7 +104,7 @@ fun ErrorScreen(retryAction: () -> Unit, modifier: Modifier = Modifier) {
 @Composable
 fun ShowGymList(
     gymList: List<Gym>,
-    onItemClick: (Int) -> Unit,
+    onItemClick: (String) -> Unit,
     modifier: Modifier = Modifier,
     onScheduleClick: ((String) -> Unit)? = null
 ) {
@@ -120,14 +120,14 @@ fun ShowGymList(
 @Composable
 fun ShowGymCard(
     gym: Gym,
-    onItemClick: (Int) -> Unit,
+    onItemClick: (String) -> Unit,
 ): Unit {
     val imageUrls = listOf(gym.imageUrls, gym.imageUrls)
     Card(
         modifier = Modifier
             .fillMaxSize()
             .padding(start = 8.dp, end = 8.dp, top = 4.dp, bottom = 4.dp)
-            .clickable { onItemClick(gym.id) },
+            .clickable {onItemClick(gym.id)},
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(
             containerColor =
