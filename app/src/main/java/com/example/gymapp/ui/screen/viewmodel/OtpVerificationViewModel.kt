@@ -3,16 +3,17 @@ package com.example.gymapp.ui.screen.viewmodel
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.gymapp.data.repository.UserDetailRepository
-import com.example.gymapp.data.repository.UserRepository
+import com.example.gymapp.data.repository.user.UserRepository
+import com.example.gymapp.data.repository.user.UserRepositoryException
 import com.example.gymapp.model.User
 import com.example.gymapp.service.authservice.AuthService
-import com.example.gymapp.service.authservice.OtpVerificationState
 import com.example.gymapp.service.authservice.OtpVerificationStatus
 import com.example.gymapp.ui.screen.viewmodel.enumeration.UserRegistrationState
 import com.example.gymapp.ui.screen.viewmodel.state.OtpVerificationUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -77,7 +78,6 @@ class OtpVerificationViewModel @Inject constructor(
             }
         }
     }
-
     fun updateStateForChangeMobileNumber() {
         authService.updateStateForChangeMobileNumber()
     }
@@ -88,15 +88,39 @@ class OtpVerificationViewModel @Inject constructor(
         valid = valid && otp.length <= OTP_LENGTH
         return valid
     }
+
     suspend fun persistDetailsOfAuthenticatedUser() {
+        Log.d(TAG, "RRD entered persistDetailsOfAuthenticatedUser")
         viewModelScope.launch {
-            val user: User = User(
-                mobileNumber = otpVerificationUiState.value.mobileNumber,
-                userId = UUID.randomUUID().toString()
-            )
-            userRepository.create(user)
-            userDetailRepository.saveUserId(user.userId)
-            userDetailRepository.saveUserRegistrationState(UserRegistrationState.REGISTERED)
+            Log.d(TAG, "RRD entered persistDetailsOfAuthenticatedUser inside launched scope")
+            try {
+                userRepository.getbyMobileNumber(otpVerificationUiState.value.mobileNumber, ::persistUserDetails)
+            } catch(e: UserRepositoryException.UserNotFound) {
+                persistUserDetails(null)
+            }
         }
+    }
+    fun persistUserDetails(userRecord: User?) {
+        CoroutineScope(Dispatchers.Default).launch {
+            Log.d(TAG, "persistUserDetails entered userRecord ${userRecord}")
+            var user = userRecord
+            try {
+                if (user == null) {
+                    user  = createUser()
+                }
+                userDetailRepository.saveUserId(user.userId)
+                userDetailRepository.saveUserRegistrationState(UserRegistrationState.REGISTERED)
+            } catch(e: RuntimeException) {
+                //TODO Error handling. set errorcode to render on UI
+            }
+        }
+    }
+    private suspend fun createUser(): User {
+        val user = User(
+            mobileNumber = otpVerificationUiState.value.mobileNumber,
+            userId = UUID.randomUUID().toString()
+        )
+        userRepository.create(user)
+        return user
     }
 }

@@ -21,12 +21,12 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
 import com.example.gymapp.MainActivity
-import com.example.gymapp.data.repository.FirebaseUserRepository
+import com.example.gymapp.data.repository.user.FirebaseUserRepository
 import com.example.gymapp.data.repository.GymRepository
 import com.example.gymapp.data.repository.OfflineGymRepository
 import com.example.gymapp.data.repository.UserDetailPreferencesRepository
 import com.example.gymapp.data.repository.UserDetailRepository
-import com.example.gymapp.data.repository.UserRepository
+import com.example.gymapp.data.repository.user.UserRepository
 import com.example.gymapp.network.GymApiService
 import com.example.gymapp.service.authservice.AuthService
 import com.example.gymapp.service.authservice.AuthServiceImpl
@@ -48,7 +48,6 @@ import retrofit2.Retrofit
 import java.lang.annotation.Documented
 import java.lang.annotation.Retention
 import java.lang.annotation.RetentionPolicy
-import javax.inject.Inject
 import javax.inject.Qualifier
 import javax.inject.Singleton
 
