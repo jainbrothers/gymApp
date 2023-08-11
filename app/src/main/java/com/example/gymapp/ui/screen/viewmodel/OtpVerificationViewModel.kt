@@ -3,28 +3,29 @@ package com.example.gymapp.ui.screen.viewmodel
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.gymapp.data.repository.UserDetailRepository
 import com.example.gymapp.data.repository.user.UserRepository
 import com.example.gymapp.data.repository.user.UserRepositoryException
 import com.example.gymapp.model.User
 import com.example.gymapp.service.authservice.AuthService
-import com.example.gymapp.service.authservice.OtpVerificationStatus
 import com.example.gymapp.ui.screen.viewmodel.enumeration.UserRegistrationState
 import com.example.gymapp.ui.screen.viewmodel.state.OtpVerificationUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.util.UUID
 import javax.inject.Inject
-
+import com.example.gymapp.ui.screen.enumeration.ErrorCode
 
 private const val TAG = "Otp View tag"
-
 @HiltViewModel
 class OtpVerificationViewModel @Inject constructor(
     val userDetailRepository: UserDetailRepository,
@@ -33,11 +34,29 @@ class OtpVerificationViewModel @Inject constructor(
 ): ViewModel()
 {
     private val _otpVerificationUiState = MutableStateFlow(OtpVerificationUiState())
-    val otpVerificationUiState = _otpVerificationUiState.asStateFlow()
-    val otpVerificationStatus: StateFlow<OtpVerificationStatus> = authService.otpVerificationStatus.asStateFlow()
     init {
         populateUserDetail()
     }
+    val otpVerificationUiState: StateFlow<OtpVerificationUiState> = authService.otpVerificationStatus.combine(_otpVerificationUiState)
+        { authState, uiState ->
+            viewModelScope.launch {
+
+            }
+            OtpVerificationUiState(
+                mobileNumber = uiState.mobileNumber,
+                userRegistrationState = uiState.userRegistrationState,
+                otp = uiState.otp,
+                isVerificationInProgress = uiState.isVerificationInProgress,
+                authServiceErrorCode = authState.errorCode,
+                otpVerificationState = authState.otpVerificationState,
+                errorCode = uiState.errorCode
+            )
+        }
+        .stateIn(
+        viewModelScope,
+        SharingStarted.WhileSubscribed(5000L),
+        (OtpVerificationUiState())
+        )
     private fun populateUserDetail() {
         viewModelScope.launch {
             userDetailRepository.userRegistrationStatus.collect { userRegistrationState ->
@@ -52,8 +71,7 @@ class OtpVerificationViewModel @Inject constructor(
             }
         }
     }
-
-    suspend fun verifyOtp(otp: String) {
+    fun verifyOtp(otp: String) {
         viewModelScope.launch {
             Log.d(TAG, "inside verifyOtp function, otp = ${otp}")
             _otpVerificationUiState.update {currentState ->
@@ -90,9 +108,7 @@ class OtpVerificationViewModel @Inject constructor(
     }
 
     suspend fun persistDetailsOfAuthenticatedUser() {
-        Log.d(TAG, "RRD entered persistDetailsOfAuthenticatedUser")
         viewModelScope.launch {
-            Log.d(TAG, "RRD entered persistDetailsOfAuthenticatedUser inside launched scope")
             try {
                 userRepository.getbyMobileNumber(otpVerificationUiState.value.mobileNumber, ::persistUserDetails)
             } catch(e: UserRepositoryException.UserNotFound) {
@@ -110,8 +126,15 @@ class OtpVerificationViewModel @Inject constructor(
                 }
                 userDetailRepository.saveUserId(user.userId)
                 userDetailRepository.saveUserRegistrationState(UserRegistrationState.REGISTERED)
+                _otpVerificationUiState.update { currentState ->
+                    currentState.copy(userRegistrationState = UserRegistrationState.REGISTERED)
+                }
             } catch(e: RuntimeException) {
-                //TODO Error handling. set errorcode to render on UI
+                _otpVerificationUiState.update { currentState ->
+                    currentState.copy(errorCode = ErrorCode.InternalServiceError(
+                        "Error occurred during persisting user detail. ${e}"
+                    ))
+                }
             }
         }
     }
