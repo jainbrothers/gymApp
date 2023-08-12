@@ -29,8 +29,7 @@ data class GymDetailsUiState( // Create Gym object with None values
 class GymDetailsViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle, gymRepository: GymRepository
 ) : ViewModel() {
-
-    private val gymId: Int = checkNotNull(savedStateHandle["gymId"])
+    private val gymId: String = checkNotNull(savedStateHandle["gymId"]).toString()
 
     val gymDetailsUiState: StateFlow<GymDetailsUiState> =
         gymRepository.getGymDetailsWithId(gymId)
@@ -40,5 +39,4 @@ class GymDetailsViewModel @Inject constructor(
                 started = SharingStarted.WhileSubscribed(5000L),
                 initialValue = GymDetailsUiState()
             )
-
 }
