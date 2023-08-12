@@ -16,35 +16,11 @@
 
 package com.example.gymapp.ui.screen.viewmodel
 
-import android.util.Log
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.example.gymapp.data.repository.GymRepository
-import com.example.gymapp.model.Gym
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.launch
-import retrofit2.HttpException
-import java.io.IOException
 import javax.inject.Inject
 
-/**
- * Ui State for HomeScreen
- */
-//data class HomeUiState(val gymList: List<Gym> = listOf())
-
-//sealed interface GymsUiState {
-//    data class Success(val gyms: List<Gym>) : GymsUiState
-//    object Error : GymsUiState
-//    object Loading : GymsUiState
-//}
-
-/**
- * [BlurViewModel] starts and stops the WorkManger and applies blur to the image. Also updates the
- * visibility states of the buttons depending on the states of the WorkManger.
- */
 @HiltViewModel
 class GymViewModel @Inject constructor(val gymRepository: GymRepository) : ViewModel() {
     val gyms = gymRepository.gyms
