@@ -19,7 +19,9 @@ package com.example.gymapp.data.repository
 import android.util.Log
 import com.example.gymapp.model.Gym
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ktx.dataObjects
 import com.google.firebase.firestore.ktx.toObject
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
@@ -27,23 +29,32 @@ import javax.inject.Inject
 
 class FirebaseGymRepository @Inject constructor(private val database: FirebaseFirestore) :
     GymRepository {
-    override suspend fun getGyms(onGetGymsCallback : (List<Gym>) -> Unit): List<Gym> {
-        val gymLst : MutableList<Gym> = mutableListOf()
-        database.collection("Gym")
-            .get()
-            .addOnSuccessListener { result ->
-                for (document in result) {
-                    val gym = document.toObject<Gym>()
-                    gymLst.add(gym)
-                }
-                // return the gymLst inside the success listener block
-                onGetGymsCallback(gymLst)
-            }
-            .addOnFailureListener { exception ->
-                Log.w("sarkar", "Error getting documents.", exception)
-            }
-        return gymLst
-    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    override val gyms: Flow<List<Gym>>
+        get() = database.collection("Gym").dataObjects()
+
+//    Log.d("sarkar", $gyms)
+
+//    override suspend fun getGyms(onGetGymsCallback : (List<Gym>) -> Unit): List<Gym> {
+//        val gymLst : MutableList<Gym> = mutableListOf()
+//        database.collection("Gym")
+//            .get()
+//            .addOnSuccessListener { result ->
+//                for (document in result) {
+//                    val gym = document.toObject<Gym>()
+//                    gymLst.add(gym)
+//                }
+//                // return the gymLst inside the success listener block
+//                onGetGymsCallback(gymLst)
+//            }
+//            .addOnFailureListener { exception ->
+//                Log.w("sarkar", "Error getting documents.", exception)
+//            }
+//        return gymLst
+//    }
+
+
 
 //    fun getGymsUsingFlow()
 

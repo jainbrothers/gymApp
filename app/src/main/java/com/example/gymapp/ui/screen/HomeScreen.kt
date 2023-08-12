@@ -27,13 +27,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.ui.res.stringResource
 import com.example.gymapp.R
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -41,13 +39,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.gymapp.model.Gym
-import com.example.gymapp.ui.screen.viewmodel.GymsUiState
 import com.example.gymapp.ui.screen.viewmodel.GymViewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.gymapp.ui.theme.MyApplicationTheme
 import com.example.gymapp.ui.utils.AutoSlidingCarousel
-import com.example.gymapp.ui.utils.Spinner
 import com.google.accompanist.pager.ExperimentalPagerApi
 
 
@@ -62,54 +58,23 @@ fun GymListApp(
     onItemClick: (String) -> Unit,
     viewModel: GymViewModel = hiltViewModel()
 ) {
-    val uiState = viewModel.gymsUiState
+    val gyms = viewModel.gyms.collectAsState(emptyList())
     Column {
-        when (uiState) {
-            is GymsUiState.Loading ->
-                Spinner(
-                    doShow = uiState is GymsUiState.Loading,
-                    modifier = Modifier.padding(200.dp)
-                )
-
-//                LoadingScreen(
-//                modifier.fillMaxSize().size(200.dp))
-            is GymsUiState.Success -> ShowGymList(
-                uiState.gyms,
-                modifier = modifier.fillMaxSize(), onItemClick = onItemClick
-            )
-
-            else -> ErrorScreen(retryAction = {}, modifier.fillMaxSize())
-        }
+        ShowGymList(
+            gyms.value,
+            modifier = modifier.fillMaxSize(), onItemClick = onItemClick
+        )
     }
 }
-
-/**
- * The home screen displaying error message with re-attempt button.
- */
-@Composable
-fun ErrorScreen(retryAction: () -> Unit, modifier: Modifier = Modifier) {
-    Column(
-        modifier = modifier,
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(stringResource(R.string.loading_failed))
-        Button(onClick = retryAction) {
-            Text(stringResource(R.string.retry))
-        }
-    }
-}
-
 
 @Composable
 fun ShowGymList(
     gymList: List<Gym>,
     onItemClick: (String) -> Unit,
-    modifier: Modifier = Modifier,
-    onScheduleClick: ((String) -> Unit)? = null
+    modifier: Modifier = Modifier
 ) {
     LazyColumn(modifier = Modifier, contentPadding = PaddingValues(vertical = 8.dp)) {
-        items(items = gymList, key = { facility -> facility.name }) { item ->
+        items(items = gymList, key = { facility -> facility.id }) { item ->
             ShowGymCard(gym = item, onItemClick = onItemClick)
         }
     }
