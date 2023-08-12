@@ -33,13 +33,13 @@ import javax.inject.Inject
 /**
  * Ui State for HomeScreen
  */
-data class HomeUiState(val gymList: List<Gym> = listOf())
+//data class HomeUiState(val gymList: List<Gym> = listOf())
 
-sealed interface GymsUiState {
-    data class Success(val gyms: List<Gym>) : GymsUiState
-    object Error : GymsUiState
-    object Loading : GymsUiState
-}
+//sealed interface GymsUiState {
+//    data class Success(val gyms: List<Gym>) : GymsUiState
+//    object Error : GymsUiState
+//    object Loading : GymsUiState
+//}
 
 /**
  * [BlurViewModel] starts and stops the WorkManger and applies blur to the image. Also updates the
@@ -47,31 +47,6 @@ sealed interface GymsUiState {
  */
 @HiltViewModel
 class GymViewModel @Inject constructor(val gymRepository: GymRepository) : ViewModel() {
-
-    var gymsUiState: GymsUiState by mutableStateOf(GymsUiState.Loading)
-        private set
-
-    init {
-        Log.d("sarkar", "init")
-        getGyms()
-    }
-
-    fun onGetGymsCallback(gymLst: List<Gym>) {
-        Log.d("sarkar", "onGetGymsCallback : $gymLst")
-        gymsUiState = GymsUiState.Loading
-        gymsUiState = try {
-            GymsUiState.Success(gymLst)
-        } catch (e: IOException) {
-            GymsUiState.Error
-        } catch (e: HttpException) {
-            GymsUiState.Error
-        }
-    }
-
-    private fun getGyms() {
-        viewModelScope.launch {
-            gymRepository.getGyms(::onGetGymsCallback)
-        }
-    }
+    val gyms = gymRepository.gyms
 }
 

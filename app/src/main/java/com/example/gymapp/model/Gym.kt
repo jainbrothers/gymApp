@@ -51,9 +51,9 @@ data class Address(
     var streetNameAndNumber: String = "",
     val locality: String = "",
     val city: String = "",
-    @get:PropertyName("pin_code")
-    @set:PropertyName("pin_code")
-    var pinCode: String = "",
+//    @get:PropertyName("pin_code")
+//    @set:PropertyName("pin_code")
+//    var pinCode: String = "",
     val location: Location = Location()
 )
 
