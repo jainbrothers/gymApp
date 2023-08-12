@@ -10,4 +10,5 @@ data class User(
     @get:PropertyName(MOBILE_NUMBER_FIELD_NAME)
     @set:PropertyName(MOBILE_NUMBER_FIELD_NAME)
     var mobileNumber: String = ""
+//    val location: Location
 )

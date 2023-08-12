@@ -52,6 +52,7 @@ import com.example.gymapp.ui.screen.UserRegisterScreen
 import com.example.gymapp.ui.screen.enumeration.ScreenName
 
 private const val TAG = "GymNavGraph.kt"
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GymAppBar(
@@ -104,7 +105,7 @@ fun GymNavHost(
             GymAppBar(
                 currentScreen = currentScreen,
                 canNavigateBack = navController.previousBackStackEntry != null,
-                navigateUp = {navController.navigateUp()})
+                navigateUp = { navController.navigateUp() })
         }
     ) { innerPadding ->
         NavHost(
@@ -114,15 +115,17 @@ fun GymNavHost(
                 .padding(innerPadding)
                 .fillMaxWidth()
         ) {
-            composable(route = ScreenName.SPLASH_SCREEN.name) {
+            composable(route = ScreenName.SPLASH_SCREEN.name
+            ) {
                 SplashScreen(
                     unregisteredUserHandler = {
                         navController.popBackStack()
                         navController.navigate(route = ScreenName.USER_REGISTER_SCREEN.name)
                     },
-                    registeredUserHandler = {
+                    registeredUserHandler = { mobileNumber ->
                         navController.popBackStack()
-                        navController.navigate(route = ScreenName.HOME_SCREEN.name)
+                        navController.navigate(route = "${ScreenName.HOME_SCREEN.name}/${mobileNumber}")
+                        // navController.navigate(route = ScreenName.HOME_SCREEN.name)
                     },
                     otpVerifiedUserHandler = {
                         navController.popBackStack()
@@ -154,17 +157,20 @@ fun GymNavHost(
                     }
                 )
             }
-            composable(route = ScreenName.HOME_SCREEN.name) {
+            composable(route = ScreenName.HOME_SCREEN.name + "/{mobileNumber}",
+                arguments = listOf(navArgument("mobileNumber") {
+                    type = NavType.StringType
+                }
+                )) {
                 HomeScreen(
                     onClickGymDetails = { gymId ->
                         navController.navigate(route = "${ScreenName.GYM_DETAILS.name}/${gymId}")
                     }
                 )
             }
-            composable(
-                route = ScreenName.GYM_DETAILS.name + "/{gymId}",
+            composable(route = ScreenName.GYM_DETAILS.name + "/{gymId}",
                 arguments = listOf(navArgument("gymId") {
-                    type = NavType.IntType
+                    type = NavType.StringType
                 }
                 )
             ) {
