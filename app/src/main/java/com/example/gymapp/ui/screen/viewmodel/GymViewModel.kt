@@ -16,13 +16,24 @@
 
 package com.example.gymapp.ui.screen.viewmodel
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import com.example.gymapp.data.repository.GymRepository
+import com.example.gymapp.data.repository.user.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
+
+
 @HiltViewModel
-class GymViewModel @Inject constructor(val gymRepository: GymRepository) : ViewModel() {
+class GymViewModel @Inject constructor(
+    savedStateHandle: SavedStateHandle,
+    val gymRepository: GymRepository
+) : ViewModel() {
+
+//    userRepository
+    private val mobileNumber: String = checkNotNull(savedStateHandle["mobileNumber"])
     val gyms = gymRepository.gyms
+
 }
 
