@@ -17,44 +17,59 @@
 package com.example.gymapp.data.repository
 
 import android.util.Log
-import com.example.gymapp.model.Address
 import com.example.gymapp.model.Gym
-import com.example.gymapp.model.Location
-import com.example.gymapp.model.Timings
-import com.example.gymapp.network.GymApiService
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.toObject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
-import kotlin.reflect.typeOf
 
 
 class FirebaseGymRepository @Inject constructor(private val database: FirebaseFirestore) :
     GymRepository {
-    override suspend fun getGyms(): List<Gym> {
+    override suspend fun getGyms(onGetGymsCallback : (List<Gym>) -> Unit): List<Gym> {
         val gymLst : MutableList<Gym> = mutableListOf()
-        val data = database.collection("Gym")
+        database.collection("Gym")
             .get()
             .addOnSuccessListener { result ->
                 for (document in result) {
-                    Log.d("sarkar", "${document.id} => ${document.data}")
                     val gym = document.toObject<Gym>()
                     gymLst.add(gym)
                 }
-                println("sarkar")
+                // return the gymLst inside the success listener block
+                onGetGymsCallback(gymLst)
             }
             .addOnFailureListener { exception ->
                 Log.w("sarkar", "Error getting documents.", exception)
             }
-        Log.d("sarkar", "now $gymLst")
         return gymLst
     }
 
-    override fun getGymDetailsWithId(id: Int): Flow<Gym> = flow {
+//    fun getGymsUsingFlow()
+
+//    override fun getGymDetailsWithId(id: String): Flow<Gym> {
+//        val gymLst : MutableList<Gym> = mutableListOf()
+//        database.collection("Gym").whereEqualTo("gym_id", id)
+//            .get()
+//            .addOnSuccessListener { result ->
+//                for (document in result) {
+//                    Log.d("sarkar", "${document.id} => ${document.data}")
+//                    val gym = document.toObject<Gym>()
+//                    gymLst.add(gym)
+//                }
+//                Log.d("sarkar", "executed the code: $gymLst")
+//                // return the gymLst inside the success listener block
+//                //  onGetGymsCallback(gymLst)
+//            }
+//            .addOnFailureListener { exception ->
+//                Log.w("sarkar", "Error getting documents.", exception)
+//            }
+//    }
+
+
+    override fun getGymDetailsWithId(id: String): Flow<Gym> = flow {
         emit(
             Gym()
         )
     }
 }
-

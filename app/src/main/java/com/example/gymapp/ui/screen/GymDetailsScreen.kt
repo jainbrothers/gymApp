@@ -354,17 +354,17 @@ fun GymDetailsScreenPreview() {
         Column() {
             ShowWorkouts(gym.activities)
             Divider(thickness = 1.dp)
-            BookWorkoutSession()
-            Divider(thickness = 1.dp)
-            ShowTimings(gym.timings)
-            Divider(thickness = 1.dp)
-            ShowAmenities(gym.amenities)
-            Divider(thickness = 1.dp)
-            ShowWorkoutOptions(
-                selectedTabIndex = 0,
-                tabTitles = listOf("Gym", "Yoga", "Dance"),
-                onSelectedTab = {}
-            )
+//            BookWorkoutSession()
+//            Divider(thickness = 1.dp)
+//            ShowTimings(gym.timings)
+//            Divider(thickness = 1.dp)
+//            ShowAmenities(gym.amenities)
+//            Divider(thickness = 1.dp)
+//            ShowWorkoutOptions(
+//                selectedTabIndex = 0,
+//                tabTitles = listOf("Gym", "Yoga", "Dance"),
+//                onSelectedTab = {}
+//            )
         }
     }
 }

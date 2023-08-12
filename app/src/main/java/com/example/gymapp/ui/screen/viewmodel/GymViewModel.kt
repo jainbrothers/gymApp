@@ -16,6 +16,7 @@
 
 package com.example.gymapp.ui.screen.viewmodel
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -51,21 +52,26 @@ class GymViewModel @Inject constructor(val gymRepository: GymRepository) : ViewM
         private set
 
     init {
+        Log.d("sarkar", "init")
         getGyms()
+    }
+
+    fun onGetGymsCallback(gymLst: List<Gym>) {
+        Log.d("sarkar", "onGetGymsCallback : $gymLst")
+        gymsUiState = GymsUiState.Loading
+        gymsUiState = try {
+            GymsUiState.Success(gymLst)
+        } catch (e: IOException) {
+            GymsUiState.Error
+        } catch (e: HttpException) {
+            GymsUiState.Error
+        }
     }
 
     private fun getGyms() {
         viewModelScope.launch {
-            gymsUiState = GymsUiState.Loading
-            gymsUiState = try {
-                GymsUiState.Success(gymRepository.getGyms())
-            } catch (e: IOException) {
-                GymsUiState.Error
-            } catch (e: HttpException) {
-                GymsUiState.Error
-            }
+            gymRepository.getGyms(::onGetGymsCallback)
         }
     }
-
 }
 

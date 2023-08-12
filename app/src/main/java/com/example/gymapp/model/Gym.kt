@@ -26,10 +26,18 @@ import com.google.firebase.firestore.PropertyName
 
 data class Timings(
     val day: String = "",
-    @get:PropertyName("begin_hour") val beginHour: Int = 0,
-    @get:PropertyName("begin_minute") val beginMinute: Int = 0,
-    @get:PropertyName("end_hour") val endHour: Int = 0,
-    @get:PropertyName("end_minute") val endMinute: Int = 0
+    @get:PropertyName("begin_hour")
+    @set:PropertyName("begin_hour")
+    var beginHour: Int = 0,
+    @get:PropertyName("begin_minute")
+    @set:PropertyName("begin_minute")
+    var beginMinute: Int = 0,
+    @get:PropertyName("end_hour")
+    @set:PropertyName("end_hour")
+    var endHour: Int = 0,
+    @get:PropertyName("end_minute")
+    @set:PropertyName("end_minute")
+    var endMinute: Int = 0
 )
 
 data class Location(
@@ -38,21 +46,29 @@ data class Location(
 )
 
 data class Address(
-    @get:PropertyName("street_name_and_number") val streetNameAndNumber: String = "",
+    @get:PropertyName("street_name_and_number")
+    @set:PropertyName("street_name_and_number")
+    var streetNameAndNumber: String = "",
     val locality: String = "",
     val city: String = "",
-    val pinCode: String = "",
+    @get:PropertyName("pin_code")
+    @set:PropertyName("pin_code")
+    var pinCode: String = "",
     val location: Location = Location()
 )
 
 data class Gym(
-    @PropertyName("gym_id") val id: String = "",
+    @get:PropertyName("gym_id")
+    @set:PropertyName("gym_id")
+    var id: String = "",
     val name: String = "",
     val type: String = "",
     val activities: List<String> = listOf(),
     val address: Address = Address(),
     val description: String = "",
-    @PropertyName("gym_src") val imageUrls: List<String> = listOf(), // gym_src -> gym_urls
+    @get:PropertyName("gym_src")
+    @set:PropertyName("gym_src")
+    var imageUrls: List<String> = listOf(), // gym_src -> gym_urls
     val timings: List<Timings> = listOf(),
     val amenities: List<String> = listOf()
     )
