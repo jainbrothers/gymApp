@@ -39,9 +39,6 @@ class OtpVerificationViewModel @Inject constructor(
     }
     val otpVerificationUiState: StateFlow<OtpVerificationUiState> = authService.otpVerificationStatus.combine(_otpVerificationUiState)
         { authState, uiState ->
-            viewModelScope.launch {
-
-            }
             OtpVerificationUiState(
                 mobileNumber = uiState.mobileNumber,
                 userRegistrationState = uiState.userRegistrationState,
@@ -112,13 +109,21 @@ class OtpVerificationViewModel @Inject constructor(
             try {
                 userRepository.getbyMobileNumber(otpVerificationUiState.value.mobileNumber, ::persistUserDetails)
             } catch(e: UserRepositoryException.UserNotFound) {
-                persistUserDetails(null)
+                persistUserDetails(null, ErrorCode.None)
             }
         }
     }
-    fun persistUserDetails(userRecord: User?) {
+    fun persistUserDetails(userRecord: User?, errorCode: ErrorCode) {
         CoroutineScope(Dispatchers.Default).launch {
             Log.d(TAG, "persistUserDetails entered userRecord ${userRecord}")
+            if (!(errorCode is ErrorCode.None)) {
+                _otpVerificationUiState.update {currentState ->
+                    currentState.copy(
+                        errorCode = errorCode
+                    )
+                }
+                return@launch
+            }
             var user = userRecord
             try {
                 if (user == null) {
