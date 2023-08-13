@@ -3,9 +3,11 @@ package com.example.gymapp.data.repository.user
 import android.util.Log
 import com.example.gymapp.model.User
 import com.example.gymapp.ui.screen.enumeration.ErrorCode
+import com.example.gymapp.ui.screen.viewmodel.OtpVerificationViewModel
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.toObject
 import javax.inject.Inject
+import kotlin.reflect.KFunction2
 
 
 private const val TAG: String = "FirebaseUserRepository"
@@ -26,6 +28,7 @@ class FirebaseUserRepository @Inject constructor(private val database: FirebaseF
     override suspend fun getbyId(userId: String): User {
         TODO("Not yet implemented")
     }
+
     override suspend fun getbyMobileNumber(mobileNumber: String, callback: (User?) -> Unit) {
         Log.d(TAG, "RRD entered into getbyMobileNumber mobilenumber ${mobileNumber}")
         lateinit var user: User

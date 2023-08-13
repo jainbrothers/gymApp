@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.gymapp.data.repository.UserDetailRepository
 import com.example.gymapp.data.repository.user.UserRepository
 import com.example.gymapp.data.repository.user.UserRepositoryException
+import com.example.gymapp.model.Location
 import com.example.gymapp.model.User
 import com.example.gymapp.service.authservice.AuthService
 import com.example.gymapp.service.authservice.OtpVerificationStatus
@@ -118,7 +119,8 @@ class OtpVerificationViewModel @Inject constructor(
     private suspend fun createUser(): User {
         val user = User(
             mobileNumber = otpVerificationUiState.value.mobileNumber,
-            userId = UUID.randomUUID().toString()
+            userId = UUID.randomUUID().toString(),
+            location = Location(0.0, 0.0)
         )
         userRepository.create(user)
         return user

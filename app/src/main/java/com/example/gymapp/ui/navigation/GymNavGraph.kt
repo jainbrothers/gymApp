@@ -105,7 +105,7 @@ fun GymNavHost(
             GymAppBar(
                 currentScreen = currentScreen,
                 canNavigateBack = navController.previousBackStackEntry != null,
-                navigateUp = { navController.navigateUp() })
+                navigateUp = {navController.navigateUp()})
         }
     ) { innerPadding ->
         NavHost(
@@ -115,17 +115,15 @@ fun GymNavHost(
                 .padding(innerPadding)
                 .fillMaxWidth()
         ) {
-            composable(route = ScreenName.SPLASH_SCREEN.name
-            ) {
+            composable(route = ScreenName.SPLASH_SCREEN.name) {
                 SplashScreen(
                     unregisteredUserHandler = {
                         navController.popBackStack()
                         navController.navigate(route = ScreenName.USER_REGISTER_SCREEN.name)
                     },
-                    registeredUserHandler = { mobileNumber ->
+                    registeredUserHandler = {
                         navController.popBackStack()
-                        navController.navigate(route = "${ScreenName.HOME_SCREEN.name}/${mobileNumber}")
-                        // navController.navigate(route = ScreenName.HOME_SCREEN.name)
+                        navController.navigate(route = ScreenName.HOME_SCREEN.name)
                     },
                     otpVerifiedUserHandler = {
                         navController.popBackStack()
@@ -157,20 +155,17 @@ fun GymNavHost(
                     }
                 )
             }
-            composable(route = ScreenName.HOME_SCREEN.name + "/{mobileNumber}",
-                arguments = listOf(navArgument("mobileNumber") {
-                    type = NavType.StringType
-                }
-                )) {
+            composable(route = ScreenName.HOME_SCREEN.name) {
                 HomeScreen(
                     onClickGymDetails = { gymId ->
                         navController.navigate(route = "${ScreenName.GYM_DETAILS.name}/${gymId}")
                     }
                 )
             }
-            composable(route = ScreenName.GYM_DETAILS.name + "/{gymId}",
+            composable(
+                route = ScreenName.GYM_DETAILS.name + "/{gymId}",
                 arguments = listOf(navArgument("gymId") {
-                    type = NavType.StringType
+                    type = NavType.IntType
                 }
                 )
             ) {
