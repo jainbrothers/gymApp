@@ -26,23 +26,24 @@ class FirebaseUserRepository @Inject constructor(private val database: FirebaseF
     override suspend fun getbyId(userId: String): User {
         TODO("Not yet implemented")
     }
-    override suspend fun getbyMobileNumber(mobileNumber: String, callback: (User?) -> Unit) {
-        Log.d(TAG, "RRD entered into getbyMobileNumber mobilenumber ${mobileNumber}")
-        lateinit var user: User
+    override suspend fun getbyMobileNumber(mobileNumber: String, callback: (User?, ErrorCode) -> Unit) {
+        Log.d(TAG, "Entered into getbyMobileNumber mobilenumber ${mobileNumber}")
+        var user: User? = null
+        var errorCode: ErrorCode = ErrorCode.None
         database.collection("user")
             .whereEqualTo(MOBILE_NUMBER_FIELD_NAME, mobileNumber)
             .get()
             .addOnSuccessListener { documents ->
-                if (documents.size() == 0) {
-                    throw UserRepositoryException.UserNotFound("Record with mobile number ${mobileNumber} not found")
+                if (documents.size() > 0) {
+                    user = documents.first().toObject<User>()
                 }
-                user = documents.first().toObject<User>()
-                Log.d(TAG, "RRD DB returned user ${user}")
-                callback(user)
+                Log.d(TAG, "Fetch user record user = ${user}")
+                callback(user, errorCode)
             }
             .addOnFailureListener { exception ->
                 Log.e(TAG, "Error getting documents for mobile number ${mobileNumber}", exception)
-                throw ErrorCode.ThirdPartyServiceException("Firestore failure while fetching user record", exception)
+                errorCode = ErrorCode.ThirdPartyServiceException("Firestore failure while fetching user record", exception)
+                callback(user, errorCode)
             }
     }
 }

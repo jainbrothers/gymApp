@@ -69,8 +69,6 @@ fun GenerateOtp(
     val uiState by userRegistrationViewModel.userRegistrationUiState.collectAsState()
     val otpVerificationStatus by userRegistrationViewModel.otpVerificationStatus.collectAsState()
     val enabled = uiState.isMobileNumberValid && !(otpVerificationStatus.otpVerificationState is OtpVerificationState.OtpGenerationInProgress)
-    Log.d(TAG, "uiState.isOtpGenerationEnabled ${uiState.isGenerateOtpButtonEnabled} " +
-            "isMobileValid ${uiState.isMobileNumberValid}")
     Column(
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally,
