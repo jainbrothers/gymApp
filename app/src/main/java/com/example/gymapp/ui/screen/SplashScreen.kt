@@ -19,7 +19,7 @@ private const val TAG = "Splash Screen"
 @Composable
 fun SplashScreen(
     unregisteredUserHandler: () -> Unit,
-    registeredUserHandler: (String) -> Unit,
+    registeredUserHandler: () -> Unit,
     otpVerifiedUserHandler: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -38,7 +38,7 @@ fun SplashScreen(
                 UserRegistrationState.REGISTERED -> {
                     Text("Redirecting to home screen")
                     LaunchedEffect(uiState.userRegistrationState) {
-                        registeredUserHandler(uiState.mobileNumber)
+                        registeredUserHandler()
                     }
                 }
                 UserRegistrationState.UNREGISTERED -> {

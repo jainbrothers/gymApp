@@ -20,8 +20,7 @@ class SplashScreenViewModel @Inject constructor(val userDetailRepository: UserDe
     val splashScreenUiState: StateFlow<SplashScreenUiState> = userDetailRepository.userRegistrationStatus.map { registrationState ->
         Log.d(TAG, "registration state ${registrationState}")
         SplashScreenUiState(userRegistrationState = registrationState,
-            isLoadingDone = true,
-            mobileNumber=userDetailRepository.userMobileNumber.first())
+            isLoadingDone = true)
     }.stateIn(
         viewModelScope,
         SharingStarted.WhileSubscribed(5000L),

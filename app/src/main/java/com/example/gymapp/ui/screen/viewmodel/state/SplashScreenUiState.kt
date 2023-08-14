@@ -5,6 +5,5 @@ import com.example.gymapp.ui.screen.viewmodel.enumeration.UserRegistrationState
 
 data class SplashScreenUiState (
     val userRegistrationState: UserRegistrationState = UserRegistrationState.UNREGISTERED,
-    val mobileNumber: String = "",
     val isLoadingDone: Boolean = false
 )
