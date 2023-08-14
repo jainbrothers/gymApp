@@ -165,7 +165,7 @@ fun GymNavHost(
             composable(
                 route = ScreenName.GYM_DETAILS.name + "/{gymId}",
                 arguments = listOf(navArgument("gymId") {
-                    type = NavType.IntType
+                    type = NavType.StringType
                 }
                 )
             ) {
