@@ -42,6 +42,7 @@ class FirebaseUserRepository @Inject constructor(private val database: FirebaseF
                 }
                 Log.d(TAG, "Fetch user record user = ${user}")
                 callback(user, errorCode)
+
             }
             .addOnFailureListener { exception ->
                 Log.e(TAG, "Error getting documents for mobile number ${mobileNumber}", exception)
