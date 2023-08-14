@@ -38,7 +38,6 @@ fun SplashScreen(
                 UserRegistrationState.REGISTERED -> {
                     Text("Redirecting to home screen")
                     LaunchedEffect(uiState.userRegistrationState) {
-                        println(uiState.mobileNumber)
                         registeredUserHandler(uiState.mobileNumber)
                     }
                 }

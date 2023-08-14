@@ -23,6 +23,16 @@ import com.google.firebase.firestore.PropertyName
  * Data class that defines an amphibian which includes a name, type, description, and image URL.
  */
 
+data class Session(
+    val userId: String,
+    val gymId: String,
+    val beginHour: Int,
+    val beginMinute: Int,
+    val endHour: Int,
+    val endMinute: Int,
+    val activity: String,
+    val isCancelled: Boolean
+)
 
 data class Timings(
     val day: String = "",

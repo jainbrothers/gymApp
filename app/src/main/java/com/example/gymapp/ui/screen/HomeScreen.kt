@@ -16,6 +16,8 @@
 
 package com.example.gymapp.ui.screen
 
+import android.Manifest
+import android.util.Log
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -30,8 +32,13 @@ import androidx.compose.foundation.lazy.LazyColumn
 import com.example.gymapp.R
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -45,11 +52,63 @@ import coil.request.ImageRequest
 import com.example.gymapp.ui.theme.MyApplicationTheme
 import com.example.gymapp.ui.utils.AutoSlidingCarousel
 import com.google.accompanist.pager.ExperimentalPagerApi
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.rememberMultiplePermissionsState
+import com.google.accompanist.permissions.rememberPermissionState
 
+
+@OptIn(ExperimentalPermissionsApi::class)
+@Composable
+fun PreciseLocation(){
+    val context = LocalContext.current
+
+    // When precision is important request both permissions but make sure to handle the case where
+    // the user only grants ACCESS_COARSE_LOCATION
+    val fineLocationPermissionState = rememberMultiplePermissionsState(
+        listOf(
+            Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION,
+        ),
+    )
+
+    // Keeps track of the rationale dialog state, needed when the user requires further rationale
+    var rationaleState by remember {
+        mutableStateOf<RationaleState?>(null)
+    }
+
+    Column() {
+        rationaleState?.run { PermissionRationaleDialog(rationaleState = this) }
+        Log.d("sarkar", "location access")
+
+        if (fineLocationPermissionState.shouldShowRationale) {
+            rationaleState = RationaleState(
+                "Request Precise Location",
+                "In order to use this feature please grant access by accepting " + "the location permission dialog." + "\n\nWould you like to continue?",
+            ) { proceed ->
+                if (proceed) {
+                    fineLocationPermissionState.launchMultiplePermissionRequest()
+                }
+                rationaleState = null
+            }
+        } else {
+            fineLocationPermissionState.launchMultiplePermissionRequest()
+        }
+    }
+}
 
 @Composable
-fun HomeScreen(onClickGymDetails: (String) -> Unit) {
-    GymListApp(onItemClick = onClickGymDetails)
+fun HomeScreen(
+//    onClickGetLocation: () -> Unit,
+    onClickGymDetails: (String) -> Unit
+) {
+    Column() {
+//        Button(onClick = onClickGetLocation) {
+//            Text(text = "GET LOCATION BUTTON")
+//        }
+//        PreciseLocation()
+        GymListApp(onItemClick = onClickGymDetails)
+
+    }
+
 }
 
 @Composable
@@ -92,7 +151,7 @@ fun ShowGymCard(
         modifier = Modifier
             .fillMaxSize()
             .padding(start = 8.dp, end = 8.dp, top = 4.dp, bottom = 4.dp)
-            .clickable {onItemClick(gym.id)},
+            .clickable { onItemClick(gym.id) },
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(
             containerColor =
