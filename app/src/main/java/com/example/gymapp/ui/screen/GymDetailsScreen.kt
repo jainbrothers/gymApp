@@ -17,16 +17,11 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.Tab
-import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -47,7 +42,6 @@ import coil.request.ImageRequest
 import com.example.gymapp.R
 import com.example.gymapp.model.Address
 import com.example.gymapp.model.Gym
-import com.example.gymapp.model.Location
 import com.example.gymapp.model.Timings
 import com.example.gymapp.ui.screen.viewmodel.GymDetailsViewModel
 import com.example.gymapp.ui.theme.MyApplicationTheme
@@ -118,9 +112,7 @@ fun ShowGymAddress(gymName:String, address: Address) {
     }
 }
 
-
 data class TimingsList(val title: String, val timingsList: List<Timings>)
-
 
 @Composable
 fun ShowTimings(timingsList: List<Timings>) {
@@ -164,7 +156,7 @@ fun ShowTimings(timingsList: List<Timings>) {
 }
 
 @Composable
-fun ShowAmenity(facility: String) {
+fun ShowItem(facility: String) {
     val facilityResId: Int = when (facility) {
         "GYM" -> R.drawable.gym
         "YOGA" -> R.drawable.yoga
@@ -184,8 +176,6 @@ fun ShowAmenity(facility: String) {
         Text(text = facility)
     }
 }
-
-
 
 @Composable
 fun ShowAmenities(facilities: List<String>) {
@@ -207,7 +197,7 @@ fun ShowAmenities(facilities: List<String>) {
             ),
             content = {
                 items(facilities) { facility ->
-                    ShowAmenity(facility)
+                    ShowItem(facility)
                 }
             }
         )
@@ -233,7 +223,7 @@ fun ShowWorkouts(workouts: List<String>) {
             ),
             content = {
                 items(workouts) { workout ->
-                    ShowAmenity(workout)
+                    ShowItem(workout)
                 }
             }
         )
@@ -246,15 +236,15 @@ fun ShowWorkouts(workouts: List<String>) {
 fun ShowGymDetailsPage(
     gymDetailsViewModel: GymDetailsViewModel = hiltViewModel()
 ) {
-    val uiState by gymDetailsViewModel.gymDetailsUiState.collectAsState()
-    val imageUrls = listOf(uiState.gym.imageUrls, uiState.gym.imageUrls)
+    val gym by gymDetailsViewModel.gym
+//    val imageUrls = listOf(gym.imageUrls, gym.imageUrls)
     Column(Modifier.fillMaxSize()) {
         AutoSlidingCarousel(
-            itemsCount = imageUrls.size,
+            itemsCount = gym.imageUrls.size,
             itemContent = { index ->
                 AsyncImage(
                     model = ImageRequest.Builder(LocalContext.current)
-                        .data(imageUrls[index])
+                        .data(gym.imageUrls[index])
                         .build(),
                     contentDescription = "Gym Images",
                     contentScale = ContentScale.Crop, // need to check this
@@ -263,88 +253,18 @@ fun ShowGymDetailsPage(
             },
             autoScroll = false
         )
-        ShowGymTitle(uiState.gym.name)
+        ShowGymTitle(gym.name)
         Divider(thickness = 1.dp)
-        ShowGymAddress(uiState.gym.name, uiState.gym.address)
+        ShowGymAddress(gym.name, gym.address)
         Divider(thickness = 1.dp)
-        ShowWorkouts(uiState.gym.activities)
+        ShowWorkouts(gym.activities)
         Divider(thickness = 1.dp)
-        ShowTimings(uiState.gym.timings)
+        ShowTimings(gym.timings)
         Divider(thickness = 1.dp)
-        ShowAmenities(uiState.gym.amenities)
+        ShowAmenities(gym.amenities)
         Divider(thickness = 1.dp)
-//        TabbedPages()
     }
 }
-
-
-@Composable
-fun BookWorkoutSession(){
-    Column(Modifier.fillMaxWidth().height(80.dp)) {
-        Button(
-            onClick = {},
-            Modifier
-                .align(Alignment.CenterHorizontally)
-        ) {
-            Text(text = "Book Session")
-        }
-    }
-}
-
-@Composable
-fun ShowWorkoutOptions(
-    selectedTabIndex: Int,
-    tabTitles: List<String>,
-    onSelectedTab: (Int) -> Unit
-) {
-    TabRow(
-        selectedTabIndex = selectedTabIndex,
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        tabTitles.forEachIndexed { index, title ->
-            Tab(
-                text = { Text(title) },
-                selected = selectedTabIndex == index,
-                onClick = { onSelectedTab(index) }
-            )
-        }
-    }
-}
-
-
-@Composable
-fun TabbedPages() {
-    val tabs = listOf("Gym Sessions")
-    var selectedTabIndex by remember { mutableStateOf(0) }
-
-    Column {
-        TabRow(selectedTabIndex) {
-            tabs.forEachIndexed { index, title ->
-                Tab(
-                    selected = selectedTabIndex == index,
-                    onClick = { selectedTabIndex = index },
-                    text = { Text(title) }
-                )
-            }
-        }
-
-        when (selectedTabIndex) {
-            0 -> {
-                // Content for Tab 1
-                Text("Content for Tab 1")
-            }
-            1 -> {
-                // Content for Tab 2
-                Text("Content for Tab 2")
-            }
-            2 -> {
-                // Content for Tab 3
-                Text("Content for Tab 3")
-            }
-        }
-    }
-}
-
 
 @Preview(showBackground = true)
 @Composable

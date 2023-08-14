@@ -16,14 +16,9 @@
 
 package com.example.gymapp.ui.screen.viewmodel
 
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.example.gymapp.data.repository.GymRepository
-import com.example.gymapp.data.repository.user.UserRepository
+import com.example.gymapp.data.repository.gym.GymRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 

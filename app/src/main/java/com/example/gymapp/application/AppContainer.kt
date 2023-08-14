@@ -20,11 +20,10 @@ import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
-import androidx.lifecycle.ViewModel
 import com.example.gymapp.MainActivity
 import com.example.gymapp.data.repository.user.FirebaseUserRepository
-import com.example.gymapp.data.repository.GymRepository
-import com.example.gymapp.data.repository.FirebaseGymRepository
+import com.example.gymapp.data.repository.gym.GymRepository
+import com.example.gymapp.data.repository.gym.FirebaseGymRepository
 import com.example.gymapp.data.repository.UserDetailPreferencesRepository
 import com.example.gymapp.data.repository.UserDetailRepository
 import com.example.gymapp.data.repository.user.UserRepository
@@ -41,7 +40,6 @@ import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ViewModelComponent
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import kotlinx.serialization.json.Json
