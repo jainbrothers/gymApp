@@ -19,25 +19,10 @@ private const val TAG = "Splash Screen View Model"
 class SplashScreenViewModel @Inject constructor(val userDetailRepository: UserDetailRepository): ViewModel() {
     val splashScreenUiState: StateFlow<SplashScreenUiState> = userDetailRepository.userRegistrationStatus.map { registrationState ->
         Log.d(TAG, "registration state ${registrationState}")
-        SplashScreenUiState(userRegistrationState = registrationState,
-            isLoadingDone = true)
+        SplashScreenUiState(userRegistrationState = registrationState, isLoadingDone = true)
     }.stateIn(
         viewModelScope,
         SharingStarted.WhileSubscribed(5000L),
         SplashScreenUiState()
     )
-
-
-//    val splashScreenUiState: StateFlow<SplashScreenUiState> = userDetailRepository.map { userDetailRepo: UserDetailRepository ->
-//        Log.d(TAG, "registration state ${userDetailRepo}")
-//        SplashScreenUiState(
-//            userRegistrationState = userDetailRepo.userRegistrationStatus.first(),
-//            isLoadingDone = true,
-//            mobileNumber = userDetailRepo.userMobileNumber.first()
-//        )
-//    }.stateIn(
-//        viewModelScope,
-//        SharingStarted.WhileSubscribed(5000L),
-//        SplashScreenUiState()
-//    )
 }
