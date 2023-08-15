@@ -24,8 +24,6 @@ import com.example.gymapp.data.repository.IMAGE_URLS_FIELD_NAME
 import com.example.gymapp.data.repository.PIN_CODE_FIELD_NAME
 import com.example.gymapp.data.repository.STREET_NAME_AND_NUMBER_FIELD_NAME
 import com.google.firebase.firestore.DocumentId
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
 import com.google.firebase.firestore.PropertyName
 /**
  * Data class that defines an amphibian which includes a name, type, description, and image URL.
@@ -46,16 +44,16 @@ data class Timings(
     val day: String = "",
     @get:PropertyName(BEGIN_HOUR_FIELD_NAME)
     @set:PropertyName(BEGIN_HOUR_FIELD_NAME)
-    var beginHour: Int = 0,
+    var openingHour: Int = 0,
     @get:PropertyName(BEGIN_MINUTE_FIELD_NAME)
     @set:PropertyName(BEGIN_MINUTE_FIELD_NAME)
-    var beginMinute: Int = 0,
+    var openingMinute: Int = 0,
     @get:PropertyName(END_HOUR_FIELD_NAME)
     @set:PropertyName(END_HOUR_FIELD_NAME)
-    var endHour: Int = 0,
+    var closingHour: Int = 0,
     @get:PropertyName(END_MINUTE_FIELD_NAME)
     @set:PropertyName(END_MINUTE_FIELD_NAME)
-    var endMinute: Int = 0
+    var closingMinute: Int = 0
 )
 
 data class Location(

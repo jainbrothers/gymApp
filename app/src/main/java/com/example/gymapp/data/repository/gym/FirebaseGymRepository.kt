@@ -32,7 +32,7 @@ class FirebaseGymRepository @Inject constructor(private val database: FirebaseFi
     override val gyms: Flow<List<Gym>>
         get() = database.collection(GYM_TABLE_NAME).dataObjects()
 
-    override suspend fun getGymWithId(gymId: String): Gym? =
-        database.collection(GYM_TABLE_NAME).document(gymId).get().await().toObject()
+    override suspend fun getGymById(docId: String): Gym? =
+        database.collection(GYM_TABLE_NAME).document(docId).get().await().toObject()
 
 }

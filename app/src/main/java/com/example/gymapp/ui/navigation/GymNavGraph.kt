@@ -46,7 +46,7 @@ import com.example.gymapp.R
 import com.example.gymapp.ui.screen.HomeScreen
 import com.example.gymapp.ui.screen.LocationPermissionScreen
 import com.example.gymapp.ui.screen.OtpVerificationScreen
-import com.example.gymapp.ui.screen.ShowGymDetailsPage
+import com.example.gymapp.ui.screen.ShowGymDetails
 import com.example.gymapp.ui.screen.SplashScreen
 import com.example.gymapp.ui.screen.UserRegisterScreen
 import com.example.gymapp.ui.screen.enumeration.ScreenName
@@ -169,7 +169,7 @@ fun GymNavHost(
                 }
                 )
             ) {
-                ShowGymDetailsPage()
+                ShowGymDetails()
             }
             composable(route = ScreenName.LOCATION_PERMISSION_SCREEN.name) {
                 LocationPermissionScreen()

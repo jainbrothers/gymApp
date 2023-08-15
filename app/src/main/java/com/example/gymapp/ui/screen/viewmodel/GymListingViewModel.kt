@@ -24,7 +24,7 @@ import javax.inject.Inject
 
 
 @HiltViewModel
-class GymViewModel @Inject constructor(
+class GymListingViewModel @Inject constructor(
     val gymRepository: GymRepository
 //    val userRepository: UserRepository // to get from local data store - preference
 ) : ViewModel() {

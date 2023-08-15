@@ -32,7 +32,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import com.example.gymapp.R
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -46,7 +45,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.gymapp.model.Gym
-import com.example.gymapp.ui.screen.viewmodel.GymViewModel
+import com.example.gymapp.ui.screen.viewmodel.GymListingViewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.gymapp.ui.theme.MyApplicationTheme
@@ -54,9 +53,6 @@ import com.example.gymapp.ui.utils.AutoSlidingCarousel
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
-import com.google.accompanist.permissions.rememberPermissionState
-
-
 
 
 //@OptIn(ExperimentalPermissionsApi::class)
@@ -157,7 +153,7 @@ fun HomeScreen(
 fun GymListApp(
     modifier: Modifier = Modifier,
     onItemClick: (String) -> Unit,
-    viewModel: GymViewModel = hiltViewModel()
+    viewModel: GymListingViewModel = hiltViewModel()
 ) {
     val gyms = viewModel.gyms.collectAsState(emptyList())
     Column {

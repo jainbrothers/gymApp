@@ -23,7 +23,7 @@ data class GymDetailsUiState( // Create Gym object with None values
 
 @HiltViewModel
 class GymDetailsViewModel @Inject constructor(
-    savedStateHandle: SavedStateHandle, val gymRepository: GymRepository
+    val savedStateHandle: SavedStateHandle, val gymRepository: GymRepository
 ) : ViewModel() {
 
     val gym = mutableStateOf(Gym())
@@ -33,7 +33,7 @@ class GymDetailsViewModel @Inject constructor(
     }
     private fun getGymDetails() {
         viewModelScope.launch {
-            gym.value = gymRepository.getGymWithId(gymId) ?: Gym()
+            gym.value = gymRepository.getGymById(gymId) ?: Gym()
         }
     }
 }

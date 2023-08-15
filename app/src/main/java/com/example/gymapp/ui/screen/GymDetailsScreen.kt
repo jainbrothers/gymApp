@@ -143,8 +143,8 @@ fun ShowTimings(timingsList: List<Timings>) {
                                     .padding(horizontal = 48.dp, vertical = 8.dp)
                             )
                             Text(
-                                text = schedule.beginHour.toString() +":"+schedule.beginMinute + " - "
-                                        + schedule.endHour.toString() +":"+schedule.endMinute,
+                                text = schedule.openingHour.toString() +":"+schedule.openingMinute + " - "
+                                        + schedule.closingHour.toString() +":"+schedule.closingMinute,
                                 modifier = Modifier.padding(horizontal = 48.dp, vertical = 8.dp)
                             )
                         }
@@ -156,7 +156,7 @@ fun ShowTimings(timingsList: List<Timings>) {
 }
 
 @Composable
-fun ShowItem(facility: String) {
+fun ShowAmenityAndActivity(facility: String) {
     val facilityResId: Int = when (facility) {
         "GYM" -> R.drawable.gym
         "YOGA" -> R.drawable.yoga
@@ -196,8 +196,8 @@ fun ShowAmenities(facilities: List<String>) {
                 bottom = 6.dp
             ),
             content = {
-                items(facilities) { facility ->
-                    ShowItem(facility)
+                items(facilities) { amenity ->
+                    ShowAmenityAndActivity(amenity)
                 }
             }
         )
@@ -205,7 +205,7 @@ fun ShowAmenities(facilities: List<String>) {
 }
 
 @Composable
-fun ShowWorkouts(workouts: List<String>) {
+fun ShowWorkouts(activities: List<String>) {
     Column() {
         Text(
             text = "Available Workouts",
@@ -222,8 +222,8 @@ fun ShowWorkouts(workouts: List<String>) {
                 bottom = 6.dp
             ),
             content = {
-                items(workouts) { workout ->
-                    ShowItem(workout)
+                items(activities) { activity ->
+                    ShowAmenityAndActivity(activity)
                 }
             }
         )
@@ -233,11 +233,10 @@ fun ShowWorkouts(workouts: List<String>) {
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun ShowGymDetailsPage(
+fun ShowGymDetails(
     gymDetailsViewModel: GymDetailsViewModel = hiltViewModel()
 ) {
     val gym by gymDetailsViewModel.gym
-//    val imageUrls = listOf(gym.imageUrls, gym.imageUrls)
     Column(Modifier.fillMaxSize()) {
         AutoSlidingCarousel(
             itemsCount = gym.imageUrls.size,

@@ -24,5 +24,5 @@ import kotlinx.coroutines.flow.Flow
  */
 interface GymRepository {
     val gyms: Flow<List<Gym>>
-    suspend fun getGymWithId(gymId: String): Gym?
+    suspend fun getGymById(gymId: String): Gym?
 }
