@@ -32,7 +32,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import com.example.gymapp.R
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -46,7 +45,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.gymapp.model.Gym
-import com.example.gymapp.ui.screen.viewmodel.GymViewModel
+import com.example.gymapp.ui.screen.viewmodel.GymListingViewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.gymapp.ui.theme.MyApplicationTheme
@@ -54,7 +53,46 @@ import com.example.gymapp.ui.utils.AutoSlidingCarousel
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
-import com.google.accompanist.permissions.rememberPermissionState
+
+
+//@OptIn(ExperimentalPermissionsApi::class)
+//@Composable
+//fun PreciseLocation(){
+//    val context = LocalContext.current
+//
+//    // When precision is important request both permissions but make sure to handle the case where
+//    // the user only grants ACCESS_COARSE_LOCATION
+//    val fineLocationPermissionState = rememberMultiplePermissionsState(
+//        listOf(
+//            Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION,
+//        ),
+//    )
+//
+//    // Keeps track of the rationale dialog state, needed when the user requires further rationale
+//    var rationaleState by remember {
+//        mutableStateOf<RationaleState?>(null)
+//    }
+//
+//    Column() {
+//        rationaleState?.run { PermissionRationaleDialog(rationaleState = this) }
+//        Log.d("sarkar", "location access")
+//
+//        if (fineLocationPermissionState.shouldShowRationale) {
+//            rationaleState = RationaleState(
+//                "Request Precise Location",
+//                "In order to use this feature please grant access by accepting " + "the location permission dialog." + "\n\nWould you like to continue?",
+//            ) { proceed ->
+//                if (proceed) {
+//                    fineLocationPermissionState.launchMultiplePermissionRequest()
+//                }
+//                rationaleState = null
+//            }
+//        } else {
+//            fineLocationPermissionState.launchMultiplePermissionRequest()
+//        }
+//    }
+//}
+
 
 
 @OptIn(ExperimentalPermissionsApi::class)
@@ -115,7 +153,7 @@ fun HomeScreen(
 fun GymListApp(
     modifier: Modifier = Modifier,
     onItemClick: (String) -> Unit,
-    viewModel: GymViewModel = hiltViewModel()
+    viewModel: GymListingViewModel = hiltViewModel()
 ) {
     val gyms = viewModel.gyms.collectAsState(emptyList())
     Column {
@@ -146,7 +184,6 @@ fun ShowGymCard(
     gym: Gym,
     onItemClick: (String) -> Unit,
 ): Unit {
-    val imageUrls = listOf(gym.imageUrls, gym.imageUrls)
     Card(
         modifier = Modifier
             .fillMaxSize()
@@ -162,11 +199,11 @@ fun ShowGymCard(
         )
     ) {
         AutoSlidingCarousel(
-            itemsCount = imageUrls.size,
+            itemsCount = gym.imageUrls.size,
             itemContent = { index ->
                 AsyncImage(
                     model = ImageRequest.Builder(LocalContext.current)
-                        .data(imageUrls[index])
+                        .data(gym.imageUrls[index])
                         .build(),
                     contentDescription = null,
                     contentScale = ContentScale.Crop,

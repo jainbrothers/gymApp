@@ -1,6 +1,7 @@
 package com.example.gymapp.data.repository.user
 
 import android.util.Log
+import com.example.gymapp.data.repository.MOBILE_NUMBER_FIELD_NAME
 import com.example.gymapp.model.User
 import com.example.gymapp.ui.screen.enumeration.ErrorCode
 import com.example.gymapp.ui.screen.viewmodel.OtpVerificationViewModel

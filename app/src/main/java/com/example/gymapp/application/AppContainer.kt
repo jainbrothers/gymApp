@@ -23,8 +23,8 @@ import androidx.datastore.preferences.preferencesDataStore
 import androidx.lifecycle.ViewModel
 import com.example.gymapp.MainActivity
 import com.example.gymapp.data.repository.user.FirebaseUserRepository
-import com.example.gymapp.data.repository.GymRepository
-import com.example.gymapp.data.repository.FirebaseGymRepository
+import com.example.gymapp.data.repository.gym.GymRepository
+import com.example.gymapp.data.repository.gym.FirebaseGymRepository
 import com.example.gymapp.data.repository.UserDetailPreferencesRepository
 import com.example.gymapp.data.repository.UserDetailRepository
 import com.example.gymapp.data.repository.user.UserRepository
