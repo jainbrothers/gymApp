@@ -11,5 +11,4 @@ data class User(
     @set:PropertyName(MOBILE_NUMBER_FIELD_NAME)
     var mobileNumber: String = "",
     val location: Location = Location()
-    // val bookings: Booking
 )

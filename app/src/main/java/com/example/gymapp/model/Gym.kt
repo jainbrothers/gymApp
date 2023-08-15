@@ -88,3 +88,4 @@ data class Gym(
     val timings: List<Timings> = listOf(),
     val amenities: List<String> = listOf()
     )
+

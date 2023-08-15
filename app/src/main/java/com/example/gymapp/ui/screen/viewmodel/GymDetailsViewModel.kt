@@ -10,15 +10,24 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+//sealed interface GymDetailsUiState {
+//    data class Successful(val amphibians: Gym) : GymDetailsUiState
+//    object Error : GymDetailsUiState
+//    object Loading : GymDetailsUiState
+//}
+
+data class GymDetailsUiState( // Create Gym object with None values
+    val gym: Gym = Gym()
+)
+
 
 @HiltViewModel
 class GymDetailsViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle, val gymRepository: GymRepository
 ) : ViewModel() {
+
     val gym = mutableStateOf(Gym())
     private val gymId: String = checkNotNull(savedStateHandle["gymId"])
-
-
     init{
         getGymDetails()
     }
