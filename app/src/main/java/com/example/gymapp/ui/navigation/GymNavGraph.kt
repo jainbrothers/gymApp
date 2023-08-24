@@ -43,6 +43,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.gymapp.R
+import com.example.gymapp.ui.screen.BookSession
 import com.example.gymapp.ui.screen.HomeScreen
 import com.example.gymapp.ui.screen.LocationPermissionScreen
 import com.example.gymapp.ui.screen.OtpVerificationScreen
@@ -163,8 +164,8 @@ fun GymNavHost(
                 )
             }
             composable(
-                route = ScreenName.GYM_DETAILS.name + "/{gymId}",
-                arguments = listOf(navArgument("gymId") {
+                route = ScreenName.GYM_DETAILS.name + "/{${GYM_ID_ARGUMENT_NAME}}",
+                arguments = listOf(navArgument(GYM_ID_ARGUMENT_NAME) {
                     type = NavType.StringType
                 }
                 )
@@ -173,6 +174,15 @@ fun GymNavHost(
             }
             composable(route = ScreenName.LOCATION_PERMISSION_SCREEN.name) {
                 LocationPermissionScreen()
+            }
+            composable(
+                route = ScreenName.BOOK_SESSION.name + "/{${GYM_ID_ARGUMENT_NAME}}",
+                arguments = listOf(navArgument(GYM_ID_ARGUMENT_NAME) {
+                        type = NavType.StringType
+                    }
+                )
+            ) {
+                BookSession()
             }
         }
     }

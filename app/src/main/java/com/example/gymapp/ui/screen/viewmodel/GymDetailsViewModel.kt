@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.gymapp.data.repository.gym.GymRepository
 import com.example.gymapp.model.Gym
+import com.example.gymapp.ui.navigation.GYM_ID_ARGUMENT_NAME
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -27,7 +28,7 @@ class GymDetailsViewModel @Inject constructor(
 ) : ViewModel() {
 
     val gym = mutableStateOf(Gym())
-    private val gymId: String = checkNotNull(savedStateHandle["gymId"])
+    private val gymId: String = checkNotNull(savedStateHandle[GYM_ID_ARGUMENT_NAME])
     init{
         getGymDetails()
     }

@@ -26,4 +26,5 @@
     <string name="location_permission">location permission</string>
     <string name="gym_details">Gym Details</string>
     <string name="mobile_number_changed_by_user">Mobile number changed by user</string>
+    <string name="book_session">Book session</string>
 </resources>
