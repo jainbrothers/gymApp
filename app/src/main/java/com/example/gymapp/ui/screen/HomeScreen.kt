@@ -32,12 +32,20 @@ import androidx.compose.foundation.lazy.LazyColumn
 import com.example.gymapp.R
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -133,17 +141,33 @@ fun PreciseLocation(){
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun SearchBox(
+    searchQuery: String,
+    onSearchQueryChange: (String) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Column(modifier = Modifier.padding(16.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+        OutlinedTextField(value = searchQuery,
+            onValueChange = onSearchQueryChange,
+            label = { Text(text = "Search Airports")},
+            modifier = Modifier.fillMaxWidth())
+    }
+}
+
 @Composable
 fun HomeScreen(
-//    onClickGetLocation: () -> Unit,
-    onClickGymDetails: (String) -> Unit
+    onClickGymDetails: (String) -> Unit,
+    gymViewModel: GymListingViewModel = hiltViewModel()
 ) {
+    val searchQuery:String = gymViewModel.searchQuery
     Column() {
-//        Button(onClick = onClickGetLocation) {
-//            Text(text = "GET LOCATION BUTTON")
-//        }
-//        PreciseLocation()
-        GymListApp(onItemClick = onClickGymDetails)
+        SearchBox(
+            searchQuery = searchQuery,
+            onSearchQueryChange = {gymViewModel.updateSearchQuery(it)}
+        )
+        GymListApp(onItemClick = onClickGymDetails, gymViewModel = gymViewModel)
 
     }
 
@@ -153,12 +177,13 @@ fun HomeScreen(
 fun GymListApp(
     modifier: Modifier = Modifier,
     onItemClick: (String) -> Unit,
-    viewModel: GymListingViewModel = hiltViewModel()
+    gymViewModel: GymListingViewModel
+
 ) {
-    val gyms = viewModel.gyms.collectAsState(emptyList())
+    val homeScreenUIState = gymViewModel.homeScreenUiState.collectAsState()
     Column {
         ShowGymList(
-            gyms.value,
+            homeScreenUIState.value.gyms,
             modifier = modifier.fillMaxSize(), onItemClick = onItemClick
         )
     }
@@ -172,6 +197,7 @@ fun ShowGymList(
 ) {
     LazyColumn(modifier = Modifier, contentPadding = PaddingValues(vertical = 8.dp)) {
         items(items = gymList, key = { facility -> facility.id }) { item ->
+            Log.d("sarkar", "printing gym information : $item")
             ShowGymCard(gym = item, onItemClick = onItemClick)
         }
     }

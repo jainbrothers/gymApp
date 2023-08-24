@@ -2,6 +2,8 @@ package com.example.gymapp.data.repository
 
 import com.example.gymapp.model.Gym
 
+
+const val USER_TABLE_NAME = "user"
 const val MOBILE_NUMBER_FIELD_NAME = "mobile_number"
 const val USER_ID_FIELD_NAME = "user_id"
 

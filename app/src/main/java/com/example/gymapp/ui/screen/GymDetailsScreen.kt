@@ -22,6 +22,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -236,7 +237,8 @@ fun ShowWorkouts(activities: List<String>) {
 fun ShowGymDetails(
     gymDetailsViewModel: GymDetailsViewModel = hiltViewModel()
 ) {
-    val gym by gymDetailsViewModel.gym
+    val gymUIState by gymDetailsViewModel.gymUIState.collectAsState()
+    val gym = gymUIState.gym
     Column(Modifier.fillMaxSize()) {
         AutoSlidingCarousel(
             itemsCount = gym.imageUrls.size,

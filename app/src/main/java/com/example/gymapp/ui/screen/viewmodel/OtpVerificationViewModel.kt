@@ -3,7 +3,6 @@ package com.example.gymapp.ui.screen.viewmodel
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.gymapp.data.repository.UserDetailRepository
 import com.example.gymapp.data.repository.user.UserRepository
 import com.example.gymapp.data.repository.user.UserRepositoryException
@@ -130,7 +129,7 @@ class OtpVerificationViewModel @Inject constructor(
                 if (user == null) {
                     user  = createUser()
                 }
-                userDetailRepository.saveUserId(user.userId)
+                userDetailRepository.saveUserId(user.id)
                 userDetailRepository.saveUserRegistrationState(UserRegistrationState.REGISTERED)
                 _otpVerificationUiState.update { currentState ->
                     currentState.copy(userRegistrationState = UserRegistrationState.REGISTERED)
@@ -147,7 +146,7 @@ class OtpVerificationViewModel @Inject constructor(
     private suspend fun createUser(): User {
         val user = User(
             mobileNumber = otpVerificationUiState.value.mobileNumber,
-            userId = UUID.randomUUID().toString(),
+            id = UUID.randomUUID().toString(),
             location = Location(0.0, 0.0)
         )
         userRepository.create(user)

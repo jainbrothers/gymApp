@@ -22,7 +22,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.dataObjects
 import com.google.firebase.firestore.ktx.toObject
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.tasks.await
+
 import javax.inject.Inject
 
 
@@ -32,7 +32,14 @@ class FirebaseGymRepository @Inject constructor(private val database: FirebaseFi
     override val gyms: Flow<List<Gym>>
         get() = database.collection(GYM_TABLE_NAME).dataObjects()
 
-    override suspend fun getGymById(docId: String): Gym? =
-        database.collection(GYM_TABLE_NAME).document(docId).get().await().toObject()
+    override suspend fun getGymListBySearch(search: String): Flow<List<Gym>> {
+        return if (search != "") {
+            database.collection(GYM_TABLE_NAME).whereGreaterThanOrEqualTo("type", search).dataObjects()
+        } else {
+            gyms
+        }
+    }
+    override suspend fun getGymById(docId: String): Flow<Gym?> =
+        database.collection(GYM_TABLE_NAME).document(docId).dataObjects()
 
 }

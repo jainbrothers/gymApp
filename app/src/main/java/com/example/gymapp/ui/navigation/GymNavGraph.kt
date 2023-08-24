@@ -19,6 +19,9 @@ package com.example.gymapp.ui.navigation
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -31,9 +34,13 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -59,23 +66,33 @@ fun GymAppBar(
     currentScreen: ScreenName,
     canNavigateBack: Boolean,
     navigateUp: () -> Unit,
+    topBarState: Boolean = true,
     modifier: Modifier = Modifier
 ) {
-    TopAppBar(
-        title = { Text(stringResource(currentScreen.title)) },
-        colors = TopAppBarDefaults.mediumTopAppBarColors(
-            containerColor = MaterialTheme.colorScheme.primaryContainer
-        ),
-        modifier = modifier,
-        navigationIcon = {
-            if (canNavigateBack) {
-                IconButton(onClick = navigateUp) {
-                    Icon(
-                        imageVector = Icons.Filled.ArrowBack,
-                        contentDescription = stringResource(R.string.back_button)
-                    )
+
+    AnimatedVisibility(
+        visible = topBarState,
+        enter = slideInVertically(initialOffsetY = { -it }),
+        exit = slideOutVertically(targetOffsetY = { -it }),
+        content = {
+            TopAppBar(
+                title = { Text(stringResource(currentScreen.title)) },
+                //colors = TopAppBarDefaults.centerAlignedTopAppBarColors()
+                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                    containerColor = Color.Transparent
+                ),
+                modifier = modifier,
+                navigationIcon = {
+                    if (canNavigateBack) {
+                        IconButton(onClick = navigateUp) {
+                            Icon(
+                                imageVector = Icons.Filled.ArrowBack,
+                                contentDescription = stringResource(R.string.back_button)
+                            )
+                        }
+                    }
                 }
-            }
+            )
         }
     )
 }
@@ -102,10 +119,19 @@ fun GymNavHost(
     Log.d(TAG, "backStackEntry?.destination?.route ${backStackEntry?.destination?.route}")
     Scaffold(
         topBar = {
+            val screen = when(currentScreen.name) {
+                ScreenName.GYM_DETAILS.name -> true
+                ScreenName.HOME_SCREEN.name -> true
+                else -> {
+                    true
+                }
+            }
             GymAppBar(
                 currentScreen = currentScreen,
                 canNavigateBack = navController.previousBackStackEntry != null,
-                navigateUp = {navController.navigateUp()})
+                navigateUp = {navController.navigateUp()},
+                topBarState = screen
+            )
         }
     ) { innerPadding ->
         NavHost(

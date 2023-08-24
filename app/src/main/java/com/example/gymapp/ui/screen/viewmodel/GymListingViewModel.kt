@@ -16,40 +16,91 @@
 
 package com.example.gymapp.ui.screen.viewmodel
 
-import androidx.lifecycle.ViewModel
-import com.example.gymapp.data.repository.gym.GymRepository
-import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
 
+import android.util.Log
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.gymapp.data.repository.UserDetailRepository
+import com.example.gymapp.data.repository.gym.GymRepository
+import com.example.gymapp.data.repository.user.UserRepository
+import com.example.gymapp.model.User
+import com.example.gymapp.ui.screen.viewmodel.state.GymListingUiState
+import com.example.gymapp.ui.screen.viewmodel.state.HomeScreenUiState
+import com.example.gymapp.ui.screen.viewmodel.state.UserUiState
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 
 @HiltViewModel
 class GymListingViewModel @Inject constructor(
-    val gymRepository: GymRepository
-//    val userRepository: UserRepository // to get from local data store - preference
-) : ViewModel() {
+    val gymRepository: GymRepository,
+    val userDetailRepository: UserDetailRepository,
+    val userRepository: UserRepository
+    ) : ViewModel() {
+    val gymListingUiState = MutableStateFlow(GymListingUiState())
+    val userUiState = MutableStateFlow(UserUiState())
+    var searchQuery by mutableStateOf("")
+        private set
 
-//    userRepository
-//    private val mobileNumber: String = checkNotNull(savedStateHandle["mobileNumber"])
-    val gyms = gymRepository.gyms
+    init {
+        getUser()
+        getGymList()
+    }
 
-//    init {
-////        getUserDetails(mobileNumber)
-//        getLocationDetails()
-//    }
+    val homeScreenUiState: StateFlow<HomeScreenUiState> = gymListingUiState.combine(userUiState){
+            gymListState, userState ->
+        HomeScreenUiState(
+            user = userState.user,
+            gyms = gymListState.gyms
+        )
+    }.stateIn(
+        viewModelScope,
+        SharingStarted.WhileSubscribed(5000L),
+        (HomeScreenUiState())
+    )
 
-//    private fun getUserDetails(mobileNumber: String) {
-//        viewModelScope.launch {
-//            // val user = userRepository.getbyMobileNumber(mobileNumber)
-//        }
-//    }
 
-//    private fun getLocationDetails() {
-//        viewModelScope.launch {
-//            // val user = userRepository.getbyMobileNumber(mobileNumber)
-//
-//        }
-//    }
+    private fun getGymList(){
+        viewModelScope.launch {
+            Log.d("sarkar", "searchQuery $searchQuery")
+            gymRepository.getGymListBySearch(searchQuery).collect{ gyms ->
+                gymListingUiState.update{ currentState ->
+                    currentState.copy(
+                        gyms = gyms
+                    )
+                }
+            }
+        }
+    }
+    private fun getUser(){
+        viewModelScope.launch {
+            userRepository.getbyId(userId = userDetailRepository.userId.first()).collect{ user ->
+                userUiState.update { currentState ->
+                    currentState.copy(
+                        user = user ?: User()
+                    )
+                }
+            }
+        }
+    }
 
+    fun updateSearchQuery(query: String) {
+        viewModelScope.launch {
+            searchQuery = query
+            getGymList()
+        }
+    }
 }
 

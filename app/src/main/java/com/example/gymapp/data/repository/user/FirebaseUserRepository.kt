@@ -1,12 +1,20 @@
 package com.example.gymapp.data.repository.user
 
 import android.util.Log
+
 import com.example.gymapp.data.repository.MOBILE_NUMBER_FIELD_NAME
+import com.example.gymapp.data.repository.GYM_TABLE_NAME
+import com.example.gymapp.data.repository.MOBILE_NUMBER_FIELD_NAME
+import com.example.gymapp.data.repository.USER_TABLE_NAME
+import com.example.gymapp.model.Gym
 import com.example.gymapp.model.User
 import com.example.gymapp.ui.screen.enumeration.ErrorCode
 import com.example.gymapp.ui.screen.viewmodel.OtpVerificationViewModel
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ktx.dataObjects
 import com.google.firebase.firestore.ktx.toObject
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 import kotlin.reflect.KFunction2
 
@@ -26,9 +34,8 @@ class FirebaseUserRepository @Inject constructor(private val database: FirebaseF
                 throw Exception(e)
             }
     }
-    override suspend fun getbyId(userId: String): User {
-        TODO("Not yet implemented")
-    }
+    override suspend fun getbyId(docId: String): Flow<User?> =
+        database.collection(USER_TABLE_NAME).document(docId).dataObjects()
 
     override suspend fun getbyMobileNumber(mobileNumber: String, callback: (User?, ErrorCode) -> Unit) {
         Log.d(TAG, "Entered into getbyMobileNumber mobilenumber ${mobileNumber}")
