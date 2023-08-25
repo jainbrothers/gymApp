@@ -88,7 +88,7 @@ data class Gym(
     val amenities: List<String> = listOf(),
     @get:PropertyName(SCHEDULE_LIST_FIELD_NAME)
     @set:PropertyName(SCHEDULE_LIST_FIELD_NAME)
-    var dayWiseScheduleListForActivity: Map<String, Map<String, List<SessionSchedule>>> = emptyMap()
+    var activityToDayToScheduleListMap: Map<String, Map<String, List<SessionSchedule>>> = emptyMap()
     )
 
 data class SessionSchedule(

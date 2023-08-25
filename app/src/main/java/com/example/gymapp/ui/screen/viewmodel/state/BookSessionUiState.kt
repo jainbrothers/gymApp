@@ -8,8 +8,9 @@ import com.example.gymapp.ui.screen.enumeration.ErrorCode
 data class BookSessionUiState(
     val gym: Gym? = null,
     val errorCode: ErrorCode = ErrorCode.None,
-    val selectedSessionScheduleIndex: Int ?= null,
-    val pageIndexOfSelectedSchedule: Int ?= null,
+//    val selectedSessionScheduleIndex: Int ?= null,
+//    val tabIndexOfSelectedSchedule: Int ?= null,
+    val selectedScheduleInfo: Pair<Int?, Int?> = Pair(null, null),
     val scheduleList: List<Pair<String, List<SessionSchedule>?>>? = listOf(),
     val selectedActivity: String = DEFAULT_ACTIVTY_FOR_SCHEDULE_LISTING
 )

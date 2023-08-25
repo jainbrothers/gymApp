@@ -8,6 +8,7 @@ import com.example.gymapp.data.repository.gym.GymRepository
 import com.example.gymapp.model.Gym
 import com.example.gymapp.ui.navigation.GYM_ID_ARGUMENT_NAME
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -34,7 +35,7 @@ class GymDetailsViewModel @Inject constructor(
     }
     private fun getGymDetails() {
         viewModelScope.launch {
-            gym.value = gymRepository.getGymById(gymId) ?: Gym()
+            gym.value = gymRepository.getGymById(gymId).first() ?: Gym()
         }
     }
 }

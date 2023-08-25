@@ -34,10 +34,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.gymapp.R
 import com.example.gymapp.model.SessionSchedule
 import com.example.gymapp.ui.screen.enumeration.ErrorCode
 import com.example.gymapp.ui.screen.viewmodel.BookSessionViewModel
@@ -72,7 +74,7 @@ fun GymHighlightMessage(modifier: Modifier = Modifier) {
         .fillMaxWidth()
         .background(Color.LightGray)) {
         Text(
-            text = "Every process is followed by a mandatory sanitization process",
+            text = stringResource(R.string.book_session_header_text),
             color = Color.Magenta,
             modifier = modifier.padding(10.dp)
         )
@@ -93,7 +95,7 @@ fun ScheduleSession(
 fun ScheduleSessionHeader(modifier: Modifier = Modifier) {
     Box(modifier = modifier.fillMaxWidth()) {
         Text(
-            text = "Select workout timing",
+            text = stringResource(R.string.book_session_screen_header_message),
             fontWeight = FontWeight.Bold,
             modifier = modifier
                 .align(Alignment.Center)
@@ -115,26 +117,26 @@ fun ScheduleList(
         }
         ScheduleListForActivity(
             uiState.scheduleList,
-            Pair(uiState.selectedSessionScheduleIndex, uiState.pageIndexOfSelectedSchedule),
-            {index, pageIndex -> bookSessionViewModel.setSelectedSessionScheduleIndex(index, pageIndex)}
+            uiState.selectedScheduleInfo,
+            {newSelectedScheduleInfo -> bookSessionViewModel.setSelectedSessionScheduleIndex(newSelectedScheduleInfo)}
         )
     }
 }
-class DayWiseScheduleTabItem(val title: String, val icon: ImageVector, val screens: TabContentRenderingFunc)
+class DayWiseScheduleTabItem(val title: String, val icon: ImageVector, val renderTabContents: TabContentRenderingFunc)
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ScheduleListForActivity(
     dayWiseScheduleList: List<Pair<String, List<SessionSchedule>?>> ,
     selectedScheduleInfo: Pair<Int?, Int?>,
-    onScheduleSelection: (Int, Int) -> Unit,
+    onScheduleSelection: (Pair<Int, Int>) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val scheduleTabList: MutableList<DayWiseScheduleTabItem> = mutableListOf()
     dayWiseScheduleList.forEach {listItem ->
-        scheduleTabList.add(DayWiseScheduleTabItem(listItem.first, Icons.Default.Home, {currentPageIndex -> ScheduleListForDay(
+        scheduleTabList.add(DayWiseScheduleTabItem(listItem.first, Icons.Default.Home, {currentTabIndex -> ScheduleListForDay(
             listItem.second,
             selectedScheduleInfo,
-            currentPageIndex,
+            currentTabIndex,
             onScheduleSelection
         )}))
     }
@@ -179,30 +181,30 @@ fun ScheduleTabs(tabs: List<DayWiseScheduleTabItem>, pagerState: PagerState) {
 @Composable
 fun ScheduleTabContent(tabs: List<DayWiseScheduleTabItem>, pagerState: PagerState) {
     HorizontalPager(pageCount = tabs.size, state = pagerState) { pageIndex ->
-        tabs[pageIndex].screens(pageIndex)
+        tabs[pageIndex].renderTabContents(pageIndex)
     }
 }
 @Composable
 fun ScheduleListForDay(
     scheduleList: List<SessionSchedule>?,
     selectedScheduleInfo: Pair<Int?, Int?>,
-    currentPageIndex: Int,
-    onScheduleSelection: (Int, Int) -> Unit,
+    currentTabIndex: Int,
+    onScheduleSelection: (Pair<Int, Int>) -> Unit,
     modifier: Modifier = Modifier
 ) {
     if (scheduleList.isNullOrEmpty()) {
-        Text("No schedule found.")
+        Text(stringResource(R.string.no_schedule_found))
         return
     }
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),
         modifier = modifier.padding(4.dp)
     ) {
-        items(scheduleList!!) { item ->
+        items(scheduleList) { item ->
             var backgroundColor = Color.Transparent
             val isItemSelected = (
                     scheduleList.indexOf(item) == selectedScheduleInfo.first &&
-                            currentPageIndex == selectedScheduleInfo.second)
+                            currentTabIndex == selectedScheduleInfo.second)
 
             if (isItemSelected) {
                 backgroundColor = Color.Cyan
@@ -221,7 +223,7 @@ fun ScheduleListForDay(
                     )
                     .clickable {
                         val index = scheduleList.indexOf(item)
-                        onScheduleSelection(index, currentPageIndex)
+                        onScheduleSelection(Pair(index, currentTabIndex))
                     },
                 contentAlignment = Alignment.Center
             ) {

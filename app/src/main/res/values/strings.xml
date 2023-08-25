@@ -27,4 +27,7 @@
     <string name="gym_details">Gym Details</string>
     <string name="mobile_number_changed_by_user">Mobile number changed by user</string>
     <string name="book_session">Book session</string>
+    <string name="no_schedule_found">No schedule found!</string>
+    <string name="book_session_screen_header_message">Select workout timing</string>
+    <string name="book_session_header_text">Every process is followed by a mandatory sanitization process</string>
 </resources>

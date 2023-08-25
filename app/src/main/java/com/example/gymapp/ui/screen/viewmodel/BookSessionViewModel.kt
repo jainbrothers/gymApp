@@ -12,13 +12,16 @@ import com.example.gymapp.ui.screen.enumeration.ErrorCode
 import com.example.gymapp.ui.screen.viewmodel.state.BookSessionUiState
 import com.example.gymapp.util.DAYS_NAME
 import com.example.gymapp.util.DAY_INDEX_TO_DISPLAY_NAME
+import com.example.gymapp.util.NUM_OF_DAYS_IN_WEEK
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import okhttp3.internal.toImmutableList
 import java.util.Calendar
 import java.util.Calendar.MONTH
@@ -29,60 +32,59 @@ import javax.inject.Inject
 private val TAG = BookSessionViewModel::class.java.simpleName
 @HiltViewModel
 class BookSessionViewModel @Inject constructor(
-    val savedStateHandle: SavedStateHandle, val gymRepository: GymRepository,
+    savedStateHandle: SavedStateHandle, val gymRepository: GymRepository,
 ) : ViewModel() {
     private val gymId: String = checkNotNull(savedStateHandle[GYM_ID_ARGUMENT_NAME])
     private val _bookSessionUistate = MutableStateFlow(BookSessionUiState())
-    private var gym: Gym? = null
+    private var gym: Flow<Gym?>? = null
     private var errorCode: ErrorCode = ErrorCode.None
-    val bookSessionUiState: StateFlow<BookSessionUiState> = _bookSessionUistate.map { uiState ->
-        gym = gymRepository.getGymById(gymId) ?: Gym()
-        errorCode = uiState.errorCode
-        if (gym == null) {
-            errorCode =
-                ErrorCode.InternalServiceError("Selected Gym record not found. Reference = ${gymId}")
+    init {
+        viewModelScope.launch {
+            gym = gymRepository.getGymById(gymId)
         }
-        val scheduleListForDisplay: List<Pair<String, List<SessionSchedule>?>>? =
-            gym
-                ?.dayWiseScheduleListForActivity
-                ?.let {
-                    retrieveScheduleForUserDisplay(it)
-                }
+    }
+    val bookSessionUiState: StateFlow<BookSessionUiState> = gym!!.combine(_bookSessionUistate) {gym, uiState ->
+            errorCode = uiState.errorCode
+            if (gym == null) {
+                errorCode =
+                    ErrorCode.InternalServiceError("Selected Gym record not found. Reference = ${gymId}")
+            }
         BookSessionUiState(
             gym = gym,
             errorCode = errorCode,
-            selectedSessionScheduleIndex = uiState.selectedSessionScheduleIndex,
-            pageIndexOfSelectedSchedule = uiState.pageIndexOfSelectedSchedule,
-            scheduleList = scheduleListForDisplay,
+            selectedScheduleInfo = uiState.selectedScheduleInfo,
+            scheduleList = mapScheduleListToDisplayName(gym),
             selectedActivity = uiState.selectedActivity
         )
-    }.stateIn(
+    }
+    .stateIn(
         viewModelScope,
         SharingStarted.WhileSubscribed(5000L),
         (BookSessionUiState())
     )
-
     fun setSelectedSessionScheduleIndex(
-        selectedSessionScheduleIndex: Int,
-        pageIndexOfSelectedSchedule: Int
+        selectedScheduleInfo: Pair<Int?, Int?>
     ) {
         _bookSessionUistate.update { currentState ->
             currentState.copy(
-                selectedSessionScheduleIndex = selectedSessionScheduleIndex,
-                pageIndexOfSelectedSchedule = pageIndexOfSelectedSchedule
+                selectedScheduleInfo = selectedScheduleInfo
             )
         }
     }
-    private fun retrieveScheduleForUserDisplay(
-        scheduleList: Map<String, Map<String, List<SessionSchedule>>>
-    ): List<Pair<String, List<SessionSchedule>?>> {
+    private fun mapScheduleListToDisplayName(gym: Gym?
+    ): List<Pair<String, List<SessionSchedule>?>>? {
+        var activityToScheduleListForDisplay: MutableList<Pair<String, List<SessionSchedule>?>>? = null
+        if (gym == null || gym.activityToDayToScheduleListMap.isNullOrEmpty()) {
+            return activityToScheduleListForDisplay
+        }
         val calendar = Calendar.getInstance()
         val today = calendar[Calendar.DAY_OF_WEEK] - 1
-        val activityToScheduleListForDisplay: MutableList<Pair<String, List<SessionSchedule>?>> = mutableListOf()
+      activityToScheduleListForDisplay = mutableListOf()
         for (dayIndex in 0..SCHEDULE_DISPLAY_FOR_DAYS - 1) {
-            val scheduleListForActivity = (scheduleList[bookSessionUiState.value.selectedActivity]?.let {
-                    retrieveScheduleForActivity(it, DAYS_NAME[today + dayIndex])
-                })
+            val scheduleListForActivity = (gym.activityToDayToScheduleListMap[_bookSessionUistate.value.selectedActivity]?.let
+            {
+                retrieveScheduleForActivity(it, DAYS_NAME[(today + dayIndex) % NUM_OF_DAYS_IN_WEEK])
+            })
             val displayName: String = getDisplayName(dayIndex)
             activityToScheduleListForDisplay.add(Pair(displayName, scheduleListForActivity))
         }
