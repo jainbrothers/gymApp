@@ -33,19 +33,15 @@ import com.example.gymapp.R
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -144,14 +140,14 @@ fun PreciseLocation(){
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchBox(
-    searchQuery: String,
-    onSearchQueryChange: (String) -> Unit,
+    searchText: String,
+    onSearchTextChange: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(modifier = Modifier.padding(16.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-        OutlinedTextField(value = searchQuery,
-            onValueChange = onSearchQueryChange,
-            label = { Text(text = "Search Airports")},
+        OutlinedTextField(value = searchText,
+            onValueChange = onSearchTextChange,
+            label = { Text(text = "Search Gyms")},
             modifier = Modifier.fillMaxWidth())
     }
 }
@@ -164,23 +160,23 @@ fun HomeScreen(
     val searchQuery:String = gymViewModel.searchQuery
     Column() {
         SearchBox(
-            searchQuery = searchQuery,
-            onSearchQueryChange = {gymViewModel.updateSearchQuery(it)}
+            searchText = searchQuery,
+            onSearchTextChange = {gymViewModel.updateSearchQuery(it)}
         )
-        GymListApp(onItemClick = onClickGymDetails, gymViewModel = gymViewModel)
+        GymListing(onItemClick = onClickGymDetails, gymViewModel = gymViewModel)
 
     }
 
 }
 
 @Composable
-fun GymListApp(
+fun GymListing(
     modifier: Modifier = Modifier,
     onItemClick: (String) -> Unit,
     gymViewModel: GymListingViewModel
 
 ) {
-    val homeScreenUIState = gymViewModel.homeScreenUiState.collectAsState()
+    val homeScreenUIState = gymViewModel.uiState.collectAsState()
     Column {
         ShowGymList(
             homeScreenUIState.value.gyms,

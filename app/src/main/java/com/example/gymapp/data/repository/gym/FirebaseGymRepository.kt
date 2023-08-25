@@ -20,7 +20,6 @@ import com.example.gymapp.data.repository.GYM_TABLE_NAME
 import com.example.gymapp.model.Gym
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.dataObjects
-import com.google.firebase.firestore.ktx.toObject
 import kotlinx.coroutines.flow.Flow
 
 import javax.inject.Inject

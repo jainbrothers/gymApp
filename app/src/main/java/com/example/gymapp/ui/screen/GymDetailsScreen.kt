@@ -237,7 +237,7 @@ fun ShowWorkouts(activities: List<String>) {
 fun ShowGymDetails(
     gymDetailsViewModel: GymDetailsViewModel = hiltViewModel()
 ) {
-    val gymUIState by gymDetailsViewModel.gymUIState.collectAsState()
+    val gymUIState by gymDetailsViewModel.gymDetailsUiState.collectAsState()
     val gym = gymUIState.gym
     Column(Modifier.fillMaxSize()) {
         AutoSlidingCarousel(

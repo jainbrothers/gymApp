@@ -7,7 +7,7 @@ data class GymListingUiState (
     val gyms: List<Gym> = listOf()
 )
 
-data class GymUiState (
+data class GymDetailsUiState (
     val gym: Gym = Gym()
 )
 

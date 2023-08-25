@@ -36,7 +36,6 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -59,7 +58,7 @@ class GymListingViewModel @Inject constructor(
         getGymList()
     }
 
-    val homeScreenUiState: StateFlow<HomeScreenUiState> = gymListingUiState.combine(userUiState){
+    val uiState: StateFlow<HomeScreenUiState> = gymListingUiState.combine(userUiState){
             gymListState, userState ->
         HomeScreenUiState(
             user = userState.user,
