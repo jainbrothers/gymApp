@@ -22,6 +22,7 @@ import com.example.gymapp.data.repository.END_HOUR_FIELD_NAME
 import com.example.gymapp.data.repository.END_MINUTE_FIELD_NAME
 import com.example.gymapp.data.repository.IMAGE_URLS_FIELD_NAME
 import com.example.gymapp.data.repository.PIN_CODE_FIELD_NAME
+import com.example.gymapp.data.repository.SCHEDULE_LIST_FIELD_NAME
 import com.example.gymapp.data.repository.STREET_NAME_AND_NUMBER_FIELD_NAME
 import com.google.firebase.firestore.DocumentId
 import com.google.firebase.firestore.PropertyName
@@ -84,6 +85,23 @@ data class Gym(
     @set:PropertyName(IMAGE_URLS_FIELD_NAME)
     var imageUrls: List<String> = listOf(),
     val timings: List<Timings> = listOf(),
-    val amenities: List<String> = listOf()
+    val amenities: List<String> = listOf(),
+    @get:PropertyName(SCHEDULE_LIST_FIELD_NAME)
+    @set:PropertyName(SCHEDULE_LIST_FIELD_NAME)
+    var activityToDayToScheduleListMap: Map<String, Map<String, List<SessionSchedule>>> = emptyMap()
     )
 
+data class SessionSchedule(
+    @get:PropertyName(BEGIN_HOUR_FIELD_NAME)
+    @set:PropertyName(BEGIN_HOUR_FIELD_NAME)
+    var beginHour: Int = 0,
+    @get:PropertyName(BEGIN_MINUTE_FIELD_NAME)
+    @set:PropertyName(BEGIN_MINUTE_FIELD_NAME)
+    var beginMinute: Int = 0,
+    @get:PropertyName(END_HOUR_FIELD_NAME)
+    @set:PropertyName(END_HOUR_FIELD_NAME)
+    var endHour: Int = 0,
+    @get:PropertyName(END_MINUTE_FIELD_NAME)
+    @set:PropertyName(END_MINUTE_FIELD_NAME)
+    var endMinute: Int = 0
+)

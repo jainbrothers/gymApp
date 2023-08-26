@@ -5,7 +5,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.gymapp.data.repository.gym.GymRepository
 import com.example.gymapp.model.Gym
+import com.example.gymapp.ui.navigation.GYM_ID_ARGUMENT_NAME
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import com.example.gymapp.ui.screen.viewmodel.state.GymDetailsUiState
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -25,10 +27,10 @@ data class GymDetailsUiState( // Create Gym object with None values
 
 @HiltViewModel
 class GymDetailsViewModel @Inject constructor(
-    val savedStateHandle: SavedStateHandle, val gymRepository: GymRepository
+    savedStateHandle: SavedStateHandle, val gymRepository: GymRepository
 ) : ViewModel() {
     val gymDetailsUiState = MutableStateFlow(GymDetailsUiState())
-    private val gymId: String = checkNotNull(savedStateHandle["gymId"])
+    private val gymId: String = checkNotNull(savedStateHandle[GYM_ID_ARGUMENT_NAME])
     init{
         getGymDetails()
     }

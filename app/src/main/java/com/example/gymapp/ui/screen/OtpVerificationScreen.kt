@@ -42,7 +42,6 @@ fun OtpVerificationScreen(
 {
     val otpViewModel: OtpVerificationViewModel = hiltViewModel()
     val uiState by otpViewModel.otpVerificationUiState.collectAsState()
-//    val otpVerificationStatus by otpViewModel.otpVerificationStatus.collectAsState()
     val isOtpVerificationDone = (
             uiState.otpVerificationState is OtpVerificationState.Successful
                     || uiState.userRegistrationState == UserRegistrationState.OTP_VERICATION_SUCCESSFUL

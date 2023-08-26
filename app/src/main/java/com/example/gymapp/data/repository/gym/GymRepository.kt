@@ -26,5 +26,4 @@ interface GymRepository {
     val gyms: Flow<List<Gym>>
     suspend fun getGymListBySearch(searchStr: String): Flow<List<Gym>>
     suspend fun getGymById(gymId: String): Flow<Gym?>
-
 }
