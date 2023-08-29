@@ -16,6 +16,8 @@
 
 package com.example.gymapp.model
 
+import android.os.Parcel
+import android.os.Parcelable
 import com.example.gymapp.data.repository.BEGIN_HOUR_FIELD_NAME
 import com.example.gymapp.data.repository.BEGIN_MINUTE_FIELD_NAME
 import com.example.gymapp.data.repository.END_HOUR_FIELD_NAME
@@ -73,7 +75,6 @@ data class Address(
     var pinCode: String = "",
     val location: Location = Location()
 )
-
 data class Gym(
     @DocumentId val id: String = "",
     val name: String = "",
@@ -90,7 +91,6 @@ data class Gym(
     @set:PropertyName(SCHEDULE_LIST_FIELD_NAME)
     var activityToDayToScheduleListMap: Map<String, Map<String, List<SessionSchedule>>> = emptyMap()
     )
-
 data class SessionSchedule(
     @get:PropertyName(BEGIN_HOUR_FIELD_NAME)
     @set:PropertyName(BEGIN_HOUR_FIELD_NAME)
@@ -104,4 +104,29 @@ data class SessionSchedule(
     @get:PropertyName(END_MINUTE_FIELD_NAME)
     @set:PropertyName(END_MINUTE_FIELD_NAME)
     var endMinute: Int = 0
-)
+) : Parcelable {
+    constructor(parcel: Parcel) : this(
+        parcel.readInt(),
+        parcel.readInt(),
+        parcel.readInt(),
+        parcel.readInt()
+    ) {
+    }
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeInt(beginHour)
+        parcel.writeInt(beginMinute)
+        parcel.writeInt(endHour)
+        parcel.writeInt(endMinute)
+    }
+    override fun describeContents(): Int {
+        return 0
+    }
+    companion object CREATOR : Parcelable.Creator<SessionSchedule> {
+        override fun createFromParcel(parcel: Parcel): SessionSchedule {
+            return SessionSchedule(parcel)
+        }
+        override fun newArray(size: Int): Array<SessionSchedule?> {
+            return arrayOfNulls(size)
+        }
+    }
+}

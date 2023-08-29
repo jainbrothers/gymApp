@@ -146,11 +146,13 @@ fun GymNavHost(
                 SplashScreen(
                     unregisteredUserHandler = {
                         navController.popBackStack()
-                        navController.navigate(route = ScreenName.USER_REGISTER_SCREEN.name)
+                        navController.navigate(route = "${ScreenName.BOOK_SESSION.name}/2F2MECcizFQ1IWV7ElW7aw")
+//                        navController.navigate(route = ScreenName.USER_REGISTER_SCREEN.name)
                     },
                     registeredUserHandler = {
                         navController.popBackStack()
-                        navController.navigate(route = ScreenName.HOME_SCREEN.name)
+//                        navController.navigate(route = ScreenName.HOME_SCREEN.name)
+                        navController.navigate(route = "${ScreenName.BOOK_SESSION.name}/2MECcizFQ1IWV7ElW7aw")
                     },
                     otpVerifiedUserHandler = {
                         navController.popBackStack()
@@ -208,7 +210,24 @@ fun GymNavHost(
                     }
                 )
             ) {
-                BookSession()
+                BookSession(
+                    onProceedButtonClick = {sessionSchedule ->
+                        navController.navigate(route = "${ScreenName.BOOK_SESSION_CONFIRMATION.name}/${sessionSchedule}")
+                    }
+                )
+            }
+            composable(
+                route = ScreenName.BOOK_SESSION_CONFIRMATION.name + "/{${SCHEDULE_SESSION_ARGUMENT_NAME}}",
+                arguments = listOf(navArgument(SCHEDULE_SESSION_ARGUMENT_NAME) {
+                    type = NavType.StringType
+                }
+                )
+            ) {
+                BookSession(
+                    onProceedButtonClick = {sessionSchedule ->
+                        navController.navigate(route = "${ScreenName.BOOK_SESSION_CONFIRMATION.name}/${sessionSchedule}")
+                    }
+                )
             }
         }
     }
