@@ -10,6 +10,8 @@ import com.example.gymapp.model.SessionSchedule
 import com.example.gymapp.ui.navigation.GYM_ID_ARGUMENT_NAME
 import com.example.gymapp.ui.screen.enumeration.ErrorCode
 import com.example.gymapp.ui.screen.viewmodel.state.BookSessionUiState
+import com.example.gymapp.ui.screen.viewmodel.state.DaywiseSessionsInfo
+import com.example.gymapp.ui.screen.viewmodel.state.SelectedSessionInfo
 import com.example.gymapp.util.DAYS_NAME
 import com.example.gymapp.util.DAY_INDEX_TO_DISPLAY_NAME
 import com.example.gymapp.util.NUM_OF_DAYS_IN_WEEK
@@ -36,14 +38,14 @@ class BookSessionViewModel @Inject constructor(
 ) : ViewModel() {
     private val gymId: String = checkNotNull(savedStateHandle[GYM_ID_ARGUMENT_NAME])
     private val _bookSessionUistate = MutableStateFlow(BookSessionUiState())
-    private var gym: Flow<Gym?>? = null
+    private var gymFlow: Flow<Gym?>? = null
     private var errorCode: ErrorCode = ErrorCode.None
     init {
         viewModelScope.launch {
-            gym = gymRepository.getGymById(gymId)
+            gymFlow = gymRepository.getGymById(gymId)
         }
     }
-    val bookSessionUiState: StateFlow<BookSessionUiState> = gym!!.combine(_bookSessionUistate) {gym, uiState ->
+    val bookSessionUiState: StateFlow<BookSessionUiState> = gymFlow!!.combine(_bookSessionUistate) {gym, uiState ->
             errorCode = uiState.errorCode
             if (gym == null) {
                 errorCode =
@@ -52,8 +54,8 @@ class BookSessionViewModel @Inject constructor(
         BookSessionUiState(
             gym = gym,
             errorCode = errorCode,
-            selectedScheduleInfo = uiState.selectedScheduleInfo,
-            scheduleList = mapScheduleListToDisplayName(gym),
+            selectedSessionInfo = uiState.selectedSessionInfo,
+            daywiseSessionsInfo = mapScheduleListToDisplayName(gym) as List<DaywiseSessionsInfo>?,
             selectedActivity = uiState.selectedActivity
         )
     }
@@ -63,30 +65,29 @@ class BookSessionViewModel @Inject constructor(
         (BookSessionUiState())
     )
     fun setSelectedSessionScheduleIndex(
-        selectedScheduleInfo: Pair<Int?, Int?>
+        selectedSessionInfo: SelectedSessionInfo
     ) {
         _bookSessionUistate.update { currentState ->
             currentState.copy(
-                selectedScheduleInfo = selectedScheduleInfo
+                selectedSessionInfo = selectedSessionInfo
             )
         }
     }
     private fun mapScheduleListToDisplayName(gym: Gym?
-    ): List<Pair<String, List<SessionSchedule>?>>? {
-        var activityToScheduleListForDisplay: MutableList<Pair<String, List<SessionSchedule>?>>? = null
+    ): List<DaywiseSessionsInfo?>? {
         if (gym == null || gym.activityToDayToScheduleListMap.isNullOrEmpty()) {
-            return activityToScheduleListForDisplay
+            return null
         }
         val calendar = Calendar.getInstance()
         val today = calendar[Calendar.DAY_OF_WEEK] - 1
-      activityToScheduleListForDisplay = mutableListOf()
+        var activityToScheduleListForDisplay: MutableList<DaywiseSessionsInfo?> = mutableListOf()
         for (dayIndex in 0..SCHEDULE_DISPLAY_FOR_DAYS - 1) {
             val scheduleListForActivity = (gym.activityToDayToScheduleListMap[_bookSessionUistate.value.selectedActivity]?.let
             {
                 retrieveScheduleForActivity(it, DAYS_NAME[(today + dayIndex) % NUM_OF_DAYS_IN_WEEK])
             })
             val displayName: String = getDisplayName(dayIndex)
-            activityToScheduleListForDisplay.add(Pair(displayName, scheduleListForActivity))
+            activityToScheduleListForDisplay.add(DaywiseSessionsInfo(scheduleListForActivity?.toImmutableList(), displayName))
         }
         return activityToScheduleListForDisplay.toImmutableList()
     }

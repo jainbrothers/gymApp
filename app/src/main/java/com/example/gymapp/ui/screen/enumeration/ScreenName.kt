@@ -10,5 +10,5 @@ enum class ScreenName(@StringRes val title: Int) {
     HOME_SCREEN(title = R.string.gym_listing),
     LOCATION_PERMISSION_SCREEN(R.string.location_permission),
     GYM_DETAILS(title = R.string.gym_details),
-    BOOK_SESSION(title = R.string.book_session)
+    BOOK_SESSION(title = R.string.book_session),
 }

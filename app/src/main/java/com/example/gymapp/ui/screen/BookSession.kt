@@ -6,7 +6,6 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -23,7 +22,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LeadingIconTab
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.TabRow
+import androidx.compose.material3.ScrollableTabRow
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -44,8 +43,11 @@ import com.example.gymapp.model.SessionSchedule
 import com.example.gymapp.ui.screen.enumeration.ErrorCode
 import com.example.gymapp.ui.screen.viewmodel.BookSessionViewModel
 import com.example.gymapp.ui.screen.viewmodel.state.BookSessionUiState
+import com.example.gymapp.ui.screen.viewmodel.state.DaywiseSessionsInfo
+import com.example.gymapp.ui.screen.viewmodel.state.SelectedSessionInfo
 import com.example.gymapp.ui.theme.MyApplicationTheme
 import kotlinx.coroutines.launch
+
 typealias TabContentRenderingFunc = @Composable (Int)->Unit
 
 private const val TAG = "Workout selection tag"
@@ -55,15 +57,19 @@ fun BookSession(
 ) {
     val bookSessionViewModel: BookSessionViewModel = hiltViewModel()
     val uiState by bookSessionViewModel.bookSessionUiState.collectAsState()
-    Column(modifier = modifier
-        .fillMaxWidth()
-        .fillMaxSize()) {
+    Column(
+        modifier = modifier.fillMaxWidth()
+    ) {
         if (uiState.errorCode != ErrorCode.None) {
             ErrorMessage(uiState.errorCode, modifier)
         } else {
-            GymHighlightMessage(modifier)
-            ScheduleSession(bookSessionViewModel, uiState, modifier)
-            ProceedButton(modifier)
+            Column (
+                modifier = modifier.fillMaxWidth().weight(1f)
+            ) {
+                GymHighlightMessage(modifier)
+                ScheduleSession(bookSessionViewModel, uiState, modifier)
+            }
+            ProceedButton(uiState, modifier)
         }
     }
 }
@@ -111,14 +117,14 @@ fun ScheduleList(
 {
     Box(modifier = modifier
         .fillMaxWidth()) {
-        if (uiState.scheduleList.isNullOrEmpty()) {
+        if (uiState.daywiseSessionsInfo.isNullOrEmpty()) {
             Text(text = "No schedule found for ${uiState.selectedActivity} activity!!!")
             return
         }
         ScheduleListForActivity(
-            uiState.scheduleList,
-            uiState.selectedScheduleInfo,
-            {newSelectedScheduleInfo -> bookSessionViewModel.setSelectedSessionScheduleIndex(newSelectedScheduleInfo)}
+            uiState.daywiseSessionsInfo,
+            uiState.selectedSessionInfo,
+            {newSessionScheduleInfo -> bookSessionViewModel.setSelectedSessionScheduleIndex(newSessionScheduleInfo)}
         )
     }
 }
@@ -126,22 +132,22 @@ class DayWiseScheduleTabItem(val title: String, val icon: ImageVector, val rende
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ScheduleListForActivity(
-    dayWiseScheduleList: List<Pair<String, List<SessionSchedule>?>> ,
-    selectedScheduleInfo: Pair<Int?, Int?>,
-    onScheduleSelection: (Pair<Int, Int>) -> Unit,
+    dayWiseScheduleList: List<DaywiseSessionsInfo>,
+    selectedSessionInfo: SelectedSessionInfo?,
+    onSessionSelection: (SelectedSessionInfo) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val scheduleTabList: MutableList<DayWiseScheduleTabItem> = mutableListOf()
     dayWiseScheduleList.forEach {listItem ->
-        scheduleTabList.add(DayWiseScheduleTabItem(listItem.first, Icons.Default.Home, {currentTabIndex -> ScheduleListForDay(
-            listItem.second,
-            selectedScheduleInfo,
+        scheduleTabList.add(DayWiseScheduleTabItem(listItem.displayName, Icons.Default.Home, {currentTabIndex -> ScheduleListForDay(
+            listItem.sessionList,
+            selectedSessionInfo,
             currentTabIndex,
-            onScheduleSelection
+            onSessionSelection
         )}))
     }
     val pagerState: PagerState = rememberPagerState()
-    Column(modifier = Modifier.fillMaxSize()) {
+    Column(modifier = Modifier.fillMaxWidth()) {
         ScheduleTabs(scheduleTabList, pagerState)
         ScheduleTabContent(scheduleTabList, pagerState)
     }
@@ -150,7 +156,7 @@ fun ScheduleListForActivity(
 @Composable
 fun ScheduleTabs(tabs: List<DayWiseScheduleTabItem>, pagerState: PagerState) {
     val scope = rememberCoroutineScope()
-    TabRow(
+    ScrollableTabRow(
         selectedTabIndex = pagerState.currentPage,
         containerColor = MaterialTheme.colorScheme.primaryContainer,
         indicator = {tabPositions ->
@@ -166,7 +172,7 @@ fun ScheduleTabs(tabs: List<DayWiseScheduleTabItem>, pagerState: PagerState) {
                     }
                 },
                 text = {
-                    Text(tabItem.title)
+                    Text(tabItem.title, softWrap = false)
                 },
                 icon = {
                     Icon(
@@ -187,9 +193,9 @@ fun ScheduleTabContent(tabs: List<DayWiseScheduleTabItem>, pagerState: PagerStat
 @Composable
 fun ScheduleListForDay(
     scheduleList: List<SessionSchedule>?,
-    selectedScheduleInfo: Pair<Int?, Int?>,
+    selectedSessionInfo: SelectedSessionInfo?,
     currentTabIndex: Int,
-    onScheduleSelection: (Pair<Int, Int>) -> Unit,
+    onSessionSelection: (SelectedSessionInfo) -> Unit,
     modifier: Modifier = Modifier
 ) {
     if (scheduleList.isNullOrEmpty()) {
@@ -203,8 +209,8 @@ fun ScheduleListForDay(
         items(scheduleList) { item ->
             var backgroundColor = Color.Transparent
             val isItemSelected = (
-                    scheduleList.indexOf(item) == selectedScheduleInfo.first &&
-                            currentTabIndex == selectedScheduleInfo.second)
+                    scheduleList.indexOf(item) == selectedSessionInfo?.scheduleIndex &&
+                            currentTabIndex == selectedSessionInfo?.scheduleTabIndex)
 
             if (isItemSelected) {
                 backgroundColor = Color.Cyan
@@ -223,7 +229,7 @@ fun ScheduleListForDay(
                     )
                     .clickable {
                         val index = scheduleList.indexOf(item)
-                        onScheduleSelection(Pair(index, currentTabIndex))
+                        onSessionSelection(SelectedSessionInfo(index, currentTabIndex, item))
                     },
                 contentAlignment = Alignment.Center
             ) {
@@ -235,16 +241,17 @@ fun ScheduleListForDay(
     }
 }
 @Composable
-fun ProceedButton(modifier: Modifier = Modifier) {
+fun ProceedButton(uiState: BookSessionUiState, modifier: Modifier = Modifier) {
     Column (
         modifier = modifier
             .fillMaxWidth()
             .padding(10.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
     )
     {
         Button(
-            onClick = { /*TODO*/ }
+            onClick = { /*TODO*/ },
+            enabled = uiState.selectedSessionInfo != null
         ) {
             Text(
                 text = "Book Session",
