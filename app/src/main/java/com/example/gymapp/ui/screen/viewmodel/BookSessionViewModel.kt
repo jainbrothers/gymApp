@@ -6,10 +6,12 @@ import androidx.lifecycle.viewModelScope
 import com.example.gymapp.application.SCHEDULE_DISPLAY_FOR_DAYS
 import com.example.gymapp.data.repository.gym.GymRepository
 import com.example.gymapp.model.Gym
-import com.example.gymapp.model.SessionSchedule
+import com.example.gymapp.model.SessionTiming
 import com.example.gymapp.ui.navigation.GYM_ID_ARGUMENT_NAME
 import com.example.gymapp.ui.screen.enumeration.ErrorCode
 import com.example.gymapp.ui.screen.viewmodel.state.BookSessionUiState
+import com.example.gymapp.ui.screen.viewmodel.state.DaywiseSessionSchedule
+import com.example.gymapp.ui.screen.viewmodel.state.SelectedSessionInfo
 import com.example.gymapp.util.DAYS_NAME
 import com.example.gymapp.util.DAY_INDEX_TO_DISPLAY_NAME
 import com.example.gymapp.util.NUM_OF_DAYS_IN_WEEK
@@ -36,14 +38,14 @@ class BookSessionViewModel @Inject constructor(
 ) : ViewModel() {
     private val gymId: String = checkNotNull(savedStateHandle[GYM_ID_ARGUMENT_NAME])
     private val _bookSessionUistate = MutableStateFlow(BookSessionUiState())
-    private var gym: Flow<Gym?>? = null
+    private var gymFlow: Flow<Gym?>? = null
     private var errorCode: ErrorCode = ErrorCode.None
     init {
         viewModelScope.launch {
-            gym = gymRepository.getGymById(gymId)
+            gymFlow = gymRepository.getGymById(gymId)
         }
     }
-    val bookSessionUiState: StateFlow<BookSessionUiState> = gym!!.combine(_bookSessionUistate) {gym, uiState ->
+    val bookSessionUiState: StateFlow<BookSessionUiState> = gymFlow!!.combine(_bookSessionUistate) {gym, uiState ->
             errorCode = uiState.errorCode
             if (gym == null) {
                 errorCode =
@@ -52,8 +54,8 @@ class BookSessionViewModel @Inject constructor(
         BookSessionUiState(
             gym = gym,
             errorCode = errorCode,
-            selectedScheduleInfo = uiState.selectedScheduleInfo,
-            scheduleList = mapScheduleListToDisplayName(gym),
+            selectedSessionInfo = uiState.selectedSessionInfo,
+            daywiseSessionSchedule = mapSessionScheduleToDisplayName(gym) as List<DaywiseSessionSchedule>?,
             selectedActivity = uiState.selectedActivity
         )
     }
@@ -63,32 +65,31 @@ class BookSessionViewModel @Inject constructor(
         (BookSessionUiState())
     )
     fun setSelectedSessionScheduleIndex(
-        selectedScheduleInfo: Pair<Int?, Int?>
+        selectedSessionInfo: SelectedSessionInfo
     ) {
         _bookSessionUistate.update { currentState ->
             currentState.copy(
-                selectedScheduleInfo = selectedScheduleInfo
+                selectedSessionInfo = selectedSessionInfo
             )
         }
     }
-    private fun mapScheduleListToDisplayName(gym: Gym?
-    ): List<Pair<String, List<SessionSchedule>?>>? {
-        var activityToScheduleListForDisplay: MutableList<Pair<String, List<SessionSchedule>?>>? = null
-        if (gym == null || gym.activityToDayToScheduleListMap.isNullOrEmpty()) {
-            return activityToScheduleListForDisplay
+    private fun mapSessionScheduleToDisplayName(gym: Gym?
+    ): List<DaywiseSessionSchedule?>? {
+        if (gym == null || gym.activityToDayToSessionScheduleMap.isNullOrEmpty()) {
+            return null
         }
         val calendar = Calendar.getInstance()
         val today = calendar[Calendar.DAY_OF_WEEK] - 1
-      activityToScheduleListForDisplay = mutableListOf()
+        var dayWiseSessionSchedule: MutableList<DaywiseSessionSchedule?> = mutableListOf()
         for (dayIndex in 0..SCHEDULE_DISPLAY_FOR_DAYS - 1) {
-            val scheduleListForActivity = (gym.activityToDayToScheduleListMap[_bookSessionUistate.value.selectedActivity]?.let
+            val sessionSchedule = (gym.activityToDayToSessionScheduleMap[_bookSessionUistate.value.selectedActivity]?.let
             {
                 retrieveScheduleForActivity(it, DAYS_NAME[(today + dayIndex) % NUM_OF_DAYS_IN_WEEK])
             })
             val displayName: String = getDisplayName(dayIndex)
-            activityToScheduleListForDisplay.add(Pair(displayName, scheduleListForActivity))
+            dayWiseSessionSchedule.add(DaywiseSessionSchedule(sessionSchedule?.toImmutableList(), displayName))
         }
-        return activityToScheduleListForDisplay.toImmutableList()
+        return dayWiseSessionSchedule.toImmutableList()
     }
     private fun getDisplayName(dayIndex: Int): String {
         var displayName: String? = DAY_INDEX_TO_DISPLAY_NAME.get(dayIndex)
@@ -101,9 +102,9 @@ class BookSessionViewModel @Inject constructor(
     }
 
     private fun retrieveScheduleForActivity(
-        scheduleList: Map<String, List<SessionSchedule>>,
+        scheduleList: Map<String, List<SessionTiming>>,
         dayName: String
-    ): List<SessionSchedule>? {
+    ): List<SessionTiming>? {
         return scheduleList?.get(dayName)
     }
 }
