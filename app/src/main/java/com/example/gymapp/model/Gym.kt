@@ -26,56 +26,56 @@ import com.example.gymapp.data.repository.ACTIVITY_TO_DAY_TO_SESSION_SCHEDULE_FI
 import com.example.gymapp.data.repository.STREET_NAME_AND_NUMBER_FIELD_NAME
 import com.google.firebase.firestore.DocumentId
 import com.google.firebase.firestore.PropertyName
-/**
- * Data class that defines an amphibian which includes a name, type, description, and image URL.
- */
+import com.algolia.search.model.indexing.Indexable
+import kotlinx.serialization.Serializable
+import com.algolia.search.model.ObjectID
+import kotlinx.serialization.SerialName
 
-data class Session(
-    val userId: String,
-    val gymId: String,
-    val beginHour: Int,
-    val beginMinute: Int,
-    val endHour: Int,
-    val endMinute: Int,
-    val activity: String,
-    val isCancelled: Boolean
-)
 
+@Serializable
 data class Timings(
     val day: String = "",
     @get:PropertyName(BEGIN_HOUR_FIELD_NAME)
     @set:PropertyName(BEGIN_HOUR_FIELD_NAME)
+    @SerialName(BEGIN_HOUR_FIELD_NAME)
     var openingHour: Int = 0,
     @get:PropertyName(BEGIN_MINUTE_FIELD_NAME)
     @set:PropertyName(BEGIN_MINUTE_FIELD_NAME)
+    @SerialName(BEGIN_MINUTE_FIELD_NAME)
     var openingMinute: Int = 0,
     @get:PropertyName(END_HOUR_FIELD_NAME)
     @set:PropertyName(END_HOUR_FIELD_NAME)
+    @SerialName(END_HOUR_FIELD_NAME)
     var closingHour: Int = 0,
     @get:PropertyName(END_MINUTE_FIELD_NAME)
     @set:PropertyName(END_MINUTE_FIELD_NAME)
+    @SerialName(END_MINUTE_FIELD_NAME)
     var closingMinute: Int = 0
 )
 
+@Serializable
 data class Location(
     val latitude: Double = 0.0,
     val longitude: Double = 0.0
 )
 
+@Serializable
 data class Address(
     @get:PropertyName(STREET_NAME_AND_NUMBER_FIELD_NAME)
     @set:PropertyName(STREET_NAME_AND_NUMBER_FIELD_NAME)
+    @SerialName(STREET_NAME_AND_NUMBER_FIELD_NAME)
     var streetNameAndNumber: String = "",
     val locality: String = "",
     val city: String = "",
     @get:PropertyName(PIN_CODE_FIELD_NAME)
     @set:PropertyName(PIN_CODE_FIELD_NAME)
+    @SerialName(PIN_CODE_FIELD_NAME)
     var pinCode: String = "",
     val location: Location = Location()
 )
 
+@Serializable
 data class Gym(
-    @DocumentId val id: String = "",
     val name: String = "",
     val type: String = "",
     val activities: List<String> = listOf(),
@@ -83,25 +83,33 @@ data class Gym(
     val description: String = "",
     @get:PropertyName(IMAGE_URLS_FIELD_NAME)
     @set:PropertyName(IMAGE_URLS_FIELD_NAME)
+    @SerialName(IMAGE_URLS_FIELD_NAME)
     var imageUrls: List<String> = listOf(),
     val timings: List<Timings> = listOf(),
     val amenities: List<String> = listOf(),
     @get:PropertyName(ACTIVITY_TO_DAY_TO_SESSION_SCHEDULE_FIELD_NAME)
     @set:PropertyName(ACTIVITY_TO_DAY_TO_SESSION_SCHEDULE_FIELD_NAME)
-    var activityToDayToSessionScheduleMap: Map<String, Map<String, List<SessionTiming>>> = emptyMap()
-    )
+    @SerialName(ACTIVITY_TO_DAY_TO_SESSION_SCHEDULE_FIELD_NAME)
+    var activityToDayToSessionScheduleMap: Map<String, Map<String, List<SessionTiming>>> = emptyMap(),
+    @DocumentId val id: String = "1"
+)
 
+@Serializable
 data class SessionTiming(
     @get:PropertyName(BEGIN_HOUR_FIELD_NAME)
     @set:PropertyName(BEGIN_HOUR_FIELD_NAME)
+    @SerialName(BEGIN_HOUR_FIELD_NAME)
     var beginHour: Int = 0,
     @get:PropertyName(BEGIN_MINUTE_FIELD_NAME)
     @set:PropertyName(BEGIN_MINUTE_FIELD_NAME)
+    @SerialName(BEGIN_MINUTE_FIELD_NAME)
     var beginMinute: Int = 0,
     @get:PropertyName(END_HOUR_FIELD_NAME)
     @set:PropertyName(END_HOUR_FIELD_NAME)
+    @SerialName(END_HOUR_FIELD_NAME)
     var endHour: Int = 0,
     @get:PropertyName(END_MINUTE_FIELD_NAME)
     @set:PropertyName(END_MINUTE_FIELD_NAME)
+    @SerialName(END_MINUTE_FIELD_NAME)
     var endMinute: Int = 0
 )
