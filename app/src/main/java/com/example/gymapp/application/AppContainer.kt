@@ -20,7 +20,11 @@ import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
-import androidx.lifecycle.ViewModel
+import com.algolia.search.client.ClientSearch
+import com.algolia.search.client.Index
+import com.algolia.search.model.APIKey
+import com.algolia.search.model.ApplicationID
+import com.algolia.search.model.IndexName
 import com.example.gymapp.MainActivity
 import com.example.gymapp.data.repository.user.FirebaseUserRepository
 import com.example.gymapp.data.repository.gym.GymRepository
@@ -41,7 +45,6 @@ import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ViewModelComponent
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import kotlinx.serialization.json.Json
@@ -86,6 +89,16 @@ object AppModule {
     @Singleton
     @Provides
     fun provideMainActivity(): MainActivity = MainActivity.getInstance() as MainActivity
+
+    @Singleton
+    @Provides
+    fun provideGymIndex(): Index {
+        val client = ClientSearch(
+            applicationID = ApplicationID("UV7REXJNQJ"),
+            apiKey = APIKey("0b11699168f3d5e74cdc4bd6cdd839ed")
+        )
+        return client.initIndex(indexName = IndexName("Gym"))
+    }
 }
 
 @InstallIn(SingletonComponent::class)
