@@ -47,7 +47,7 @@ class GymListingViewModel @Inject constructor(
     val gymRepository: GymRepository,
     val userDetailRepository: UserDetailRepository,
     val userRepository: UserRepository
-    ) : ViewModel() {
+) : ViewModel() {
     val gymListingUiState = MutableStateFlow(GymListingUiState())
     val userUiState = MutableStateFlow(UserUiState())
     var searchQuery by mutableStateOf("")
@@ -58,24 +58,24 @@ class GymListingViewModel @Inject constructor(
         getGymList()
     }
 
-    val uiState: StateFlow<HomeScreenUiState> = gymListingUiState.combine(userUiState){
-            gymListState, userState ->
-        HomeScreenUiState(
-            user = userState.user,
-            gyms = gymListState.gyms
+    val uiState: StateFlow<HomeScreenUiState> =
+        gymListingUiState.combine(userUiState) { gymListState, userState ->
+            HomeScreenUiState(
+                user = userState.user,
+                gyms = gymListState.gyms
+            )
+        }.stateIn(
+            viewModelScope,
+            SharingStarted.WhileSubscribed(5000L),
+            (HomeScreenUiState())
         )
-    }.stateIn(
-        viewModelScope,
-        SharingStarted.WhileSubscribed(5000L),
-        (HomeScreenUiState())
-    )
 
 
-    private fun getGymList(){
+    private fun getGymList() {
         viewModelScope.launch {
             Log.d("sarkar", "searchQuery $searchQuery")
-            gymRepository.getGymListBySearch(searchQuery).collect{ gyms ->
-                gymListingUiState.update{ currentState ->
+            gymRepository.getGymListBySearch(searchQuery).collect { gyms ->
+                gymListingUiState.update { currentState ->
                     currentState.copy(
                         gyms = gyms
                     )
@@ -83,9 +83,10 @@ class GymListingViewModel @Inject constructor(
             }
         }
     }
-    private fun getUser(){
+
+    private fun getUser() {
         viewModelScope.launch {
-            userRepository.getbyId(userId = userDetailRepository.userId.first()).collect{ user ->
+            userRepository.getbyId(userId = userDetailRepository.userId.first()).collect { user ->
                 userUiState.update { currentState ->
                     currentState.copy(
                         user = user ?: User()
