@@ -18,6 +18,7 @@ package com.example.gymapp.ui.screen
 
 import android.Manifest
 import android.util.Log
+import androidx.compose.foundation.border
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -32,19 +33,27 @@ import androidx.compose.foundation.lazy.LazyColumn
 import com.example.gymapp.R
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material3.Button
 
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -52,6 +61,7 @@ import com.example.gymapp.model.Gym
 import com.example.gymapp.ui.screen.viewmodel.GymListingViewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.example.gymapp.ui.screen.viewmodel.state.HomeScreenUiState
 import com.example.gymapp.ui.theme.MyApplicationTheme
 import com.example.gymapp.ui.utils.AutoSlidingCarousel
 import com.google.accompanist.pager.ExperimentalPagerApi
@@ -144,42 +154,53 @@ fun SearchBox(
     onSearchTextChange: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Column(modifier = Modifier.padding(16.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+//    Column(modifier = Modifier.padding(16.dp), horizontalAlignment = Alignment.CenterHorizontally) {
         OutlinedTextField(value = searchText,
             onValueChange = onSearchTextChange,
             label = { Text(text = "Search Gyms")},
-            modifier = Modifier.fillMaxWidth())
-    }
+            modifier = Modifier.fillMaxWidth()
+        )
 }
 
 @Composable
 fun HomeScreen(
+    onClickLocationSelection: () -> Unit,
     onClickGymDetails: (String) -> Unit,
     gymViewModel: GymListingViewModel = hiltViewModel()
 ) {
+    val homeScreenUIState = gymViewModel.uiState.collectAsState()
+    val city = homeScreenUIState.value.user.city
     val searchQuery:String = gymViewModel.searchQuery
     Column() {
-        SearchBox(
-            searchText = searchQuery,
-            onSearchTextChange = {gymViewModel.updateSearchQuery(it)}
-        )
-        GymListing(onItemClick = onClickGymDetails, gymViewModel = gymViewModel)
-
+        Row {
+            IconButton(onClick = onClickLocationSelection) {
+                Icon(
+                    painter = painterResource(id = R.drawable.round_location_on_24),
+                    contentDescription = stringResource(R.string.back_button)
+                )
+            }
+            Text(text = city)
+            SearchBox(
+                searchText = searchQuery,
+                onSearchTextChange = {gymViewModel.updateSearchQuery(it)}
+            )
+        }
+        GymListing(onItemClick = onClickGymDetails, gyms = homeScreenUIState.value.gyms)
     }
-
 }
 
 @Composable
 fun GymListing(
     modifier: Modifier = Modifier,
     onItemClick: (String) -> Unit,
-    gymViewModel: GymListingViewModel
+    gyms: List<Gym>
 
 ) {
-    val homeScreenUIState = gymViewModel.uiState.collectAsState()
+
     Column {
         ShowGymList(
-            homeScreenUIState.value.gyms,
+//            homeScreenUIState.value.gyms,
+            gyms,
             modifier = modifier.fillMaxSize(), onItemClick = onItemClick
         )
     }

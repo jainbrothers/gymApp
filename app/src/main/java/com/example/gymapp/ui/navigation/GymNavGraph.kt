@@ -29,16 +29,12 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
@@ -50,9 +46,11 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.gymapp.R
+import com.example.gymapp.model.City
 import com.example.gymapp.ui.screen.BookSession
 import com.example.gymapp.ui.screen.HomeScreen
-import com.example.gymapp.ui.screen.LocationPermissionScreen
+import com.example.gymapp.ui.screen.LocationPermission
+import com.example.gymapp.ui.screen.LocationSelectionScreen
 import com.example.gymapp.ui.screen.OtpVerificationScreen
 import com.example.gymapp.ui.screen.ShowGymDetails
 import com.example.gymapp.ui.screen.SplashScreen
@@ -109,6 +107,7 @@ fun GymNavHost(
     modifier: Modifier = Modifier,
 ) {
     val defaultStartScreen = ScreenName.SPLASH_SCREEN
+//    val defaultStartScreen = ScreenName.HOME_SCREEN
     // Get current back stack entry
     val backStackEntry by navController.currentBackStackEntryAsState()
 
@@ -184,6 +183,9 @@ fun GymNavHost(
             }
             composable(route = ScreenName.HOME_SCREEN.name) {
                 HomeScreen(
+                    onClickLocationSelection = {
+                        navController.navigate(route = "${ScreenName.LOCATION_PERMISSION_SCREEN.name}")
+                    },
                     onClickGymDetails = { gymId ->
                         navController.navigate(route = "${ScreenName.GYM_DETAILS.name}/${gymId}")
                     }
@@ -205,7 +207,15 @@ fun GymNavHost(
                 )
             }
             composable(route = ScreenName.LOCATION_PERMISSION_SCREEN.name) {
-                LocationPermissionScreen()
+                val cityList: List<City> = listOf(
+                    City("1", "Bangalore"),
+                    City("2", "Pune"),
+                    City("3", "Noida"),
+                    City("4", "Mumbai"),
+                    City("5", "Hyderabad"),
+                    City("6", "New Delhi"),
+                )
+                LocationSelectionScreen(cityList)
             }
             composable(
                 route = ScreenName.BOOK_SESSION.name + "/{${GYM_ID_ARGUMENT_NAME}}" + "/{${ACTIVITY_ARGUMENT_NAME}}",

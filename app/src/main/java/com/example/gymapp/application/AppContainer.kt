@@ -96,6 +96,7 @@ object AppModule {
         val client = ClientSearch(
             applicationID = ApplicationID("UV7REXJNQJ"),
             apiKey = APIKey("0b11699168f3d5e74cdc4bd6cdd839ed")
+//            apiKey = APIKey("832ac118fb2a762e60e7162952d0011e")
         )
         return client.initIndex(indexName = IndexName("Gym"))
     }

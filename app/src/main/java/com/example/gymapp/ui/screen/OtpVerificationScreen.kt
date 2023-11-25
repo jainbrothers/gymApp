@@ -42,10 +42,11 @@ fun OtpVerificationScreen(
 {
     val otpViewModel: OtpVerificationViewModel = hiltViewModel()
     val uiState by otpViewModel.otpVerificationUiState.collectAsState()
-    val isOtpVerificationDone = (
-            uiState.otpVerificationState is OtpVerificationState.Successful
-                    || uiState.userRegistrationState == UserRegistrationState.OTP_VERICATION_SUCCESSFUL
-            )
+//    val isOtpVerificationDone = (
+//            uiState.otpVerificationState is OtpVerificationState.Successful
+//                    || uiState.userRegistrationState == UserRegistrationState.OTP_VERICATION_SUCCESSFUL
+//            )
+    val isOtpVerificationDone = true // this line is to bypass the OTP verification
     if (isOtpVerificationDone) {
         LaunchedEffect(uiState.otpVerificationState) {
             otpViewModel.persistDetailsOfAuthenticatedUser()
