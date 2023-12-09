@@ -196,23 +196,14 @@ fun GymNavHost(
                 }
                 )
             ) {
-                ShowGymDetails(
-                    onClickBookSession = { gymId, activity ->
-                        navController.navigate(
-                            route = "${ScreenName.BOOK_SESSION.name}/${gymId}/${activity}"
-                        )
-                    }
-                )
+                ShowGymDetails()
             }
             composable(route = ScreenName.LOCATION_PERMISSION_SCREEN.name) {
                 LocationPermissionScreen()
             }
             composable(
-                route = ScreenName.BOOK_SESSION.name + "/{${GYM_ID_ARGUMENT_NAME}}" + "/{${ACTIVITY_ARGUMENT_NAME}}",
+                route = ScreenName.BOOK_SESSION.name + "/{${GYM_ID_ARGUMENT_NAME}}",
                 arguments = listOf(navArgument(GYM_ID_ARGUMENT_NAME) {
-                        type = NavType.StringType
-                    },
-                    navArgument(ACTIVITY_ARGUMENT_NAME) {
                         type = NavType.StringType
                     }
                 )
