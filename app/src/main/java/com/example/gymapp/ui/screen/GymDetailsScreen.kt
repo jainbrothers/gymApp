@@ -157,10 +157,35 @@ fun ShowTimings(timingsList: List<Timings>) {
 }
 
 @Composable
-fun ShowAmenityAndActivity(facility: String) {
+fun ShowActivity(gymId: String,
+                 facility: String,
+                 onClickBookSession: (String, String) -> Unit) {
     val facilityResId: Int = when (facility) {
         "GYM" -> R.drawable.gym
         "YOGA" -> R.drawable.yoga
+        else -> {
+            R.drawable.gym
+        }
+    }
+    Column(modifier = Modifier
+        .padding(start = 20.dp)
+        .clickable(onClick = {
+            onClickBookSession(gymId, facility)
+        })
+    ) {
+        Icon(
+            painter = painterResource(id = facilityResId),
+            contentDescription = null, // decorative element
+            modifier = Modifier.size(30.dp)
+        )
+        Text(text = facility)
+    }
+}
+
+
+@Composable
+fun ShowAmenity(facility: String) {
+    val facilityResId: Int = when (facility) {
         "Parking" -> R.drawable.round_directions_car_24
         "Locker" -> R.drawable.round_lock_24
         "CCTV" -> R.drawable.round_camera_outdoor_24
@@ -168,7 +193,8 @@ fun ShowAmenityAndActivity(facility: String) {
             R.drawable.gym
         }
     }
-    Column(modifier = Modifier.padding(start = 20.dp)) {
+    Column(modifier = Modifier.padding(start = 20.dp)
+    ) {
         Icon(
             painter = painterResource(id = facilityResId),
             contentDescription = null, // decorative element
@@ -198,7 +224,7 @@ fun ShowAmenities(facilities: List<String>) {
             ),
             content = {
                 items(facilities) { amenity ->
-                    ShowAmenityAndActivity(amenity)
+                    ShowAmenity(amenity)
                 }
             }
         )
@@ -206,10 +232,14 @@ fun ShowAmenities(facilities: List<String>) {
 }
 
 @Composable
-fun ShowWorkouts(activities: List<String>) {
+fun ShowActivities(
+    gymId : String,
+    activities: List<String>,
+    onClickBookSession: (String, String) -> Unit
+                   ) {
     Column() {
         Text(
-            text = "Available Workouts",
+            text = "Book Workout Session",
             Modifier.padding(top = 10.dp, bottom = 10.dp, start = 10.dp),
             fontWeight = FontWeight.Bold
         )
@@ -224,7 +254,7 @@ fun ShowWorkouts(activities: List<String>) {
             ),
             content = {
                 items(activities) { activity ->
-                    ShowAmenityAndActivity(activity)
+                    ShowActivity(gymId , activity, onClickBookSession = onClickBookSession)
                 }
             }
         )
@@ -235,6 +265,7 @@ fun ShowWorkouts(activities: List<String>) {
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun ShowGymDetails(
+    onClickBookSession: (String, String) -> Unit,
     gymDetailsViewModel: GymDetailsViewModel = hiltViewModel()
 ) {
     val gymUIState by gymDetailsViewModel.gymDetailsUiState.collectAsState()
@@ -258,7 +289,9 @@ fun ShowGymDetails(
         Divider(thickness = 1.dp)
         ShowGymAddress(gym.name, gym.address)
         Divider(thickness = 1.dp)
-        ShowWorkouts(gym.activities)
+        ShowActivities(gymId = gym.id,
+            activities = gym.activities,
+            onClickBookSession=onClickBookSession)
         Divider(thickness = 1.dp)
         ShowTimings(gym.timings)
         Divider(thickness = 1.dp)
@@ -273,19 +306,8 @@ fun GymDetailsScreenPreview() {
     MyApplicationTheme {
         val gym: Gym = Gym()
         Column() {
-            ShowWorkouts(gym.activities)
+//            ShowActivities(gym.activities)
             Divider(thickness = 1.dp)
-//            BookWorkoutSession()
-//            Divider(thickness = 1.dp)
-//            ShowTimings(gym.timings)
-//            Divider(thickness = 1.dp)
-//            ShowAmenities(gym.amenities)
-//            Divider(thickness = 1.dp)
-//            ShowWorkoutOptions(
-//                selectedTabIndex = 0,
-//                tabTitles = listOf("Gym", "Yoga", "Dance"),
-//                onSelectedTab = {}
-//            )
         }
     }
 }
