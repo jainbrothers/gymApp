@@ -39,6 +39,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.gymapp.R
+import com.example.gymapp.model.BookingSessionDetail
 import com.example.gymapp.model.SessionTiming
 import com.example.gymapp.ui.screen.enumeration.ErrorCode
 import com.example.gymapp.ui.screen.viewmodel.BookSessionViewModel
@@ -53,6 +54,7 @@ typealias TabContentRenderingFunc = @Composable (Int)->Unit
 private const val TAG = "Workout selection tag"
 @Composable
 fun BookSession(
+    onClickProceedButton: (BookingSessionDetail?) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val bookSessionViewModel: BookSessionViewModel = hiltViewModel()
@@ -69,7 +71,7 @@ fun BookSession(
                 GymHighlightMessage(modifier)
                 ScheduleSession(bookSessionViewModel, uiState, modifier)
             }
-            ProceedButton(uiState, modifier)
+            ProceedButton(bookSessionViewModel, uiState, onClickProceedButton, modifier)
         }
     }
 }
@@ -241,7 +243,10 @@ fun SessionScheduleOfADay(
     }
 }
 @Composable
-fun ProceedButton(uiState: BookSessionUiState, modifier: Modifier = Modifier) {
+fun ProceedButton(bookSessionViewModel: BookSessionViewModel,
+                  uiState: BookSessionUiState,
+                  onClickProceedButton: (BookingSessionDetail?) -> Unit,
+                  modifier: Modifier = Modifier) {
     Column (
         modifier = modifier
             .fillMaxWidth()
@@ -250,7 +255,7 @@ fun ProceedButton(uiState: BookSessionUiState, modifier: Modifier = Modifier) {
     )
     {
         Button(
-            onClick = { /*TODO*/ },
+            onClick = {onClickProceedButton(bookSessionViewModel.getBookingSessionDetail())},
             enabled = uiState.selectedSessionInfo != null
         ) {
             Text(
@@ -272,6 +277,6 @@ fun ErrorMessage(errorCode: ErrorCode, modifier: Modifier = Modifier) {
 @Composable
 fun BookSessionPreview() {
     MyApplicationTheme() {
-        BookSession()
+        BookSession({})
     }
 }

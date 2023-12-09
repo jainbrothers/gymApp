@@ -16,7 +16,9 @@
 
 package com.example.gymapp.ui.navigation
 
+import android.net.Uri
 import android.os.Build
+import android.os.Bundle
 import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.animation.AnimatedVisibility
@@ -50,7 +52,10 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.gymapp.R
+import com.example.gymapp.model.BookingSessionDetail
+import com.example.gymapp.model.SessionTiming
 import com.example.gymapp.ui.screen.BookSession
+import com.example.gymapp.ui.screen.BookSessionConfirmation
 import com.example.gymapp.ui.screen.HomeScreen
 import com.example.gymapp.ui.screen.LocationPermissionScreen
 import com.example.gymapp.ui.screen.OtpVerificationScreen
@@ -58,6 +63,7 @@ import com.example.gymapp.ui.screen.ShowGymDetails
 import com.example.gymapp.ui.screen.SplashScreen
 import com.example.gymapp.ui.screen.UserRegisterScreen
 import com.example.gymapp.ui.screen.enumeration.ScreenName
+import com.google.gson.Gson
 
 private const val TAG = "GymNavGraph.kt"
 
@@ -146,11 +152,13 @@ fun GymNavHost(
                 SplashScreen(
                     unregisteredUserHandler = {
                         navController.popBackStack()
+//                        navController.navigate(route = "${ScreenName.BOOK_SESSION.name}/2MECcizFQ1IWV7ElW7aw")
                         navController.navigate(route = ScreenName.USER_REGISTER_SCREEN.name)
                     },
                     registeredUserHandler = {
                         navController.popBackStack()
                         navController.navigate(route = ScreenName.HOME_SCREEN.name)
+//                        navController.navigate(route = "${ScreenName.BOOK_SESSION.name}/2MECcizFQ1IWV7ElW7aw")
                     },
                     otpVerifiedUserHandler = {
                         navController.popBackStack()
@@ -217,7 +225,22 @@ fun GymNavHost(
                     }
                 )
             ) {
-                BookSession()
+                BookSession(
+                    onClickProceedButton = {bookingSessionDetail: BookingSessionDetail? ->
+                        val json = Uri.encode(Gson().toJson(bookingSessionDetail))
+                        navController.navigate("${ScreenName.BOOK_SESSION_CONFIRMATION.name}/$json")
+                    }
+                )
+            }
+            composable(
+                route = ScreenName.BOOK_SESSION_CONFIRMATION.name + "/{bookSessionDetail}",
+                arguments = listOf(
+                    navArgument("bookSessionDetail") {
+                        type = NavType.StringType
+                    }
+                )
+            ) {
+                BookSessionConfirmation()
             }
         }
     }

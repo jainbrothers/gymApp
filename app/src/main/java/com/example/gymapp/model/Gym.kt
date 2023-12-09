@@ -16,20 +16,18 @@
 
 package com.example.gymapp.model
 
+import com.example.gymapp.data.repository.ACTIVITY_TO_DAY_TO_SESSION_SCHEDULE_FIELD_NAME
 import com.example.gymapp.data.repository.BEGIN_HOUR_FIELD_NAME
 import com.example.gymapp.data.repository.BEGIN_MINUTE_FIELD_NAME
 import com.example.gymapp.data.repository.END_HOUR_FIELD_NAME
 import com.example.gymapp.data.repository.END_MINUTE_FIELD_NAME
 import com.example.gymapp.data.repository.IMAGE_URLS_FIELD_NAME
 import com.example.gymapp.data.repository.PIN_CODE_FIELD_NAME
-import com.example.gymapp.data.repository.ACTIVITY_TO_DAY_TO_SESSION_SCHEDULE_FIELD_NAME
 import com.example.gymapp.data.repository.STREET_NAME_AND_NUMBER_FIELD_NAME
 import com.google.firebase.firestore.DocumentId
 import com.google.firebase.firestore.PropertyName
-import com.algolia.search.model.indexing.Indexable
-import kotlinx.serialization.Serializable
-import com.algolia.search.model.ObjectID
 import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 
 @Serializable
