@@ -20,22 +20,30 @@ import com.algolia.search.client.Index
 import kotlinx.coroutines.flow.Flow
 import com.algolia.search.model.search.Query
 import com.algolia.search.helper.deserialize
-import com.example.gymapp.model.GymFullTextSearchIndex
+import com.algolia.search.model.ObjectID
+import com.algolia.search.model.indexing.Indexable
+import com.example.gymapp.data.repository.IMAGE_URLS_FIELD_NAME
+import com.example.gymapp.model.Address
+import com.example.gymapp.model.GymFullTextSearch
+import com.google.firebase.firestore.DocumentId
+import com.google.firebase.firestore.PropertyName
 import kotlinx.coroutines.flow.flow
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 import javax.inject.Inject
 
-
-class FreeTextSearchProvider @Inject constructor(private val index: Index) :
+class FullTextSearchProvider @Inject constructor(private val index: Index) :
     SearchRepository {
 
-    override suspend fun getGymListBySearch(searchStr: String): Flow<List<GymFullTextSearchIndex>> {
+    override suspend fun getGymListBySearchText(searchStr: String): Flow<List<GymFullTextSearch>> {
         // Connect and authenticate with your Algolia app
         val response = index.run {
             search(Query(searchStr))
         }
-        val results: List<GymFullTextSearchIndex> = response.hits.deserialize(GymFullTextSearchIndex.serializer())
+        val resultsSerialised: List<Indexable> = response.hits.deserialize(GymFullTextSearch.serializer())
+        val gymList: List<GymFullTextSearch> = resultsSerialised as List<GymFullTextSearch>
         return flow {
-            emit(results.toList())
+            emit(gymList)
         }
     }
 }

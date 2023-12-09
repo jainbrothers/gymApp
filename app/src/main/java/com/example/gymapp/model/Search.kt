@@ -25,7 +25,7 @@ import com.algolia.search.model.ObjectID
 import kotlinx.serialization.SerialName
 
 @Serializable
-data class GymFullTextSearchIndex(
+data class GymFullTextSearch(
     val name: String = "",
     val type: String = "",
     val activities: List<String> = listOf(),
@@ -36,4 +36,6 @@ data class GymFullTextSearchIndex(
     var imageUrls: List<String> = listOf(),
     override val objectID: ObjectID = ObjectID(""),
     @DocumentId val id: String = objectID.toString()
-) : Indexable
+//    @DocumentId val id: String = ""
+
+) :Indexable

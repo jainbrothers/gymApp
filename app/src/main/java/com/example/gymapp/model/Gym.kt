@@ -91,7 +91,7 @@ data class Gym(
     @set:PropertyName(ACTIVITY_TO_DAY_TO_SESSION_SCHEDULE_FIELD_NAME)
     @SerialName(ACTIVITY_TO_DAY_TO_SESSION_SCHEDULE_FIELD_NAME)
     var activityToDayToSessionScheduleMap: Map<String, Map<String, List<SessionTiming>>> = emptyMap(),
-    @DocumentId val id: String = "1"
+    @DocumentId val id: String = ""
 )
 
 @Serializable

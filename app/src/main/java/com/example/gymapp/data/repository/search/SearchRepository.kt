@@ -15,13 +15,12 @@
  */
 
 package com.example.gymapp.data.repository.search
-
-import com.example.gymapp.model.GymFullTextSearchIndex
+import com.example.gymapp.model.GymFullTextSearch
 import kotlinx.coroutines.flow.Flow
 
 /**
- * Repository that provides insert, update, delete, and retrieve of [GymFullTextSearchIndex] from a given data source.
+ * Repository that provides insert, update, delete, and retrieve of [GymFullTextSearch] from a given data source.
  */
 interface SearchRepository {
-    suspend fun getGymListBySearch(searchStr: String): Flow<List<GymFullTextSearchIndex>>
+    suspend fun getGymListBySearchText(searchStr: String): Flow<List<GymFullTextSearch>>
 }

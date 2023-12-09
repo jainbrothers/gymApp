@@ -1,11 +1,11 @@
 package com.example.gymapp.ui.screen.viewmodel.state
 
 import com.example.gymapp.model.Gym
-import com.example.gymapp.model.GymFullTextSearchIndex
+import com.example.gymapp.model.GymFullTextSearch
 import com.example.gymapp.model.User
 
 data class GymListingUiState(
-    val gymFullTextSearchIndices: List<GymFullTextSearchIndex> = listOf()
+    val gymFullTextSearchIndices: List<GymFullTextSearch> = listOf()
 )
 
 data class GymDetailsUiState (
@@ -17,6 +17,6 @@ data class UserUiState (
 )
 
 data class HomeScreenUiState (
-    val gymFullTextSearchIndices: List<GymFullTextSearchIndex> = listOf(),
+    val gymFullTextSearchList: List<GymFullTextSearch> = listOf(),
     val user: User = User()
 )

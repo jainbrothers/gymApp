@@ -51,7 +51,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.gymapp.ui.screen.viewmodel.GymListingViewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import com.example.gymapp.model.GymFullTextSearchIndex
+import com.example.gymapp.model.GymFullTextSearch
 import com.example.gymapp.ui.theme.MyApplicationTheme
 import com.example.gymapp.ui.utils.AutoSlidingCarousel
 import com.google.accompanist.pager.ExperimentalPagerApi
@@ -119,7 +119,7 @@ fun PreciseLocation(){
 
     Column() {
         rationaleState?.run { PermissionRationaleDialog(rationaleState = this) }
-        Log.d("sarkar", "location access")
+        Log.d("PreciseLocation", "location access")
 
         if (fineLocationPermissionState.shouldShowRationale) {
             rationaleState = RationaleState(
@@ -179,7 +179,7 @@ fun GymListing(
     val homeScreenUIState = gymViewModel.uiState.collectAsState()
     Column {
         ShowGymList(
-            homeScreenUIState.value.gymFullTextSearchIndices,
+            homeScreenUIState.value.gymFullTextSearchList,
             modifier = modifier.fillMaxSize(), onItemClick = onItemClick
         )
     }
@@ -187,13 +187,13 @@ fun GymListing(
 
 @Composable
 fun ShowGymList(
-    gymList: List<GymFullTextSearchIndex>,
+    gymList: List<GymFullTextSearch>,
     onItemClick: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     LazyColumn(modifier = Modifier, contentPadding = PaddingValues(vertical = 8.dp)) {
         items(items = gymList, key = { facility -> facility.id }) { item ->
-            Log.d("sarkar", "printing gym information : $item")
+            Log.d("ShowGymList", "printing gym information : $item")
             ShowGymCard(gym = item, onItemClick = onItemClick)
         }
     }
@@ -203,7 +203,7 @@ fun ShowGymList(
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun ShowGymCard(
-    gym: GymFullTextSearchIndex,
+    gym: GymFullTextSearch,
     onItemClick: (String) -> Unit,
 ): Unit {
     Card(
