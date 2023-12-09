@@ -92,12 +92,12 @@ object AppModule {
 
     @Singleton
     @Provides
-    fun provideGymIndex(): Index {
+    fun provideFullTextSearchGymIndex(): Index {
         val client = ClientSearch(
-            applicationID = ApplicationID("UV7REXJNQJ"),
-            apiKey = APIKey("0b11699168f3d5e74cdc4bd6cdd839ed")
+            applicationID = ApplicationID(ALGOLIA_APPLICATION_ID),
+            apiKey = APIKey(ALGOLIA_APPLICATION_KEY)
         )
-        return client.initIndex(indexName = IndexName("Gym"))
+        return client.initIndex(indexName = IndexName(ALGOLIA_INDEX_NAME))
     }
 }
 

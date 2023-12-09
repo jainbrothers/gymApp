@@ -25,6 +25,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.gymapp.data.repository.UserDetailRepository
 import com.example.gymapp.data.repository.gym.GymRepository
+import com.example.gymapp.data.repository.search.FreeTextSearchProvider
 import com.example.gymapp.data.repository.user.UserRepository
 import com.example.gymapp.model.User
 import com.example.gymapp.ui.screen.viewmodel.state.GymListingUiState
@@ -46,7 +47,8 @@ import javax.inject.Inject
 class GymListingViewModel @Inject constructor(
     val gymRepository: GymRepository,
     val userDetailRepository: UserDetailRepository,
-    val userRepository: UserRepository
+    val userRepository: UserRepository,
+    val freeTextSearchProvider: FreeTextSearchProvider
 ) : ViewModel() {
     val gymListingUiState = MutableStateFlow(GymListingUiState())
     val userUiState = MutableStateFlow(UserUiState())
@@ -62,7 +64,7 @@ class GymListingViewModel @Inject constructor(
         gymListingUiState.combine(userUiState) { gymListState, userState ->
             HomeScreenUiState(
                 user = userState.user,
-                gyms = gymListState.gyms
+                gymFullTextSearchIndices = gymListState.gymFullTextSearchIndices
             )
         }.stateIn(
             viewModelScope,
@@ -74,10 +76,10 @@ class GymListingViewModel @Inject constructor(
     private fun getGymList() {
         viewModelScope.launch {
             Log.d("sarkar", "searchQuery $searchQuery")
-            gymRepository.getGymListBySearch(searchQuery).collect { gyms ->
+            freeTextSearchProvider.getGymListBySearch(searchQuery).collect { gyms ->
                 gymListingUiState.update { currentState ->
                     currentState.copy(
-                        gyms = gyms
+                        gymFullTextSearchIndices = gyms
                     )
                 }
             }

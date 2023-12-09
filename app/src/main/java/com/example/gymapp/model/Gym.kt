@@ -31,10 +31,6 @@ import kotlinx.serialization.Serializable
 import com.algolia.search.model.ObjectID
 import kotlinx.serialization.SerialName
 
-/**
- * Data class that defines an amphibian which includes a name, type, description, and image URL.
- */
-
 
 @Serializable
 data class Timings(
@@ -95,9 +91,8 @@ data class Gym(
     @set:PropertyName(ACTIVITY_TO_DAY_TO_SESSION_SCHEDULE_FIELD_NAME)
     @SerialName(ACTIVITY_TO_DAY_TO_SESSION_SCHEDULE_FIELD_NAME)
     var activityToDayToSessionScheduleMap: Map<String, Map<String, List<SessionTiming>>> = emptyMap(),
-    override val objectID: ObjectID = ObjectID("1"),
-    @DocumentId val id: String = objectID.toString()
-) : Indexable
+    @DocumentId val id: String = "1"
+)
 
 @Serializable
 data class SessionTiming(

@@ -48,10 +48,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.gymapp.model.Gym
 import com.example.gymapp.ui.screen.viewmodel.GymListingViewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.example.gymapp.model.GymFullTextSearchIndex
 import com.example.gymapp.ui.theme.MyApplicationTheme
 import com.example.gymapp.ui.utils.AutoSlidingCarousel
 import com.google.accompanist.pager.ExperimentalPagerApi
@@ -179,7 +179,7 @@ fun GymListing(
     val homeScreenUIState = gymViewModel.uiState.collectAsState()
     Column {
         ShowGymList(
-            homeScreenUIState.value.gyms,
+            homeScreenUIState.value.gymFullTextSearchIndices,
             modifier = modifier.fillMaxSize(), onItemClick = onItemClick
         )
     }
@@ -187,7 +187,7 @@ fun GymListing(
 
 @Composable
 fun ShowGymList(
-    gymList: List<Gym>,
+    gymList: List<GymFullTextSearchIndex>,
     onItemClick: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -203,7 +203,7 @@ fun ShowGymList(
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun ShowGymCard(
-    gym: Gym,
+    gym: GymFullTextSearchIndex,
     onItemClick: (String) -> Unit,
 ): Unit {
     Card(
