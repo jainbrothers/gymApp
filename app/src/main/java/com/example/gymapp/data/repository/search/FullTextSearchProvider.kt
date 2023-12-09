@@ -14,20 +14,13 @@
  * limitations under the License.
  */
 
-package com.example.gymapp.data.repository.gym
-
-import com.example.gymapp.data.repository.GYM_TABLE_NAME
-import com.example.gymapp.model.Gym
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.ktx.dataObjects
+package com.example.gymapp.data.repository.search
+import com.example.gymapp.model.GymFullTextSearch
 import kotlinx.coroutines.flow.Flow
-import javax.inject.Inject
 
-class FirebaseGymRepository @Inject constructor(private val database: FirebaseFirestore) :
-    GymRepository {
-    override val gyms: Flow<List<Gym>>
-        get() = database.collection(GYM_TABLE_NAME).dataObjects()
-
-    override suspend fun getGymById(docId: String): Flow<Gym?> =
-        database.collection(GYM_TABLE_NAME).document(docId).dataObjects()
+/**
+ * Repository that provides insert, update, delete, and retrieve of [GymFullTextSearch] from a given data source.
+ */
+interface FullTextSearchProvider {
+    suspend fun getGymListBySearchText(searchStr: String): Flow<List<GymFullTextSearch>>
 }

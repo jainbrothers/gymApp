@@ -112,6 +112,14 @@ dependencies {
     // tab layout
     implementation "com.google.accompanist:accompanist-pager:0.23.0"
     implementation "com.google.accompanist:accompanist-pager-indicators:0.23.0"
+
+    // for Gradle version 6.0 and higher
+    implementation("com.algolia:algoliasearch-client-kotlin:2.0.0")
+
+    // For JVM/Android
+    implementation("io.ktor:ktor-client-okhttp:2.0.1")
+    implementation("io.ktor:ktor-client-android:2.0.1")
+    implementation("io.ktor:ktor-client-cio:2.0.1")
 }
 
 // Allow references to generated code
