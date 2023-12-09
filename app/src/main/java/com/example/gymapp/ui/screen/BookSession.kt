@@ -67,7 +67,7 @@ fun BookSession(
                 modifier = modifier.fillMaxWidth().weight(1f)
             ) {
                 GymHighlightMessage(modifier)
-                ScheduleSession(bookSessionViewModel, uiState, modifier)
+                RenderSessionSchedule(bookSessionViewModel, uiState, modifier)
             }
             ProceedButton(uiState, modifier)
         }
@@ -87,7 +87,7 @@ fun GymHighlightMessage(modifier: Modifier = Modifier) {
     }
 }
 @Composable
-fun ScheduleSession(
+fun RenderSessionSchedule(
     bookSessionViewModel: BookSessionViewModel,
     uiState: BookSessionUiState,
     modifier: Modifier = Modifier)
