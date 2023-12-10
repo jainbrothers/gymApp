@@ -18,6 +18,7 @@ package com.example.gymapp.ui.screen
 
 import android.Manifest
 import android.util.Log
+import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -32,16 +33,21 @@ import androidx.compose.foundation.lazy.LazyColumn
 import com.example.gymapp.R
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material.icons.filled.Search
 
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -98,10 +104,9 @@ import com.google.accompanist.permissions.rememberMultiplePermissionsState
 //}
 
 
-
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
-fun PreciseLocation(){
+fun PreciseLocation() {
     val context = LocalContext.current
 
     // When precision is important request both permissions but make sure to handle the case where
@@ -139,17 +144,99 @@ fun PreciseLocation(){
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
+fun ExpandableSearchBox(onSearch: (String) -> Unit) {
+    val searchQuery = remember { mutableStateOf("") }
+    val isExpanded = remember { mutableStateOf(false) }
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+            .background(Color.LightGray)
+            .clickable { isExpanded.value = !isExpanded.value },
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Icon(
+            imageVector = Icons.Default.Search,
+            contentDescription = "Search",
+            tint = Color.Black,
+            modifier = Modifier.padding(horizontal = 8.dp)
+        )
+        if (isExpanded.value) {
+            OutlinedTextField(
+                value = searchQuery.value,
+                onValueChange = { searchQuery.value = it },
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(horizontal = 8.dp),
+
+            )
+        } else {
+            Text(
+                text = "Search",
+                color = Color.Black,
+                modifier = Modifier.padding(horizontal = 8.dp)
+            )
+        }
+    }
+
+    if (isExpanded.value) {
+        // Perform search when the user submits the query
+        onSearch(searchQuery.value)
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
 fun SearchBox(
     searchText: String,
     onSearchTextChange: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Column(modifier = Modifier.padding(16.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-        OutlinedTextField(value = searchText,
-            onValueChange = onSearchTextChange,
-            label = { Text(text = "Search Gyms")},
-            modifier = Modifier.fillMaxWidth())
+    val isExpanded = remember { mutableStateOf(false) }
+    Column(
+        modifier = Modifier.padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Row(modifier = Modifier.fillMaxWidth()) {
+            if (isExpanded.value) {
+                OutlinedTextField(
+                    value = searchText,
+                    onValueChange = onSearchTextChange,
+                    label = { Text(text = "Search Gyms") }
+                )
+            } else {
+                Icon(
+                    painter = painterResource(id = R.drawable.round_location_on_24),
+                    contentDescription = null, // decorative element
+                    modifier = Modifier
+                        .padding(5.dp)
+                        .size(30.dp)
+                )
+                Text(text = "Bangalore")
+            }
+            Icon(
+                imageVector = Icons.Default.Search,
+                contentDescription = "Search",
+//                tint = Color.Black,
+                modifier = Modifier
+                    .padding(start = 2.dp)
+                    .clickable { isExpanded.value = !isExpanded.value },
+
+                )
+        }
     }
+//    Column(
+//        modifier = Modifier.padding(16.dp),
+//        horizontalAlignment = Alignment.CenterHorizontally
+//    ) {
+//        OutlinedTextField(
+//            value = searchText,
+//            onValueChange = onSearchTextChange,
+//            label = { Text(text = "Search Gyms") },
+//            modifier = Modifier.fillMaxWidth()
+//        )
+//    }
 }
 
 @Composable
@@ -157,12 +244,12 @@ fun HomeScreen(
     onClickGymDetails: (String) -> Unit,
     gymViewModel: GymListingViewModel = hiltViewModel()
 ) {
-    val searchQuery:String = gymViewModel.searchQuery
+//    val searchQuery:String = gymViewModel.searchQuery
     Column() {
-        SearchBox(
-            searchText = searchQuery,
-            onSearchTextChange = {gymViewModel.updateSearchQuery(it)}
-        )
+//        SearchBox(
+//            searchText = searchQuery,
+//            onSearchTextChange = {gymViewModel.updateSearchQuery(it)}
+//        )
         GymListing(onItemClick = onClickGymDetails, gymViewModel = gymViewModel)
 
     }

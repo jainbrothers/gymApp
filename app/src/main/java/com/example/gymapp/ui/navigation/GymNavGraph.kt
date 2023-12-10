@@ -31,6 +31,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -42,6 +43,8 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -51,13 +54,16 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.gymapp.R
 import com.example.gymapp.ui.screen.BookSession
+import com.example.gymapp.ui.screen.ExpandableSearchBox
 import com.example.gymapp.ui.screen.HomeScreen
 import com.example.gymapp.ui.screen.LocationPermissionScreen
 import com.example.gymapp.ui.screen.OtpVerificationScreen
+import com.example.gymapp.ui.screen.SearchBox
 import com.example.gymapp.ui.screen.ShowGymDetails
 import com.example.gymapp.ui.screen.SplashScreen
 import com.example.gymapp.ui.screen.UserRegisterScreen
 import com.example.gymapp.ui.screen.enumeration.ScreenName
+import com.example.gymapp.ui.screen.viewmodel.GymListingViewModel
 
 private const val TAG = "GymNavGraph.kt"
 
@@ -116,23 +122,32 @@ fun GymNavHost(
     val currentScreen = ScreenName.valueOf(
         backStackEntry?.destination?.route?.split('/')?.get(0) ?: defaultStartScreen.name
     )
+    val gymViewModel: GymListingViewModel = hiltViewModel()
+
     Log.d(TAG, "navController.previousBackStackEntry ${navController.previousBackStackEntry}")
     Log.d(TAG, "backStackEntry?.destination?.route ${backStackEntry?.destination?.route}")
     Scaffold(
         topBar = {
-            val screen = when(currentScreen.name) {
-                ScreenName.GYM_DETAILS.name -> true
+            val screen = when (currentScreen.name) {
                 ScreenName.HOME_SCREEN.name -> true
                 else -> {
-                    true
+                    false
                 }
             }
-            GymAppBar(
-                currentScreen = currentScreen,
-                canNavigateBack = navController.previousBackStackEntry != null,
-                navigateUp = {navController.navigateUp()},
-                topBarState = screen
-            )
+            if (screen) {
+                val searchQuery: String = gymViewModel.searchQuery
+                SearchBox(
+                    searchText = searchQuery,
+                    onSearchTextChange = { gymViewModel.updateSearchQuery(it) }
+                )
+            } else {
+                GymAppBar(
+                    currentScreen = currentScreen,
+                    canNavigateBack = navController.previousBackStackEntry != null,
+                    navigateUp = { navController.navigateUp() },
+                    topBarState = screen
+                )
+            }
         }
     ) { innerPadding ->
         NavHost(
@@ -186,7 +201,8 @@ fun GymNavHost(
                 HomeScreen(
                     onClickGymDetails = { gymId ->
                         navController.navigate(route = "${ScreenName.GYM_DETAILS.name}/${gymId}")
-                    }
+                    },
+                    gymViewModel = gymViewModel
                 )
             }
             composable(
@@ -210,8 +226,8 @@ fun GymNavHost(
             composable(
                 route = ScreenName.BOOK_SESSION.name + "/{${GYM_ID_ARGUMENT_NAME}}" + "/{${ACTIVITY_ARGUMENT_NAME}}",
                 arguments = listOf(navArgument(GYM_ID_ARGUMENT_NAME) {
-                        type = NavType.StringType
-                    },
+                    type = NavType.StringType
+                },
                     navArgument(ACTIVITY_ARGUMENT_NAME) {
                         type = NavType.StringType
                     }
