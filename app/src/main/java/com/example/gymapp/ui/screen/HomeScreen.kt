@@ -16,7 +16,6 @@
 
 package com.example.gymapp.ui.screen
 
-import android.Manifest
 import android.util.Log
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.Card
@@ -37,10 +36,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -55,146 +50,55 @@ import com.example.gymapp.model.GymFullTextSearch
 import com.example.gymapp.ui.theme.MyApplicationTheme
 import com.example.gymapp.ui.utils.AutoSlidingCarousel
 import com.google.accompanist.pager.ExperimentalPagerApi
-import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.google.accompanist.permissions.rememberMultiplePermissionsState
 
-
-//@OptIn(ExperimentalPermissionsApi::class)
-//@Composable
-//fun PreciseLocation(){
-//    val context = LocalContext.current
-//
-//    // When precision is important request both permissions but make sure to handle the case where
-//    // the user only grants ACCESS_COARSE_LOCATION
-//    val fineLocationPermissionState = rememberMultiplePermissionsState(
-//        listOf(
-//            Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION,
-//        ),
-//    )
-//
-//    // Keeps track of the rationale dialog state, needed when the user requires further rationale
-//    var rationaleState by remember {
-//        mutableStateOf<RationaleState?>(null)
-//    }
-//
-//    Column() {
-//        rationaleState?.run { PermissionRationaleDialog(rationaleState = this) }
-//        Log.d("sarkar", "location access")
-//
-//        if (fineLocationPermissionState.shouldShowRationale) {
-//            rationaleState = RationaleState(
-//                "Request Precise Location",
-//                "In order to use this feature please grant access by accepting " + "the location permission dialog." + "\n\nWould you like to continue?",
-//            ) { proceed ->
-//                if (proceed) {
-//                    fineLocationPermissionState.launchMultiplePermissionRequest()
-//                }
-//                rationaleState = null
-//            }
-//        } else {
-//            fineLocationPermissionState.launchMultiplePermissionRequest()
-//        }
-//    }
-//}
-
-
-
-@OptIn(ExperimentalPermissionsApi::class)
 @Composable
-fun PreciseLocation(){
-    val context = LocalContext.current
-
-    // When precision is important request both permissions but make sure to handle the case where
-    // the user only grants ACCESS_COARSE_LOCATION
-    val fineLocationPermissionState = rememberMultiplePermissionsState(
-        listOf(
-            Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION,
-        ),
-    )
-
-    // Keeps track of the rationale dialog state, needed when the user requires further rationale
-    var rationaleState by remember {
-        mutableStateOf<RationaleState?>(null)
-    }
-
+fun HomeScreen(
+    onClickGymDetails: (String) -> Unit,
+    gymListingViewModel: GymListingViewModel = hiltViewModel()
+) {
+    val searchText: String = gymListingViewModel.searchText
     Column() {
-        rationaleState?.run { PermissionRationaleDialog(rationaleState = this) }
-        Log.d("PreciseLocation", "location access")
-
-        if (fineLocationPermissionState.shouldShowRationale) {
-            rationaleState = RationaleState(
-                "Request Precise Location",
-                "In order to use this feature please grant access by accepting " + "the location permission dialog." + "\n\nWould you like to continue?",
-            ) { proceed ->
-                if (proceed) {
-                    fineLocationPermissionState.launchMultiplePermissionRequest()
-                }
-                rationaleState = null
-            }
-        } else {
-            fineLocationPermissionState.launchMultiplePermissionRequest()
-        }
+        GymSearchBox(
+            searchText = searchText,
+            onSearchTextChange = { gymListingViewModel.updateSearchText(it) }
+        )
+        ShowGymList(onClickGymCard = onClickGymDetails, gymListingViewModel = gymListingViewModel)
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SearchBox(
+fun GymSearchBox(
     searchText: String,
     onSearchTextChange: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Column(modifier = Modifier.padding(16.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-        OutlinedTextField(value = searchText,
+    Column(modifier = Modifier.padding(8.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+        OutlinedTextField(
+            value = searchText,
             onValueChange = onSearchTextChange,
-            label = { Text(text = "Search Gyms")},
-            modifier = Modifier.fillMaxWidth())
-    }
-}
-
-@Composable
-fun HomeScreen(
-    onClickGymDetails: (String) -> Unit,
-    gymViewModel: GymListingViewModel = hiltViewModel()
-) {
-    val searchQuery:String = gymViewModel.searchQuery
-    Column() {
-        SearchBox(
-            searchText = searchQuery,
-            onSearchTextChange = {gymViewModel.updateSearchQuery(it)}
-        )
-        GymListing(onItemClick = onClickGymDetails, gymViewModel = gymViewModel)
-
-    }
-
-}
-
-@Composable
-fun GymListing(
-    modifier: Modifier = Modifier,
-    onItemClick: (String) -> Unit,
-    gymViewModel: GymListingViewModel
-
-) {
-    val homeScreenUIState = gymViewModel.uiState.collectAsState()
-    Column {
-        ShowGymList(
-            homeScreenUIState.value.gymFullTextSearchList,
-            modifier = modifier.fillMaxSize(), onItemClick = onItemClick
+            label = { Text(text = "Search Gyms") },
+            modifier = Modifier.fillMaxWidth()
         )
     }
 }
+
 
 @Composable
 fun ShowGymList(
-    gymList: List<GymFullTextSearch>,
-    onItemClick: (String) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onClickGymCard: (String) -> Unit,
+    gymListingViewModel: GymListingViewModel
+
 ) {
-    LazyColumn(modifier = Modifier, contentPadding = PaddingValues(vertical = 8.dp)) {
-        items(items = gymList, key = { facility -> facility.id }) { item ->
-            Log.d("ShowGymList", "printing gym information : $item")
-            ShowGymCard(gym = item, onItemClick = onItemClick)
+    val homeScreenUIState = gymListingViewModel.uiState.collectAsState()
+    val gymList: List<GymFullTextSearch> = homeScreenUIState.value.gymFullTextSearchList
+    Column() {
+        LazyColumn(modifier = Modifier, contentPadding = PaddingValues(vertical = 8.dp)) {
+            items(items = gymList, key = { gym -> gym.id }) { gym ->
+                Log.d("ShowGymList", "printing gym information : $gym")
+                ShowGymCard(gymFullTextSearch = gym, onClickGymCard = onClickGymCard)
+            }
         }
     }
 }
@@ -203,14 +107,14 @@ fun ShowGymList(
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun ShowGymCard(
-    gym: GymFullTextSearch,
-    onItemClick: (String) -> Unit,
+    gymFullTextSearch: GymFullTextSearch,
+    onClickGymCard: (String) -> Unit,
 ): Unit {
     Card(
         modifier = Modifier
             .fillMaxSize()
             .padding(start = 8.dp, end = 8.dp, top = 4.dp, bottom = 4.dp)
-            .clickable { onItemClick(gym.id) },
+            .clickable { onClickGymCard(gymFullTextSearch.id) },
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(
             containerColor =
@@ -221,11 +125,11 @@ fun ShowGymCard(
         )
     ) {
         AutoSlidingCarousel(
-            itemsCount = gym.imageUrls.size,
+            itemsCount = gymFullTextSearch.imageUrls.size,
             itemContent = { index ->
                 AsyncImage(
                     model = ImageRequest.Builder(LocalContext.current)
-                        .data(gym.imageUrls[index])
+                        .data(gymFullTextSearch.imageUrls[index])
                         .build(),
                     contentDescription = null,
                     contentScale = ContentScale.Crop,
@@ -237,7 +141,7 @@ fun ShowGymCard(
         )
         Column() {
             Text(
-                text = gym.name,
+                text = gymFullTextSearch.name,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(start = 10.dp, top = 10.dp, bottom = 3.dp)
             )
@@ -250,16 +154,17 @@ fun ShowGymCard(
                         .size(20.dp)
                 )
                 Text(
-                    text = gym.address.locality
+                    text = gymFullTextSearch.address.locality
                 )
             }
         }
     }
 }
 
+
 @Preview(showBackground = true)
 @Composable
-fun AmphibiansListScreenPreview() {
+fun GymListScreenPreview() {
     MyApplicationTheme() {
 //        val mockData = List(10) {
 //            Gym(
