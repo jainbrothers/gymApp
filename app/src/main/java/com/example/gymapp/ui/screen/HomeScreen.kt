@@ -51,9 +51,24 @@ import com.example.gymapp.ui.theme.MyApplicationTheme
 import com.example.gymapp.ui.utils.AutoSlidingCarousel
 import com.google.accompanist.pager.ExperimentalPagerApi
 
+@Composable
+fun HomeScreen(
+    onClickGymDetails: (String) -> Unit,
+    gymListingViewModel: GymListingViewModel = hiltViewModel()
+) {
+    val searchText: String = gymListingViewModel.searchText
+    Column() {
+        GymSearchBox(
+            searchText = searchText,
+            onSearchTextChange = { gymListingViewModel.updateSearchText(it) }
+        )
+        ShowGymList(onClickGymCard = onClickGymDetails, gymListingViewModel = gymListingViewModel)
+    }
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SearchGyms(
+fun GymSearchBox(
     searchText: String,
     onSearchTextChange: (String) -> Unit,
     modifier: Modifier = Modifier
@@ -146,20 +161,6 @@ fun ShowGymCard(
     }
 }
 
-@Composable
-fun HomeScreen(
-    onClickGymDetails: (String) -> Unit,
-    gymListingViewModel: GymListingViewModel = hiltViewModel()
-) {
-    val searchText: String = gymListingViewModel.searchText
-    Column() {
-        SearchGyms(
-            searchText = searchText,
-            onSearchTextChange = { gymListingViewModel.updateSearchText(it) }
-        )
-        ShowGymList(onClickGymCard = onClickGymDetails, gymListingViewModel = gymListingViewModel)
-    }
-}
 
 @Preview(showBackground = true)
 @Composable
