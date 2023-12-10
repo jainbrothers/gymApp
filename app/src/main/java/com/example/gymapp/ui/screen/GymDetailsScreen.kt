@@ -158,9 +158,9 @@ fun ShowTimings(timingsList: List<Timings>) {
 
 @Composable
 fun ShowActivity(gymId: String,
-                 facility: String,
+                 activity: String,
                  onClickBookSession: (String, String) -> Unit) {
-    val facilityResId: Int = when (facility) {
+    val activityResId: Int = when (activity) {
         "GYM" -> R.drawable.gym
         "YOGA" -> R.drawable.yoga
         else -> {
@@ -170,22 +170,22 @@ fun ShowActivity(gymId: String,
     Column(modifier = Modifier
         .padding(start = 20.dp)
         .clickable(onClick = {
-            onClickBookSession(gymId, facility)
+            onClickBookSession(gymId, activity)
         })
     ) {
         Icon(
-            painter = painterResource(id = facilityResId),
+            painter = painterResource(id = activityResId),
             contentDescription = null, // decorative element
             modifier = Modifier.size(30.dp)
         )
-        Text(text = facility)
+        Text(text = activity)
     }
 }
 
 
 @Composable
-fun ShowAmenity(facility: String) {
-    val facilityResId: Int = when (facility) {
+fun ShowAmenity(amenity: String) {
+    val amenityResId: Int = when (amenity) {
         "Parking" -> R.drawable.round_directions_car_24
         "Locker" -> R.drawable.round_lock_24
         "CCTV" -> R.drawable.round_camera_outdoor_24
@@ -196,16 +196,16 @@ fun ShowAmenity(facility: String) {
     Column(modifier = Modifier.padding(start = 20.dp)
     ) {
         Icon(
-            painter = painterResource(id = facilityResId),
+            painter = painterResource(id = amenityResId),
             contentDescription = null, // decorative element
             modifier = Modifier.size(30.dp)
         )
-        Text(text = facility)
+        Text(text = amenity)
     }
 }
 
 @Composable
-fun ShowAmenities(facilities: List<String>) {
+fun ShowAmenities(amenities: List<String>) {
     Column(modifier = Modifier.fillMaxWidth()) {
         Text(
             text = "Amenities",
@@ -223,7 +223,7 @@ fun ShowAmenities(facilities: List<String>) {
                 bottom = 6.dp
             ),
             content = {
-                items(facilities) { amenity ->
+                items(amenities) { amenity ->
                     ShowAmenity(amenity)
                 }
             }
@@ -236,7 +236,7 @@ fun ShowActivities(
     gymId : String,
     activities: List<String>,
     onClickBookSession: (String, String) -> Unit
-                   ) {
+) {
     Column() {
         Text(
             text = "Book Workout Session",
