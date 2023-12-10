@@ -24,7 +24,6 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.gymapp.data.repository.UserDetailRepository
-import com.example.gymapp.data.repository.gym.GymRepository
 import com.example.gymapp.data.repository.search.AlgoliaFullTextSearchProvider
 import com.example.gymapp.data.repository.user.UserRepository
 import com.example.gymapp.model.User
@@ -45,14 +44,13 @@ import javax.inject.Inject
 
 @HiltViewModel
 class GymListingViewModel @Inject constructor(
-    val gymRepository: GymRepository,
     val userDetailRepository: UserDetailRepository,
     val userRepository: UserRepository,
     val algoliaFullTextSearchProvider: AlgoliaFullTextSearchProvider
 ) : ViewModel() {
     val gymListingUiState = MutableStateFlow(GymListingUiState())
     val userUiState = MutableStateFlow(UserUiState())
-    var searchQuery by mutableStateOf("")
+    var searchText by mutableStateOf("")
         private set
 
     init {
@@ -64,7 +62,7 @@ class GymListingViewModel @Inject constructor(
         gymListingUiState.combine(userUiState) { gymListState, userState ->
             HomeScreenUiState(
                 user = userState.user,
-                gymFullTextSearchList = gymListState.gymFullTextSearchIndices
+                gymFullTextSearchList = gymListState.gymFullTextSearch
             )
         }.stateIn(
             viewModelScope,
@@ -75,11 +73,11 @@ class GymListingViewModel @Inject constructor(
 
     private fun getGymList() {
         viewModelScope.launch {
-            Log.d("getGymList", "searchQuery $searchQuery")
-            algoliaFullTextSearchProvider.getGymListBySearchText(searchQuery).collect { gyms ->
+            Log.d("getGymList", "searchQuery $searchText")
+            algoliaFullTextSearchProvider.getGymListBySearchText(searchText).collect { gyms ->
                 gymListingUiState.update { currentState ->
                     currentState.copy(
-                        gymFullTextSearchIndices = gyms
+                        gymFullTextSearch = gyms
                     )
                 }
             }
@@ -98,9 +96,9 @@ class GymListingViewModel @Inject constructor(
         }
     }
 
-    fun updateSearchQuery(query: String) {
+    fun updateSearchText(query: String) {
         viewModelScope.launch {
-            searchQuery = query
+            searchText = query
             getGymList()
         }
     }

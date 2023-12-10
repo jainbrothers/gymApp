@@ -5,7 +5,7 @@ import com.example.gymapp.model.GymFullTextSearch
 import com.example.gymapp.model.User
 
 data class GymListingUiState(
-    val gymFullTextSearchIndices: List<GymFullTextSearch> = listOf()
+    val gymFullTextSearch: List<GymFullTextSearch> = listOf()
 )
 
 data class GymDetailsUiState (
