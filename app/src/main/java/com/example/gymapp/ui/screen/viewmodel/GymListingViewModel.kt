@@ -25,6 +25,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.gymapp.data.repository.UserDetailRepository
 import com.example.gymapp.data.repository.search.AlgoliaFullTextSearchProvider
+import com.example.gymapp.data.repository.search.FullTextSearchProvider
 import com.example.gymapp.data.repository.user.UserRepository
 import com.example.gymapp.model.User
 import com.example.gymapp.ui.screen.viewmodel.state.GymListingUiState
@@ -46,7 +47,7 @@ import javax.inject.Inject
 class GymListingViewModel @Inject constructor(
     val userDetailRepository: UserDetailRepository,
     val userRepository: UserRepository,
-    val algoliaFullTextSearchProvider: AlgoliaFullTextSearchProvider
+    val fullTextSearchProvider: AlgoliaFullTextSearchProvider
 ) : ViewModel() {
     val gymListingUiState = MutableStateFlow(GymListingUiState())
     val userUiState = MutableStateFlow(UserUiState())
@@ -74,7 +75,7 @@ class GymListingViewModel @Inject constructor(
     private fun getGymList() {
         viewModelScope.launch {
             Log.d("getGymList", "searchQuery $searchText")
-            algoliaFullTextSearchProvider.getGymListBySearchText(searchText).collect { gyms ->
+            fullTextSearchProvider.getGymListBySearchText(searchText).collect { gyms ->
                 gymListingUiState.update { currentState ->
                     currentState.copy(
                         gymFullTextSearch = gyms
