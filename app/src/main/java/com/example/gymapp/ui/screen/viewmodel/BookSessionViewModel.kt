@@ -108,7 +108,7 @@ class BookSessionViewModel @Inject constructor(
             )
         }
     }
-    fun getBookingSessionDetail(): BookingSessionDetail? {
+    fun getBookingSessionDetail(): BookingSessionDetail {
         val selectedSessionInfo = bookSessionUiState.value.selectedSessionInfo!!
         val calendar = Calendar.getInstance()
         calendar.set(Calendar.HOUR_OF_DAY, 0)
@@ -121,11 +121,9 @@ class BookSessionViewModel @Inject constructor(
         var durationInMinute =  (selectedSessionInfo.sessionTiming.endHour - selectedSessionInfo.sessionTiming.beginHour) * 60
         durationInMinute = durationInMinute + (selectedSessionInfo.sessionTiming.endMinute - selectedSessionInfo.sessionTiming.beginMinute)
         val bookingSessionDetail = BookingSessionDetail(
-            sessionStartTimestamp = calendar.timeInMillis,
+            sessionStartEpochInMilli = calendar.timeInMillis,
             durationInMinute = durationInMinute,
-            sessionTime = selectedSessionInfo.sessionTiming.toString(),
-            gymId = gymId,
-            dateDisplayName = getDisplayName(selectedSessionInfo.tabIndexOfSchedule)
+            gymId = gymId
         )
         return bookingSessionDetail
     }

@@ -18,6 +18,8 @@ package com.example.gymapp.data.repository.gym
 
 import com.example.gymapp.data.repository.GYM_TABLE_NAME
 import com.example.gymapp.model.Gym
+import com.example.gymapp.ui.screen.enumeration.ErrorCode
+import com.google.firebase.FirebaseException
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.dataObjects
 import kotlinx.coroutines.flow.Flow
@@ -29,5 +31,11 @@ class FirebaseGymRepository @Inject constructor(private val database: FirebaseFi
         get() = database.collection(GYM_TABLE_NAME).dataObjects()
 
     override suspend fun getGymById(docId: String): Flow<Gym?> =
-        database.collection(GYM_TABLE_NAME).document(docId).dataObjects()
+        try {
+            database.collection(GYM_TABLE_NAME).document(docId).dataObjects()
+        } catch (firebaseException: FirebaseException) {
+            throw ErrorCode.ThirdPartyServiceException("Firebase error occurred during retrival of document Id ${docId}", firebaseException)
+        } catch (exception: Exception) {
+            throw ErrorCode.InternalClientException("Error error occurred during retrival of document Id ${docId}", exception)
+        }
 }

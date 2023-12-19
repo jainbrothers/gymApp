@@ -1,5 +1,6 @@
 package com.example.gymapp.ui.screen
 
+import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -39,7 +40,11 @@ fun RenderErrorMessage(errorCode: ErrorCode, modifier: Modifier = Modifier) {
             .fillMaxWidth()
             .padding(10.dp)
     ) {
-        Text(text = "Unexpected error occured during session booking. ${errorCode.message}")
+        if(errorCode == ErrorCode.DELAYED_LOADING) {
+            Text(text = "Loading the page. Please report issue if stuck here for long.")
+        } else {
+            Text(text = "Unexpected error occured during session booking. ${errorCode.message}")
+        }
     }
 }
 
@@ -52,21 +57,21 @@ fun RenderBookSessionDetail(uiState: BookSessionConfirmationUiState, modifier: M
     ) {
         Row(modifier = modifier.padding(10.dp)) {
             Text(text = "You are booking session at: ", fontWeight = FontWeight.Bold)
-            Text(text = "${uiState.gym?.name}")
+            Text(text = "${uiState.gym!!.name}")
         }
         Row(modifier = modifier.padding(10.dp)) {
             Text(text = "gym address: ", fontWeight = FontWeight.Bold)
             Column() {
-                Text(text = "${uiState.gym?.address?.streetNameAndNumber}")
-                Text(text = "${uiState.gym?.address?.locality}")
-                Text(text = "${uiState.gym?.address?.city}")
-                Text(text = "${uiState.gym?.address?.pinCode}")
+                Text(text = "${uiState.gym!!.address?.streetNameAndNumber}")
+                Text(text = "${uiState.gym!!.address?.locality}")
+                Text(text = "${uiState.gym!!.address?.city}")
+                Text(text = "${uiState.gym!!.address?.pinCode}")
             }
         }
 
         Row(modifier = modifier.padding(10.dp)) {
             Text(text = "session date and time: ", fontWeight = FontWeight.Bold)
-            Text(text = "${uiState.sessionStartTimestamp?.let { Date(it) }}")
+            Text(text = "${Date(uiState.sessionStartEpochInMilli!!) }}")
         }
         Row(modifier = modifier.padding(10.dp)) {
             Text(text = "session duration in minute: ", fontWeight = FontWeight.Bold)

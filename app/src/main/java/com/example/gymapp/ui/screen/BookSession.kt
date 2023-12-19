@@ -1,5 +1,6 @@
 package com.example.gymapp.ui.screen
 
+import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -41,6 +42,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.gymapp.R
 import com.example.gymapp.model.BookingSessionDetail
 import com.example.gymapp.model.SessionTiming
+import com.example.gymapp.service.authservice.AuthService
 import com.example.gymapp.ui.screen.enumeration.ErrorCode
 import com.example.gymapp.ui.screen.viewmodel.BookSessionViewModel
 import com.example.gymapp.ui.screen.viewmodel.state.BookSessionUiState
@@ -51,10 +53,10 @@ import kotlinx.coroutines.launch
 
 typealias TabContentRenderingFunc = @Composable (Int)->Unit
 
-private const val TAG = "Workout selection tag"
+private val TAG = "BookSession"
 @Composable
 fun BookSession(
-    onClickProceedButton: (BookingSessionDetail?) -> Unit,
+    onClickProceedButton: (String, Int, Long) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val bookSessionViewModel: BookSessionViewModel = hiltViewModel()
@@ -66,7 +68,9 @@ fun BookSession(
             ErrorMessage(uiState.errorCode, modifier)
         } else {
             Column (
-                modifier = modifier.fillMaxWidth().weight(1f)
+                modifier = modifier
+                    .fillMaxWidth()
+                    .weight(1f)
             ) {
                 GymHighlightMessage(modifier)
                 ScheduleSession(bookSessionViewModel, uiState, modifier)
@@ -245,7 +249,7 @@ fun SessionScheduleOfADay(
 @Composable
 fun ProceedButton(bookSessionViewModel: BookSessionViewModel,
                   uiState: BookSessionUiState,
-                  onClickProceedButton: (BookingSessionDetail?) -> Unit,
+                  onClickProceedButton: (String, Int, Long) -> Unit,
                   modifier: Modifier = Modifier) {
     Column (
         modifier = modifier
@@ -255,7 +259,14 @@ fun ProceedButton(bookSessionViewModel: BookSessionViewModel,
     )
     {
         Button(
-            onClick = {onClickProceedButton(bookSessionViewModel.getBookingSessionDetail())},
+            onClick = {
+                val bookingSessionDetail = bookSessionViewModel.getBookingSessionDetail()
+                onClickProceedButton(
+                    bookingSessionDetail.gymId,
+                    bookingSessionDetail.durationInMinute,
+                    bookingSessionDetail.sessionStartEpochInMilli
+                )
+            },
             enabled = uiState.selectedSessionInfo != null
         ) {
             Text(
@@ -277,6 +288,6 @@ fun ErrorMessage(errorCode: ErrorCode, modifier: Modifier = Modifier) {
 @Composable
 fun BookSessionPreview() {
     MyApplicationTheme() {
-        BookSession({})
+        BookSession({gymId, duration, epoch -> {}})
     }
 }
