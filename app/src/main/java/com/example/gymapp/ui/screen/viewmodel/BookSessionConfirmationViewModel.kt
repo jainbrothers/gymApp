@@ -77,10 +77,6 @@ class BookSessionConfirmationViewModel @Inject constructor(
         } else {
             return gymFlow!!.filterNotNull().map { gym ->
                 errorCode = _bookSessionConfirmationUiState.value.errorCode
-                if (gym == null) {
-                    errorCode =
-                        ErrorCode.InternalServiceError("Selected Gym record not found. Reference = ${gymId}")
-                }
                 BookSessionConfirmationUiState(
                     gym = gym,
                     errorCode = errorCode,
