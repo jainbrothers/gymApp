@@ -29,16 +29,12 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
@@ -51,6 +47,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.gymapp.R
 import com.example.gymapp.ui.screen.BookSession
+import com.example.gymapp.ui.screen.BookSessionConfirmation
 import com.example.gymapp.ui.screen.HomeScreen
 import com.example.gymapp.ui.screen.LocationPermissionScreen
 import com.example.gymapp.ui.screen.OtpVerificationScreen
@@ -217,7 +214,29 @@ fun GymNavHost(
                     }
                 )
             ) {
-                BookSession()
+                BookSession(
+                    onClickProceedButton = {gymId, durationInMinute, sessionStartEpochInMilli ->
+                        navController.navigate("${ScreenName.BOOK_SESSION_CONFIRMATION.name}/$gymId/$durationInMinute/$sessionStartEpochInMilli")
+                    }
+                )
+            }
+            composable(
+                route = ScreenName.BOOK_SESSION_CONFIRMATION.name
+                        + "/{${GYM_ID_ARGUMENT_NAME}}"
+                        + "/{${DURATION_IN_MINUTE_ARGUMENT_NAME}}"
+                        + "/{${SESSION_START_EPOCH_IN_MILLI_ARGUMENT_NAME}}",
+                arguments = listOf(navArgument(GYM_ID_ARGUMENT_NAME) {
+                    type = NavType.StringType
+                },
+                    navArgument(DURATION_IN_MINUTE_ARGUMENT_NAME) {
+                        type = NavType.IntType
+                    },
+                    navArgument(SESSION_START_EPOCH_IN_MILLI_ARGUMENT_NAME) {
+                        type = NavType.LongType
+                    }
+                )
+            ) {
+                BookSessionConfirmation()
             }
         }
     }

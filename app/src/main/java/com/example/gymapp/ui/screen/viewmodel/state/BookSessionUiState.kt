@@ -1,6 +1,7 @@
 package com.example.gymapp.ui.screen.viewmodel.state
 
 import com.example.gymapp.application.DEFAULT_ACTIVITY_FOR_SESSION_SCHEDULE_LISTING
+import com.example.gymapp.model.BookingSessionDetail
 import com.example.gymapp.model.Gym
 import com.example.gymapp.model.SessionTiming
 import com.example.gymapp.ui.screen.enumeration.ErrorCode
@@ -10,7 +11,8 @@ data class BookSessionUiState(
     val errorCode: ErrorCode = ErrorCode.None,
     val daywiseSessionSchedule: List<DaywiseSessionSchedule>? = listOf(),
     val selectedActivity: String = DEFAULT_ACTIVITY_FOR_SESSION_SCHEDULE_LISTING,
-    val selectedSessionInfo: SelectedSessionInfo? = null
+    val selectedSessionInfo: SelectedSessionInfo? = null,
+    val bookingSessionDetail: BookingSessionDetail? = null
 )
 data class SelectedSessionInfo(
     val sessionIndexInSchedule: Int,

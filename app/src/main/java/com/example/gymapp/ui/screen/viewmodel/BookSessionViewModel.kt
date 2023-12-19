@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.gymapp.application.SCHEDULE_DISPLAY_FOR_DAYS
 import com.example.gymapp.data.repository.gym.GymRepository
+import com.example.gymapp.model.BookingSessionDetail
 import com.example.gymapp.model.Gym
 import com.example.gymapp.model.SessionTiming
 import com.example.gymapp.ui.navigation.GYM_ID_ARGUMENT_NAME
@@ -64,15 +65,6 @@ class BookSessionViewModel @Inject constructor(
         SharingStarted.WhileSubscribed(5000L),
         (BookSessionUiState())
     )
-    fun setSelectedSessionScheduleIndex(
-        selectedSessionInfo: SelectedSessionInfo
-    ) {
-        _bookSessionUistate.update { currentState ->
-            currentState.copy(
-                selectedSessionInfo = selectedSessionInfo
-            )
-        }
-    }
     private fun mapSessionScheduleToDisplayName(gym: Gym?
     ): List<DaywiseSessionSchedule?>? {
         if (gym == null || gym.activityToDayToSessionScheduleMap.isNullOrEmpty()) {
@@ -106,5 +98,33 @@ class BookSessionViewModel @Inject constructor(
         dayName: String
     ): List<SessionTiming>? {
         return scheduleList?.get(dayName)
+    }
+    fun setSelectedSessionScheduleIndex(
+        selectedSessionInfo: SelectedSessionInfo
+    ) {
+        _bookSessionUistate.update { currentState ->
+            currentState.copy(
+                selectedSessionInfo = selectedSessionInfo
+            )
+        }
+    }
+    fun getBookingSessionDetail(): BookingSessionDetail {
+        val selectedSessionInfo = bookSessionUiState.value.selectedSessionInfo!!
+        val calendar = Calendar.getInstance()
+        calendar.set(Calendar.HOUR_OF_DAY, 0)
+        calendar.set(Calendar.MINUTE, 0)
+        calendar.set(Calendar.SECOND, 0)
+        calendar.set(Calendar.MILLISECOND, 0)
+        calendar.add(Calendar.DAY_OF_YEAR, selectedSessionInfo.tabIndexOfSchedule)
+        calendar.add(Calendar.HOUR_OF_DAY, selectedSessionInfo.sessionTiming.beginHour)
+        calendar.add(Calendar.MINUTE, selectedSessionInfo.sessionTiming.beginMinute)
+        var durationInMinute =  (selectedSessionInfo.sessionTiming.endHour - selectedSessionInfo.sessionTiming.beginHour) * 60
+        durationInMinute = durationInMinute + (selectedSessionInfo.sessionTiming.endMinute - selectedSessionInfo.sessionTiming.beginMinute)
+        val bookingSessionDetail = BookingSessionDetail(
+            sessionStartEpochInMilli = calendar.timeInMillis,
+            durationInMinute = durationInMinute,
+            gymId = gymId
+        )
+        return bookingSessionDetail
     }
 }
