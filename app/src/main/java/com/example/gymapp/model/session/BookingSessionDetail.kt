@@ -1,4 +1,4 @@
-package com.example.gymapp.model
+package com.example.gymapp.model.session
 
 data class BookingSessionDetail (
     val gymId: String,
