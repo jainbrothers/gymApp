@@ -1,11 +1,9 @@
 package com.example.gymapp.ui.screen.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.gymapp.data.repository.gym.GymRepository
-import com.example.gymapp.model.BookingSessionDetail
 import com.example.gymapp.model.Gym
 import com.example.gymapp.ui.navigation.DURATION_IN_MINUTE_ARGUMENT_NAME
 import com.example.gymapp.ui.navigation.GYM_ID_ARGUMENT_NAME
@@ -19,7 +17,6 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.filterNotNull
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update

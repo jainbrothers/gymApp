@@ -1,6 +1,5 @@
 package com.example.gymapp.ui.screen
 
-import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -40,9 +39,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.gymapp.R
-import com.example.gymapp.model.BookingSessionDetail
 import com.example.gymapp.model.SessionTiming
-import com.example.gymapp.service.authservice.AuthService
 import com.example.gymapp.ui.screen.enumeration.ErrorCode
 import com.example.gymapp.ui.screen.viewmodel.BookSessionViewModel
 import com.example.gymapp.ui.screen.viewmodel.state.BookSessionUiState

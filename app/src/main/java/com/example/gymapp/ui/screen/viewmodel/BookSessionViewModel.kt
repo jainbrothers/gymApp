@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.gymapp.application.SCHEDULE_DISPLAY_FOR_DAYS
 import com.example.gymapp.data.repository.gym.GymRepository
-import com.example.gymapp.model.BookingSessionDetail
+import com.example.gymapp.model.session.BookingSessionDetail
 import com.example.gymapp.model.Gym
 import com.example.gymapp.model.SessionTiming
 import com.example.gymapp.ui.navigation.GYM_ID_ARGUMENT_NAME

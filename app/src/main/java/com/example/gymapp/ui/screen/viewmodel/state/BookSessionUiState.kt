@@ -1,7 +1,7 @@
 package com.example.gymapp.ui.screen.viewmodel.state
 
 import com.example.gymapp.application.DEFAULT_ACTIVITY_FOR_SESSION_SCHEDULE_LISTING
-import com.example.gymapp.model.BookingSessionDetail
+import com.example.gymapp.model.session.BookingSessionDetail
 import com.example.gymapp.model.Gym
 import com.example.gymapp.model.SessionTiming
 import com.example.gymapp.ui.screen.enumeration.ErrorCode
