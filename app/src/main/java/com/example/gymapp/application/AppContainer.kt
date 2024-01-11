@@ -31,6 +31,8 @@ import com.example.gymapp.data.repository.gym.GymRepository
 import com.example.gymapp.data.repository.gym.FirebaseGymRepository
 import com.example.gymapp.data.repository.UserDetailPreferencesRepository
 import com.example.gymapp.data.repository.UserDetailRepository
+import com.example.gymapp.data.repository.session.BookedSessionRepository
+import com.example.gymapp.data.repository.session.FirebaseBookedSessionRepository
 import com.example.gymapp.data.repository.user.UserRepository
 import com.example.gymapp.network.GymApiService
 import com.example.gymapp.service.authservice.AuthService
@@ -117,6 +119,14 @@ abstract class UserDetailRepositoryModule {
     abstract fun bindUserDetailRepository(
         userDetailPreferencesRepository: UserDetailPreferencesRepository,
     ): UserDetailRepository
+}
+@InstallIn(SingletonComponent::class)
+@Module
+abstract class BookedSessionRepositoryModule {
+    @Binds
+    abstract fun bindBookedSessionRepository(
+        firebaseBookedSessionRepository: FirebaseBookedSessionRepository
+    ): BookedSessionRepository
 }
 @Module
 @InstallIn(SingletonComponent::class)

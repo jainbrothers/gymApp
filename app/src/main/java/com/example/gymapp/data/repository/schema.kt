@@ -19,3 +19,13 @@ const val STREET_NAME_AND_NUMBER_FIELD_NAME = "street_name_and_number"
 const val PIN_CODE_FIELD_NAME = "pin_code"
 const val IMAGE_URLS_FIELD_NAME = "image_urls"
 const val ACTIVITY_TO_DAY_TO_SESSION_SCHEDULE_FIELD_NAME  = "default_schedule"
+
+const val BOOKED_SESSION_TABLE_NAME = "booked_session"
+const val BOOKING_TIME_EPOCH_IN_MILLIS_FIELD_NAME = "booking_time_epoch_in_millis"
+const val DURATION_IN_MINUTES_FIELD_NAME = "duration_in_minutes"
+const val GYM_ID_FIELD_NAME = "gym_id"
+const val PAYMENT_DETAIL_FIELD_NAME = "payment_detail"
+const val SESSION_START_TIME_EPOCH_IN_MILLIS_FIELD_NAME = "session_start_time_epoch_in_millis"
+
+const val AMOUNT_PAID_FIELD_NAME = "amount_paid"
+const val AMOUNT_DUE_FIELD_NAME = "amount_due"
