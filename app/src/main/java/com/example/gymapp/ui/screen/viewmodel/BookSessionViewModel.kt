@@ -1,5 +1,6 @@
 package com.example.gymapp.ui.screen.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -8,6 +9,7 @@ import com.example.gymapp.data.repository.gym.GymRepository
 import com.example.gymapp.model.session.BookingSessionDetail
 import com.example.gymapp.model.Gym
 import com.example.gymapp.model.SessionTiming
+import com.example.gymapp.ui.navigation.ACTIVITY_ID_ARGUMENT_NAME
 import com.example.gymapp.ui.navigation.GYM_ID_ARGUMENT_NAME
 import com.example.gymapp.ui.screen.enumeration.ErrorCode
 import com.example.gymapp.ui.screen.viewmodel.state.BookSessionUiState
@@ -38,7 +40,10 @@ class BookSessionViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle, val gymRepository: GymRepository,
 ) : ViewModel() {
     private val gymId: String = checkNotNull(savedStateHandle[GYM_ID_ARGUMENT_NAME])
-    private val _bookSessionUistate = MutableStateFlow(BookSessionUiState())
+    private val activityId: String = checkNotNull(savedStateHandle[ACTIVITY_ID_ARGUMENT_NAME])
+    private val _bookSessionUistate = MutableStateFlow(BookSessionUiState(
+        selectedActivity = activityId
+    ))
     private var gymFlow: Flow<Gym?>? = null
     private var errorCode: ErrorCode = ErrorCode.None
     init {
@@ -63,7 +68,9 @@ class BookSessionViewModel @Inject constructor(
     .stateIn(
         viewModelScope,
         SharingStarted.WhileSubscribed(5000L),
-        (BookSessionUiState())
+        (BookSessionUiState(
+            selectedActivity = activityId
+        ))
     )
     private fun mapSessionScheduleToDisplayName(gym: Gym?
     ): List<DaywiseSessionSchedule?>? {
@@ -121,7 +128,8 @@ class BookSessionViewModel @Inject constructor(
         var durationInMinute =  (selectedSessionInfo.sessionTiming.endHour - selectedSessionInfo.sessionTiming.beginHour) * 60
         durationInMinute = durationInMinute + (selectedSessionInfo.sessionTiming.endMinute - selectedSessionInfo.sessionTiming.beginMinute)
         val bookingSessionDetail = BookingSessionDetail(
-            sessionStartEpochInMilli = calendar.timeInMillis,
+            sessionStartEpochInMillis = calendar.timeInMillis,
+            activityId = activityId,
             durationInMinute = durationInMinute,
             gymId = gymId
         )

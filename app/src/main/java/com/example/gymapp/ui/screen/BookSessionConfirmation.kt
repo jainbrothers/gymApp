@@ -1,14 +1,15 @@
 package com.example.gymapp.ui.screen
 
-import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -19,7 +20,10 @@ import com.example.gymapp.ui.screen.viewmodel.state.BookSessionConfirmationUiSta
 import java.util.Date
 
 @Composable
-fun BookSessionConfirmation(modifier: Modifier = Modifier) {
+fun BookSessionConfirmation(
+    onClickConfirmButton: () -> Unit,
+    modifier: Modifier = Modifier
+) {
     val bookSessionConfirmationViewModel: BookSessionConfirmationViewModel = hiltViewModel()
     val uiState by bookSessionConfirmationViewModel.bookSessionConfirmationUiState.collectAsState()
     Column(
@@ -29,6 +33,7 @@ fun BookSessionConfirmation(modifier: Modifier = Modifier) {
             RenderErrorMessage(errorCode = uiState.errorCode)
         } else {
             RenderBookSessionDetail(uiState, modifier)
+            ConfirmButton(bookSessionConfirmationViewModel, onClickConfirmButton, modifier)
         }
     }
 }
@@ -76,6 +81,32 @@ fun RenderBookSessionDetail(uiState: BookSessionConfirmationUiState, modifier: M
         Row(modifier = modifier.padding(10.dp)) {
             Text(text = "session duration in minute: ", fontWeight = FontWeight.Bold)
             Text(text = "${uiState.durationInMinute}")
+        }
+    }
+}
+@Composable
+fun ConfirmButton(
+    bookSessionConfirmationViewModel: BookSessionConfirmationViewModel,
+    onClickConfirmButton: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Column (
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(10.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    )
+    {
+        Button(
+            onClick = {
+                bookSessionConfirmationViewModel.createBookedSessionDetail()
+                onClickConfirmButton()
+            }
+        ) {
+            Text(
+                text = "Confirm",
+                fontWeight = FontWeight.Bold
+            )
         }
     }
 }
