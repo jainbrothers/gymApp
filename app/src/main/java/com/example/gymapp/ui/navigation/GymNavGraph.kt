@@ -205,29 +205,33 @@ fun GymNavHost(
                 LocationPermissionScreen()
             }
             composable(
-                route = ScreenName.BOOK_SESSION.name + "/{${GYM_ID_ARGUMENT_NAME}}" + "/{${ACTIVITY_ARGUMENT_NAME}}",
+                route = ScreenName.BOOK_SESSION.name + "/{${GYM_ID_ARGUMENT_NAME}}" + "/{${ACTIVITY_ID_ARGUMENT_NAME}}",
                 arguments = listOf(navArgument(GYM_ID_ARGUMENT_NAME) {
                         type = NavType.StringType
                     },
-                    navArgument(ACTIVITY_ARGUMENT_NAME) {
+                    navArgument(ACTIVITY_ID_ARGUMENT_NAME) {
                         type = NavType.StringType
                     }
                 )
             ) {
                 BookSession(
-                    onClickProceedButton = {gymId, durationInMinute, sessionStartEpochInMilli ->
-                        navController.navigate("${ScreenName.BOOK_SESSION_CONFIRMATION.name}/$gymId/$durationInMinute/$sessionStartEpochInMilli")
+                    onClickProceedButton = {gymId, activityId, durationInMinute, sessionStartEpochInMillis ->
+                        navController.navigate("${ScreenName.BOOK_SESSION_CONFIRMATION.name}/$gymId/$activityId/$durationInMinute/$sessionStartEpochInMillis")
                     }
                 )
             }
             composable(
                 route = ScreenName.BOOK_SESSION_CONFIRMATION.name
                         + "/{${GYM_ID_ARGUMENT_NAME}}"
+                        + "/{${ACTIVITY_ID_ARGUMENT_NAME}}"
                         + "/{${DURATION_IN_MINUTE_ARGUMENT_NAME}}"
                         + "/{${SESSION_START_EPOCH_IN_MILLI_ARGUMENT_NAME}}",
                 arguments = listOf(navArgument(GYM_ID_ARGUMENT_NAME) {
                     type = NavType.StringType
                 },
+                    navArgument(ACTIVITY_ID_ARGUMENT_NAME) {
+                        type = NavType.StringType
+                    },
                     navArgument(DURATION_IN_MINUTE_ARGUMENT_NAME) {
                         type = NavType.IntType
                     },
@@ -236,7 +240,11 @@ fun GymNavHost(
                     }
                 )
             ) {
-                BookSessionConfirmation()
+                BookSessionConfirmation(
+                    onClickConfirmButton = {
+                        navController.navigate(route = ScreenName.HOME_SCREEN.name)
+                    }
+                )
             }
         }
     }

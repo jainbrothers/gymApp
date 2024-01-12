@@ -36,6 +36,6 @@ class FirebaseGymRepository @Inject constructor(private val database: FirebaseFi
         } catch (firebaseException: FirebaseException) {
             throw ErrorCode.ThirdPartyServiceException("Firebase error occurred during retrival of document Id ${docId}", firebaseException)
         } catch (exception: Exception) {
-            throw ErrorCode.InternalClientException("Error error occurred during retrival of document Id ${docId}", exception)
+            throw ErrorCode.InternalClientException("Error occurred during retrival of document Id ${docId}", exception)
         }
 }
