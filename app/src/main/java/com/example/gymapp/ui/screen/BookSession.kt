@@ -53,7 +53,7 @@ typealias TabContentRenderingFunc = @Composable (Int)->Unit
 private val TAG = "BookSession"
 @Composable
 fun BookSession(
-    onClickProceedButton: (String, Int, Long) -> Unit,
+    onClickProceedButton: (String, String, Int, Long) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val bookSessionViewModel: BookSessionViewModel = hiltViewModel()
@@ -246,7 +246,7 @@ fun SessionScheduleOfADay(
 @Composable
 fun ProceedButton(bookSessionViewModel: BookSessionViewModel,
                   uiState: BookSessionUiState,
-                  onClickProceedButton: (String, Int, Long) -> Unit,
+                  onClickProceedButton: (String, String, Int, Long) -> Unit,
                   modifier: Modifier = Modifier) {
     Column (
         modifier = modifier
@@ -260,8 +260,9 @@ fun ProceedButton(bookSessionViewModel: BookSessionViewModel,
                 val bookingSessionDetail = bookSessionViewModel.getBookingSessionDetail()
                 onClickProceedButton(
                     bookingSessionDetail.gymId,
+                    bookingSessionDetail.activityId,
                     bookingSessionDetail.durationInMinute,
-                    bookingSessionDetail.sessionStartEpochInMilli
+                    bookingSessionDetail.sessionStartEpochInMillis
                 )
             },
             enabled = uiState.selectedSessionInfo != null
@@ -285,6 +286,6 @@ fun ErrorMessage(errorCode: ErrorCode, modifier: Modifier = Modifier) {
 @Composable
 fun BookSessionPreview() {
     MyApplicationTheme() {
-        BookSession({gymId, duration, epoch -> {}})
+        BookSession({gymId, activityId, duration, epoch -> {}})
     }
 }

@@ -14,3 +14,4 @@ val DAY_INDEX_TO_DISPLAY_NAME: Map<Int, String> = mapOf(
     0 to "Today",
     1 to "Tomorrow"
 )
+val UNDERSCORE_STRING = "_"
