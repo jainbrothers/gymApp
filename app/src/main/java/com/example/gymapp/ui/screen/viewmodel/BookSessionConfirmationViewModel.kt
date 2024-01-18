@@ -85,11 +85,9 @@ class BookSessionConfirmationViewModel @Inject constructor(
         }
     }
     private suspend fun populateUserId() {
-        var _userId = userDetailRepository.userId.first().toString()
-        if (_userId == null) {
-            errorCode = ErrorCode.InternalServiceError("Valid userId not found. userId = $userId")
-        } else {
-            userId = _userId
+        userId = userDetailRepository.userId.first().toString()
+        if (userId == null) {
+            errorCode = ErrorCode.InternalServiceError("null value for userId found.")
         }
     }
     private suspend fun validateUser() {
