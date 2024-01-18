@@ -1,6 +1,5 @@
 package com.example.gymapp.ui.screen
 
-import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -15,10 +14,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.gymapp.model.session.BookedSessionDetail
 import com.example.gymapp.ui.screen.enumeration.ErrorCode
 import com.example.gymapp.ui.screen.viewmodel.BookSessionConfirmationViewModel
-import com.example.gymapp.ui.screen.viewmodel.BookSessionViewModel
 import com.example.gymapp.ui.screen.viewmodel.state.BookSessionConfirmationUiState
 import java.util.Date
 
@@ -102,7 +99,7 @@ fun ConfirmButton(
     {
         Button(
             onClick = {
-                bookSessionConfirmationViewModel.storeBookedSessionDetail()
+                bookSessionConfirmationViewModel.createBookedSessionDetail()
                 onClickConfirmButton()
             }
         ) {

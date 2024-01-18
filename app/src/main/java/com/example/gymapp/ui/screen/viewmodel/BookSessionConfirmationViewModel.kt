@@ -33,7 +33,6 @@ import kotlinx.coroutines.launch
 import java.lang.StringBuilder
 import java.time.Instant
 import javax.inject.Inject
-import kotlin.properties.Delegates
 
 private val TAG = BookSessionConfirmationViewModel::class.java.simpleName
 @HiltViewModel
@@ -151,9 +150,9 @@ class BookSessionConfirmationViewModel @Inject constructor(
             )
         }
     }
-    fun storeBookedSessionDetail() {
+    fun createBookedSessionDetail() {
         viewModelScope.launch {
-            val bookedSessionDetail = createBookedSessionDetail()
+            val bookedSessionDetail = buildBookedSessionDetail()
             bookedSessionRepository.create(
                 bookedSessionDetail,
                 StringBuilder()
@@ -164,7 +163,7 @@ class BookSessionConfirmationViewModel @Inject constructor(
             )
         }
     }
-    fun createBookedSessionDetail(): BookedSessionDetail {
+    fun buildBookedSessionDetail(): BookedSessionDetail {
         return BookedSessionDetail(
             activityId = activityId!!,
             durationInMinute = durationInMinute!!,
