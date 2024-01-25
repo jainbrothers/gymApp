@@ -1,7 +1,5 @@
 package com.example.gymapp.ui.screen.viewmodel.state
 
-import androidx.annotation.StringRes
-import com.example.gymapp.R
 import com.example.gymapp.model.Gym
 import com.example.gymapp.ui.screen.enumeration.ErrorCode
 
