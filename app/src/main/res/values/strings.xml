@@ -31,4 +31,6 @@
     <string name="no_schedule_found">No schedule found!</string>
     <string name="book_session_screen_header_message">Select workout timing</string>
     <string name="book_session_header_text">Every process is followed by a mandatory sanitization process</string>
+    <string name="CONFIRM_BUTTON_TEXT">Confirm</string>
+    <string name="SESSION_BOOKING_CONFIRMATION_TEXT">Your session is booked</string>
 </resources>
